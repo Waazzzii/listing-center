@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Light mode - Casago themed */
+    --background: #FFFFFF;
+    --surface: #F7F7F6;
+    --surface-raised: #FFFFFF;
+    --border: #E5E2DE;
+    --border-strong: #B8B3AD;
+    --text-primary: #1A1A1A;
+    --text-secondary: #5C5A57;
+    --text-muted: #969491;
+    --primary: #0092D3;
+    --primary-hover: #0078AD;
+    --primary-light: #E6F4FB;
+    --accent: #F57000;
+    --accent-hover: #CC5D00;
+    --accent-light: #FEF0E4;
+    --sidebar-bg: #1A2332;
+    --sidebar-hover: #243044;
+    --sidebar-active: #0092D3;
+    --sidebar-text: #B7B9BF;
+    --sidebar-text-active: #FFFFFF;
+    --topbar-bg: #FFFFFF;
+    --topbar-border: #E5E2DE;
+    --card-bg: #FFFFFF;
+    --card-border: #E5E2DE;
+    --table-header-bg: #F7F7F6;
+    --table-row-hover: #F7F7F6;
+    --badge-blue-bg: #E6F4FB;
+    --badge-blue-text: #0078AD;
+    --badge-orange-bg: #FEF0E4;
+    --badge-orange-text: #CC5D00;
+  }
+
+  .dark {
+    --background: #0F1419;
+    --surface: #1A2332;
+    --surface-raised: #1E2A3A;
+    --border: #2D3B4E;
+    --border-strong: #3D4F65;
+    --text-primary: #F0F0EE;
+    --text-secondary: #B7B9BF;
+    --text-muted: #7A8899;
+    --primary: #33A8DE;
+    --primary-hover: #0092D3;
+    --primary-light: #0D2A3D;
+    --accent: #FF8A2E;
+    --accent-hover: #F57000;
+    --accent-light: #2D1F0F;
+    --sidebar-bg: #0F1419;
+    --sidebar-hover: #1A2332;
+    --sidebar-active: #0092D3;
+    --sidebar-text: #7A8899;
+    --sidebar-text-active: #FFFFFF;
+    --topbar-bg: #1A2332;
+    --topbar-border: #2D3B4E;
+    --card-bg: #1E2A3A;
+    --card-border: #2D3B4E;
+    --table-header-bg: #1A2332;
+    --table-row-hover: #243044;
+    --badge-blue-bg: #0D2A3D;
+    --badge-blue-text: #33A8DE;
+    --badge-orange-bg: #2D1F0F;
+    --badge-orange-text: #FF8A2E;
+  }
+
+  body {
+    @apply bg-[var(--background)] text-[var(--text-primary)] antialiased;
+    font-feature-settings: "cv11", "ss01";
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "positive": [
+    "Thank you so much, {guest_name}! We're thrilled you enjoyed your stay at {property_name}. We'd love to welcome you back anytime!",
+    "What a wonderful review, {guest_name}! It was a pleasure hosting you. We hope to see you again soon!",
+    "{guest_name}, thank you for the kind words! We're so happy everything met your expectations. You're always welcome back!",
+    "We really appreciate the thoughtful review, {guest_name}! Hosting guests like you is what makes this rewarding.",
+    "Thank you, {guest_name}! We put a lot of care into making {property_name} special, and we're glad it showed. Come back anytime!",
+    "{guest_name}, your kind review made our day! We're so glad you had a wonderful experience at {property_name}.",
+    "What a great guest you were, {guest_name}! Thank you for choosing {property_name} and for the lovely review.",
+    "Thank you for staying with us, {guest_name}! We're delighted that {property_name} was the right fit for your trip.",
+    "{guest_name}, we're so grateful for your generous review! We hope {property_name} gave you the perfect getaway.",
+    "Thank you, {guest_name}! Reviews like yours remind us why we love what we do. Hope to host you again!",
+    "We're thrilled you had such a great time, {guest_name}! {property_name} is always here when you need your next escape.",
+    "{guest_name}, thank you for being such a wonderful guest! We're glad everything was just right for you.",
+    "So happy to hear you loved your stay, {guest_name}! We'd be honored to welcome you back to {property_name}.",
+    "Thank you for the amazing review, {guest_name}! Your kind words mean the world to our team.",
+    "{guest_name}, what a joy it was hosting you! We're glad {property_name} lived up to your expectations.",
+    "We're so glad you chose {property_name}, {guest_name}! Thank you for the wonderful review and we hope to see you again.",
+    "Thank you, {guest_name}! Knowing our guests have a great experience is our top priority. We'd love to host you again!",
+    "{guest_name}, thanks for the stellar review! We put our heart into {property_name} and love hearing it resonates with our guests.",
+    "We truly appreciate your review, {guest_name}! It was a pleasure having you at {property_name}.",
+    "Thank you for choosing {property_name}, {guest_name}! We're so glad your stay was everything you hoped for.",
+    "{guest_name}, your review just made our week! Thank you for being an amazing guest.",
+    "So grateful for your kind words, {guest_name}! We hope {property_name} becomes your go-to spot for future visits.",
+    "Thank you, {guest_name}! We strive to create unforgettable experiences and your review confirms we're on the right track.",
+    "{guest_name}, it was truly a pleasure hosting you! Thank you for the wonderful feedback about {property_name}.",
+    "We couldn't ask for a better review, {guest_name}! Thank you for choosing us and for sharing your experience."
+  ],
+  "negative": [
+    "{guest_name}, thank you for sharing your feedback. We take every review seriously and have addressed the concerns you raised. We'd welcome the chance to provide a better experience next time.",
+    "We appreciate your honest feedback, {guest_name}. We're sorry your stay didn't meet expectations. Our team has reviewed your comments and is taking steps to improve.",
+    "{guest_name}, we're sorry to hear about your experience. Your feedback is valuable and we've already begun making improvements based on your comments.",
+    "Thank you for letting us know, {guest_name}. We hold ourselves to a high standard and clearly fell short. We've addressed the issues you mentioned.",
+    "{guest_name}, we sincerely apologize for the inconvenience. We've taken your feedback to heart and made changes to prevent similar issues for future guests.",
+    "We're grateful for your candid review, {guest_name}. Feedback like this helps us improve, and we've already taken action on the specific issues you raised.",
+    "{guest_name}, your review has been reviewed by our management team. We take these concerns seriously and have implemented changes based on your experience."
+  ],
+  "neutral": [
+    "Thank you for your feedback, {guest_name}! We appreciate you taking the time to share your experience at {property_name}.",
+    "{guest_name}, we appreciate the balanced review. We're glad you enjoyed parts of your stay and will work on the areas you mentioned.",
+    "Thank you for staying at {property_name}, {guest_name}. We value your feedback and are always looking for ways to improve.",
+    "{guest_name}, thank you for the honest review. We're taking note of your suggestions to make {property_name} even better.",
+    "We appreciate your review, {guest_name}. Your feedback helps us continue to improve the experience at {property_name}.",
+    "{guest_name}, thank you for choosing {property_name}. We've noted your feedback and are committed to making each stay better than the last."
+  ]
+}
