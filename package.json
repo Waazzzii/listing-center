@@ -10,6 +10,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "seed": "tsx scripts/seed-lookup-table.ts",
+    "seed:listing-presence": "tsx scripts/seed-listing-presence.ts",
     "refresh-views": "tsx scripts/refresh-latest-snapshots.ts",
     "agent:weekly-scan": "tsx agents/data-collection/run-weekly-scan.ts",
     "agent:spot-check": "tsx agents/data-collection/run-spot-check.ts",
@@ -19,7 +20,8 @@
     "agent:pricing-optimizer": "tsx agents/pricing-optimizer/run-pricing-optimizer.ts",
     "agent:revenue-pacer": "tsx agents/revenue-pacer/run-revenue-pacer.ts",
     "agent:content-optimizer": "tsx agents/content-optimizer/run-content-optimizer.ts",
-    "agent:testing-engine": "tsx agents/testing-engine/run-testing-engine.ts"
+    "agent:testing-engine": "tsx agents/testing-engine/run-testing-engine.ts",
+    "agent:public-scrape": "tsx agents/listing-scraper/run-public-scrape.ts"
   },
   "dependencies": {
     "@slack/web-api": "^7.15.0",

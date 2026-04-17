@@ -54,7 +54,7 @@ One row per unit × OTA. Answers: "is this live where it should be?"
 | Column | Type | Notes |
 |---|---|---|
 | `id` | uuid PK | |
-| `unit_id` | bigint | FK to lc properties |
+| `unit_id` | uuid   | FK to lc properties |
 | `ota` | text | `airbnb` \| `vrbo` |
 | `streamline_distributed` | boolean | From Streamline distribution config |
 | `publicly_found` | boolean | Did public scraper find a live listing? |
@@ -74,7 +74,7 @@ One row per unit × OTA × scrape run. Tracks content as seen by guests.
 | Column | Type | Notes |
 |---|---|---|
 | `id` | uuid PK | |
-| `unit_id` | bigint | |
+| `unit_id` | uuid   | |
 | `ota` | text | |
 | `source` | text | `public` \| `extranet` |
 | `scraped_at` | timestamptz | |
@@ -100,7 +100,7 @@ One row per unit × OTA × day. Traffic and conversion metrics from extranet.
 | Column | Type | Notes |
 |---|---|---|
 | `id` | uuid PK | |
-| `unit_id` | bigint | |
+| `unit_id` | uuid   | |
 | `ota` | text | |
 | `date` | date | |
 | `impressions` | int | |
@@ -122,7 +122,7 @@ One row per unit × period. Composite health + component scores.
 | Column | Type | Notes |
 |---|---|---|
 | `id` | uuid PK | |
-| `unit_id` | bigint | |
+| `unit_id` | uuid   | |
 | `period_start`, `period_end` | date | Rolling 7-day window |
 | `composite_score` | int | 0-100 |
 | `presence_score` | int | % expected OTAs where live |
