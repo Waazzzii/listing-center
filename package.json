@@ -11,6 +11,8 @@
     "test:watch": "vitest",
     "seed": "tsx scripts/seed-lookup-table.ts",
     "seed:listing-presence": "tsx scripts/seed-listing-presence.ts",
+    "seed:real-airbnb-accounts": "tsx scripts/seed-real-airbnb-accounts.ts",
+    "import:airbnb-listings": "tsx scripts/import-airbnb-listings-from-xlsx.ts",
     "refresh-views": "tsx scripts/refresh-latest-snapshots.ts",
     "agent:weekly-scan": "tsx agents/data-collection/run-weekly-scan.ts",
     "agent:spot-check": "tsx agents/data-collection/run-spot-check.ts",
@@ -33,6 +35,7 @@
     "react": "^18",
     "react-dom": "^18",
     "recharts": "^3.8.1",
+    "xlsx": "^0.18.5",
     "zod": "^4.3.6"
   },
   "devDependencies": {
