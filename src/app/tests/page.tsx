@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { RefreshCw, Plus } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { useABTests } from '@/hooks/useABTests';
 import ActiveTestsTable from '@/components/tests/ActiveTestsTable';
 import CompletedTestsTable from '@/components/tests/CompletedTestsTable';
@@ -35,16 +35,10 @@ export default function TestsPage() {
             Track listing changes, measure impact, and build institutional knowledge.
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={refresh}>
-            <RefreshCw className="h-3.5 w-3.5" />
-            Refresh
-          </Button>
-          <Button size="sm" onClick={() => setShowCreateModal(true)}>
-            <Plus className="h-3.5 w-3.5" />
-            New test
-          </Button>
-        </div>
+        <Button size="sm" onClick={() => setShowCreateModal(true)}>
+          <Plus className="h-3.5 w-3.5" />
+          New test
+        </Button>
       </div>
 
       <div className="border-b border-border">

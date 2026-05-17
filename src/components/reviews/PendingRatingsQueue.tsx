@@ -1,72 +1,118 @@
 'use client';
 
-import React from 'react';
+import { Star } from 'lucide-react';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { EmptyState } from '@/components/ui/empty-state';
+import { MARKET_LABELS } from '@/lib/constants';
+import { cn } from '@/lib/utils';
 import type { PendingRatingUI } from '@/hooks/useReviews';
 
 interface Props {
   ratings: PendingRatingUI[];
 }
 
+const STATUS_VARIANT: Record<string, 'success' | 'danger' | 'secondary'> = {
+  submitted: 'success',
+  failed: 'danger',
+  pending: 'secondary',
+};
+
 export default function PendingRatingsQueue({ ratings }: Props) {
   if (ratings.length === 0) {
     return (
-      <div className="text-center py-12 text-muted-foreground">
-        <p className="text-lg font-medium">No pending guest ratings</p>
-        <p className="mt-1 text-sm">All guest ratings are up to date.</p>
-      </div>
+      <Card>
+        <CardContent className="p-0">
+          <EmptyState
+            icon={Star}
+            title="No pending guest ratings"
+            description="All guest ratings are up to date."
+          />
+        </CardContent>
+      </Card>
     );
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full divide-y divide-[var(--border)]">
-        <thead className="bg-muted">
-          <tr>
-            <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Guest</th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Property</th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Checkout</th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Deadline</th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Urgency</th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Status</th>
-          </tr>
-        </thead>
-        <tbody className="bg-card divide-y divide-[var(--border)]">
-          {ratings.map((rating) => {
-            const daysLeft = rating.days_until_deadline;
-            let urgencyColor = 'text-health-green';
-            let urgencyLabel = `${daysLeft} days`;
-            if (daysLeft < 0) {
-              urgencyColor = 'text-destructive font-bold';
-              urgencyLabel = 'OVERDUE';
-            } else if (daysLeft <= 1) {
-              urgencyColor = 'text-destructive font-bold';
-              urgencyLabel = daysLeft === 0 ? 'TODAY' : '1 day';
-            } else if (daysLeft <= 3) {
-              urgencyColor = 'text-health-orange font-semibold';
-              urgencyLabel = `${daysLeft} days`;
-            }
+    <Card>
+      <CardContent className="p-0">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Guest</TableHead>
+              <TableHead>Property</TableHead>
+              <TableHead>Checkout</TableHead>
+              <TableHead>Deadline</TableHead>
+              <TableHead className="text-right">Urgency</TableHead>
+              <TableHead>Status</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {ratings.map((rating) => {
+              const daysLeft = rating.days_until_deadline;
+              let urgencyClass = 'text-health-green';
+              let urgencyLabel = `${daysLeft} days`;
+              if (daysLeft < 0) {
+                urgencyClass = 'text-destructive font-semibold';
+                urgencyLabel = 'OVERDUE';
+              } else if (daysLeft <= 1) {
+                urgencyClass = 'text-destructive font-semibold';
+                urgencyLabel = daysLeft === 0 ? 'Today' : '1 day';
+              } else if (daysLeft <= 3) {
+                urgencyClass = 'text-health-orange font-medium';
+              }
 
-            return (
-              <tr key={rating.id} className={rating.is_urgent ? 'bg-destructive/10' : 'hover:bg-accent'}>
-                <td className="px-4 py-3 text-sm font-medium text-foreground">{rating.guest_name}</td>
-                <td className="px-4 py-3 text-sm text-muted-foreground">{rating.property_name || '—'}</td>
-                <td className="px-4 py-3 text-sm text-muted-foreground">{rating.checkout_date}</td>
-                <td className="px-4 py-3 text-sm text-muted-foreground">{rating.rating_deadline}</td>
-                <td className={`px-4 py-3 text-sm ${urgencyColor}`}>{urgencyLabel}</td>
-                <td className="px-4 py-3">
-                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                    rating.submission_status === 'submitted' ? 'bg-health-green/15 text-health-green' :
-                    rating.submission_status === 'failed' ? 'bg-destructive/15 text-destructive' :
-                    'bg-muted text-muted-foreground'
-                  }`}>
-                    {rating.submission_status}
-                  </span>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </div>
+              return (
+                <TableRow
+                  key={rating.id}
+                  className={cn(rating.is_urgent && 'bg-destructive/5')}
+                >
+                  <TableCell className="font-medium">{rating.guest_name}</TableCell>
+                  <TableCell>
+                    {rating.property_name ? (
+                      <div className="flex flex-col">
+                        <span className="text-foreground">{rating.property_name}</span>
+                        {rating.market && (
+                          <span className="text-xs text-muted-foreground">
+                            {MARKET_LABELS[rating.market] || rating.market}
+                          </span>
+                        )}
+                      </div>
+                    ) : (
+                      <span className="text-muted-foreground">—</span>
+                    )}
+                  </TableCell>
+                  <TableCell className="text-muted-foreground tabular-nums">
+                    {rating.checkout_date}
+                  </TableCell>
+                  <TableCell className="text-muted-foreground tabular-nums">
+                    {rating.rating_deadline}
+                  </TableCell>
+                  <TableCell className={cn('text-right tabular-nums', urgencyClass)}>
+                    {urgencyLabel}
+                  </TableCell>
+                  <TableCell>
+                    <Badge
+                      variant={STATUS_VARIANT[rating.submission_status] || 'secondary'}
+                      dot
+                    >
+                      {rating.submission_status}
+                    </Badge>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </CardContent>
+    </Card>
   );
 }

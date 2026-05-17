@@ -19,7 +19,7 @@ const SECTIONS = [
     items: [
       { name: 'Streamline PMS', status: 'connected' as const, detail: 'Last sync 2h ago' },
       { name: 'Wheelhouse', status: 'connected' as const, detail: 'Daily 06:00 UTC' },
-      { name: 'Supabase', status: 'connected' as const, detail: 'kwcwnaibioibwwmlywtt' },
+      { name: 'Supabase', status: 'connected' as const, detail: '••••••••••••••••lywtt' },
     ],
   },
   {

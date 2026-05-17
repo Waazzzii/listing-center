@@ -1,17 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import { RefreshCw } from 'lucide-react';
 import { useReviews } from '@/hooks/useReviews';
 import PendingRatingsQueue from '@/components/reviews/PendingRatingsQueue';
 import ReviewResponseTracker from '@/components/reviews/ReviewResponseTracker';
 import ReviewAnalytics from '@/components/reviews/ReviewAnalytics';
 import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 export default function ReviewsPage() {
-  const { pendingRatings, reviews, isLoading, error, refresh } = useReviews();
+  const { pendingRatings, reviews, isLoading, error } = useReviews();
   const [activeTab, setActiveTab] = useState<'ratings' | 'responses' | 'analytics'>('ratings');
 
   const urgentCount = pendingRatings.filter((r) => r.is_urgent).length;
@@ -26,19 +24,13 @@ export default function ReviewsPage() {
 
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6">
-      <div className="flex items-start justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-            Review Management
-          </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Guest ratings, review responses, and sentiment tracking.
-          </p>
-        </div>
-        <Button variant="outline" size="sm" onClick={refresh}>
-          <RefreshCw className="h-3.5 w-3.5" />
-          Refresh
-        </Button>
+      <div>
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+          Review Management
+        </h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Guest ratings, review responses, and sentiment tracking.
+        </p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

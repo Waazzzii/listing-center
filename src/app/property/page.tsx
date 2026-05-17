@@ -5,7 +5,6 @@ import { useState } from 'react';
 import { Search, Filter } from 'lucide-react';
 import { useCommandGrid } from '@/hooks/useCommandGrid';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import {
   Table,
   TableBody,
@@ -14,7 +13,11 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { formatCurrency, formatPct, scoreToGrade, scoreColor, cn } from '@/lib/utils';
+import { TierBadge } from '@/components/ui/tier-badge';
+import { HealthScoreBadge } from '@/components/ui/health-score-badge';
+import { ChannelDots } from '@/components/ui/channel-dots';
+import { EmptyState } from '@/components/ui/empty-state';
+import { formatCurrency, formatPct, cn } from '@/lib/utils';
 import { MARKET_LABELS } from '@/lib/constants';
 
 export default function PropertiesPage() {
@@ -83,9 +86,14 @@ export default function PropertiesPage() {
               ))}
             </div>
           ) : filtered.length === 0 ? (
-            <div className="py-16 text-center text-sm text-muted-foreground">
-              No properties match the current filters.
-            </div>
+            <EmptyState
+              title="No properties match"
+              description={
+                query || marketFilter !== 'all'
+                  ? 'Try adjusting your search or filter.'
+                  : 'Properties will appear here once they sync from Streamline.'
+              }
+            />
           ) : (
             <Table>
               <TableHeader>
@@ -102,8 +110,14 @@ export default function PropertiesPage() {
               </TableHeader>
               <TableBody>
                 {filtered.map((row) => {
-                  const grade = scoreToGrade(row.health_score);
-                  const gradeColor = scoreColor(row.health_score);
+                  const paceTone =
+                    row.rev_pct_to_proj == null
+                      ? 'text-muted-foreground'
+                      : row.rev_pct_to_proj >= 100
+                        ? 'text-health-green'
+                        : row.rev_pct_to_proj >= 90
+                          ? 'text-foreground'
+                          : 'text-destructive';
                   return (
                     <TableRow
                       key={row.property_id}
@@ -115,17 +129,16 @@ export default function PropertiesPage() {
                         {MARKET_LABELS[row.market] || row.market}
                       </TableCell>
                       <TableCell>
-                        <Badge variant="secondary" className="capitalize">
-                          {row.quality_tier}
-                        </Badge>
+                        <TierBadge tier={row.quality_tier} />
                       </TableCell>
                       <TableCell className="text-right">
-                        <span className="inline-flex items-baseline gap-1">
-                          <span className={cn('font-semibold tabular-nums', gradeColor)}>
-                            {row.health_score ?? '—'}
-                          </span>
-                          <span className={cn('text-xs font-semibold', gradeColor)}>{grade}</span>
-                        </span>
+                        <div className="inline-flex">
+                          <HealthScoreBadge
+                            score={row.health_score}
+                            delta={row.health_score_delta}
+                            size="sm"
+                          />
+                        </div>
                       </TableCell>
                       <TableCell className="text-right tabular-nums">
                         {formatCurrency(row.wh_revpar)}
@@ -133,27 +146,15 @@ export default function PropertiesPage() {
                       <TableCell className="text-right tabular-nums">
                         {formatPct(row.wh_occupancy_30d)}
                       </TableCell>
-                      <TableCell className="text-right tabular-nums">
+                      <TableCell className={cn('text-right tabular-nums font-medium', paceTone)}>
                         {formatPct(row.rev_pct_to_proj, 0)}
                       </TableCell>
                       <TableCell>
-                        <div className="flex items-center gap-1.5">
-                          {row.airbnb_listing_id && (
-                            <span
-                              className="h-2 w-2 rounded-full bg-destructive"
-                              title="Airbnb"
-                            />
-                          )}
-                          {row.vrbo_listing_id && (
-                            <span className="h-2 w-2 rounded-full bg-chart-3" title="VRBO" />
-                          )}
-                          {row.booking_property_id && (
-                            <span
-                              className="h-2 w-2 rounded-full bg-chart-4"
-                              title="Booking.com"
-                            />
-                          )}
-                        </div>
+                        <ChannelDots
+                          airbnb={row.airbnb_listing_id}
+                          vrbo={row.vrbo_listing_id}
+                          booking={row.booking_property_id}
+                        />
                       </TableCell>
                     </TableRow>
                   );

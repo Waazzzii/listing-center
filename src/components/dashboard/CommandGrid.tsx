@@ -4,7 +4,10 @@ import { useRouter } from 'next/navigation';
 import DataTable, { type ColumnDef, type FilterDef } from '@/components/shared/DataTable';
 import StatusBadge from '@/components/shared/StatusBadge';
 import TrendArrow from '@/components/shared/TrendArrow';
-import { formatPct, formatCurrency, scoreToGrade, scoreColor, paceColor, paceLabel, computeTrend } from '@/lib/utils';
+import { HealthScoreBadge as HealthBadge } from '@/components/ui/health-score-badge';
+import { ChannelDots as Channels } from '@/components/ui/channel-dots';
+import { TierBadge } from '@/components/ui/tier-badge';
+import { formatPct, formatCurrency, scoreToGrade, paceColor, paceLabel, computeTrend } from '@/lib/utils';
 import { MARKET_LABELS, QUALITY_TIER_CONFIG, HEALTH_STATUS_CONFIG } from '@/lib/constants';
 import type { CommandGridRow } from '@/lib/types';
 
@@ -15,56 +18,6 @@ interface CommandGridProps {
   paceStatusFilter?: string | null;
 }
 
-/** Small circular health score badge with letter grade */
-function HealthScoreBadge({ score, delta }: { score: number | null; delta: number | null }) {
-  if (score === null || score === undefined) {
-    return <span className="text-muted-foreground text-xs">--</span>;
-  }
-
-  const grade = scoreToGrade(score);
-  const color = scoreColor(score);
-
-  // Ring color mapped from text color
-  const ringColors: Record<string, string> = {
-    'text-health-green': 'border-health-green',
-    'text-health-yellow': 'border-health-yellow',
-    'text-health-orange': 'border-health-orange',
-    'text-health-red': 'border-health-red',
-    'text-muted-foreground': 'border-muted-foreground',
-  };
-  const ringColor = ringColors[color] || 'border-muted-foreground';
-
-  return (
-    <div className="flex items-center gap-1.5">
-      <div
-        className={`w-9 h-9 rounded-full border-2 ${ringColor} flex flex-col items-center justify-center leading-none`}
-      >
-        <span className={`text-xs font-bold ${color}`}>{score}</span>
-        <span className={`text-[9px] font-semibold ${color}`}>{grade}</span>
-      </div>
-      {delta !== null && delta !== 0 && (
-        <TrendArrow direction={delta > 0 ? 'up' : 'down'} size="sm" />
-      )}
-    </div>
-  );
-}
-
-/** Channel presence dots */
-function ChannelDots({ row }: { row: CommandGridRow }) {
-  return (
-    <div className="flex items-center gap-1">
-      {row.airbnb_listing_id && (
-        <span className="w-2.5 h-2.5 rounded-full bg-[#FF5A5F] flex-shrink-0" title="Airbnb" />
-      )}
-      {row.vrbo_listing_id && (
-        <span className="w-2.5 h-2.5 rounded-full bg-[#3B5FC0] flex-shrink-0" title="VRBO" />
-      )}
-      {row.booking_property_id && (
-        <span className="w-2.5 h-2.5 rounded-full bg-[#F5B942] flex-shrink-0" title="Booking.com" />
-      )}
-    </div>
-  );
-}
 
 /** Base price with alignment indicator */
 function BasePriceCell({ basePrice, recommendedPrice, alignment }: {
@@ -163,13 +116,28 @@ export default function CommandGrid({ data, isLoading, healthGradeFilter, paceSt
       key: 'health_score',
       header: 'Health',
       sortable: true,
-      render: (row) => <HealthScoreBadge score={row.health_score} delta={row.health_score_delta} />,
+      render: (row) => (
+        <HealthBadge score={row.health_score} delta={row.health_score_delta} size="sm" />
+      ),
       sortValue: (row) => row.health_score,
+    },
+    {
+      key: 'tier',
+      header: 'Tier',
+      sortable: true,
+      render: (row) => <TierBadge tier={row.quality_tier} />,
+      sortValue: (row) => row.quality_tier_numeric,
     },
     {
       key: 'channels',
       header: 'Channels',
-      render: (row) => <ChannelDots row={row} />,
+      render: (row) => (
+        <Channels
+          airbnb={row.airbnb_listing_id}
+          vrbo={row.vrbo_listing_id}
+          booking={row.booking_property_id}
+        />
+      ),
     },
     {
       key: 'impression_rate',

@@ -1,12 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { RefreshCw } from 'lucide-react';
 import { useScorecards } from '@/hooks/useScorecards';
 import ScorecardQueue from '@/components/scorecards/ScorecardQueue';
 import ScorecardPreview from '@/components/scorecards/ScorecardPreview';
 import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 
 export default function ScorecardsPage() {
   const { scorecards, isLoading, error, refresh } = useScorecards();
@@ -20,19 +18,13 @@ export default function ScorecardsPage() {
 
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6">
-      <div className="flex items-start justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-            Owner Listing Scorecards
-          </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Monthly per-property reports for owners. Preview and approve before sending.
-          </p>
-        </div>
-        <Button variant="outline" size="sm" onClick={refresh}>
-          <RefreshCw className="h-3.5 w-3.5" />
-          Refresh
-        </Button>
+      <div>
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+          Owner Listing Scorecards
+        </h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Monthly per-property reports for owners. Preview and approve before sending.
+        </p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

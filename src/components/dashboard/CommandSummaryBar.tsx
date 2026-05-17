@@ -12,16 +12,42 @@ interface CommandSummaryBarProps {
   isLoading: boolean;
 }
 
-function Stat({ label, value, sublabel }: { label: string; value: React.ReactNode; sublabel?: string }) {
+interface StatProps {
+  label: string;
+  value: React.ReactNode;
+  hint?: string;
+}
+
+function Stat({ label, value, hint }: StatProps) {
   return (
-    <div className="flex flex-col min-w-0">
-      <span className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+    <div className="flex flex-col gap-0.5 min-w-0">
+      <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground whitespace-nowrap">
         {label}
       </span>
-      <span className="text-xl font-semibold text-foreground tabular-nums leading-tight mt-0.5">
+      <span className="text-xl font-semibold text-foreground tabular-nums leading-none">
         {value}
       </span>
-      {sublabel && <span className="text-[11px] text-muted-foreground mt-0.5">{sublabel}</span>}
+      {hint && <span className="text-[10px] text-muted-foreground">{hint}</span>}
+    </div>
+  );
+}
+
+interface CounterProps {
+  label: string;
+  count: number;
+  variant: 'warning' | 'info' | 'default' | 'secondary';
+}
+
+function Counter({ label, count, variant }: CounterProps) {
+  const active = count > 0;
+  return (
+    <div className="flex flex-col gap-1 min-w-0">
+      <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground whitespace-nowrap">
+        {label}
+      </span>
+      <Badge variant={active ? variant : 'secondary'} className="w-fit" dot={active}>
+        {count}
+      </Badge>
     </div>
   );
 }
@@ -36,78 +62,57 @@ export default function CommandSummaryBar({
   const avgGrade = scoreToGrade(summary.avg_health_score);
   const avgScore = summary.avg_health_score;
   const agentQueue =
-    summary.total_proposed_actions + summary.total_approved_actions + summary.total_executing_actions;
+    summary.total_proposed_actions +
+    summary.total_approved_actions +
+    summary.total_executing_actions;
 
   return (
     <div className="px-6 pt-6">
       <Card>
-        <CardContent className="p-5 flex flex-wrap items-center gap-x-8 gap-y-5">
-          <Stat label="Properties" value={formatNumber(summary.total_properties)} />
-          <Stat
-            label="Avg Health"
-            value={
-              <span className="flex items-baseline gap-1.5">
-                <span>{avgScore !== null ? avgScore.toFixed(0) : '—'}</span>
-                <Badge variant="secondary" className="text-[10px] py-0">{avgGrade}</Badge>
-              </span>
-            }
-          />
-          <Stat label="Avg RevPAR" value={formatCurrency(summary.avg_revpar)} />
-          <Stat label="Avg Occ. 30d" value={formatPct(summary.avg_occupancy_30d)} />
-          <Stat label="% to Projection" value={formatPct(summary.avg_pct_to_projection, 0)} />
-
-          <div className="h-10 w-px bg-border" />
-
-          <div className="flex items-center gap-3">
-            <div className="flex flex-col">
-              <span className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
-                Pending actions
-              </span>
-              <Badge
-                variant={summary.total_pending_actions > 0 ? 'warning' : 'secondary'}
-                className="mt-1 w-fit"
-                dot={summary.total_pending_actions > 0}
-              >
-                {summary.total_pending_actions}
-              </Badge>
+        <CardContent className="p-5">
+          <div className="flex items-start justify-between gap-6">
+            {/* Left: portfolio totals */}
+            <div className="flex items-start gap-8 flex-wrap">
+              <Stat label="Properties" value={formatNumber(summary.total_properties)} />
+              <Stat
+                label="Avg Health"
+                value={
+                  <span className="flex items-baseline gap-1.5">
+                    <span>{avgScore !== null ? avgScore.toFixed(0) : '—'}</span>
+                    <Badge variant="secondary" className="text-[10px] py-0 px-1.5">
+                      {avgGrade}
+                    </Badge>
+                  </span>
+                }
+              />
+              <Stat label="Avg RevPAR" value={formatCurrency(summary.avg_revpar)} />
+              <Stat label="Avg Occ. 30d" value={formatPct(summary.avg_occupancy_30d)} />
+              <Stat label="% to Projection" value={formatPct(summary.avg_pct_to_projection, 0)} />
+              <Stat
+                label="Price Alignment"
+                value={formatPct(summary.avg_price_alignment, 0)}
+              />
             </div>
-            <div className="flex flex-col">
-              <span className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
-                Active tests
-              </span>
-              <Badge
-                variant={summary.total_active_tests > 0 ? 'info' : 'secondary'}
-                className="mt-1 w-fit"
-                dot={summary.total_active_tests > 0}
-              >
-                {summary.total_active_tests}
-              </Badge>
+
+            {/* Right: action queue + freshness */}
+            <div className="flex items-start gap-6 shrink-0">
+              <Counter
+                label="Pending"
+                count={summary.total_pending_actions}
+                variant="warning"
+              />
+              <Counter label="Tests" count={summary.total_active_tests} variant="info" />
+              <Counter label="Queue" count={agentQueue} variant="default" />
+
+              <div className="flex flex-col gap-0.5 pl-6 border-l border-border">
+                <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground whitespace-nowrap">
+                  Data freshness
+                </span>
+                <span className="text-sm font-semibold text-foreground">
+                  {dataDate ? formatDate(dataDate) : 'No data'}
+                </span>
+              </div>
             </div>
-            <div className="flex flex-col">
-              <span className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
-                Agent queue
-              </span>
-              <Badge
-                variant={agentQueue > 0 ? 'default' : 'secondary'}
-                className="mt-1 w-fit"
-                dot={agentQueue > 0}
-              >
-                {agentQueue}
-              </Badge>
-            </div>
-          </div>
-
-          <div className="h-10 w-px bg-border" />
-
-          <Stat label="Price Alignment" value={formatPct(summary.avg_price_alignment, 0)} />
-
-          <div className="ml-auto flex flex-col items-end">
-            <span className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
-              Data freshness
-            </span>
-            <span className="text-sm font-medium text-foreground mt-0.5">
-              {dataDate ? formatDate(dataDate) : 'No data'}
-            </span>
           </div>
         </CardContent>
       </Card>

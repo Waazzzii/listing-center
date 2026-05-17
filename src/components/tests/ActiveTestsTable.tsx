@@ -1,26 +1,41 @@
 'use client';
 
-import React from 'react';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { EmptyState } from '@/components/ui/empty-state';
+import { FlaskConical } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import type { ABTest } from '@/hooks/useABTests';
 
 interface Props {
   tests: ABTest[];
 }
 
-const STATUS_BADGES: Record<string, { label: string; color: string }> = {
-  pending: { label: 'Pending', color: 'bg-muted text-muted-foreground' },
-  active: { label: 'Active', color: 'bg-secondary text-secondary-foreground' },
-  snapshot_due: { label: 'Snapshot Due', color: 'bg-health-yellow/15 text-health-yellow' },
+const STATUS_BADGES: Record<
+  string,
+  { label: string; variant: 'secondary' | 'info' | 'warning' | 'danger' }
+> = {
+  pending: { label: 'Pending', variant: 'secondary' },
+  active: { label: 'Active', variant: 'info' },
+  snapshot_due: { label: 'Snapshot due', variant: 'warning' },
 };
 
-function daysRemaining(dueDate: string | null): string {
-  if (!dueDate) return '\u2014';
+function daysRemaining(dueDate: string | null): { label: string; overdue: boolean } {
+  if (!dueDate) return { label: '—', overdue: false };
   const due = new Date(dueDate);
   const now = new Date();
   const diff = Math.ceil((due.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-  if (diff < 0) return 'Overdue';
-  if (diff === 0) return 'Today';
-  return `${diff}d`;
+  if (diff < 0) return { label: `Overdue ${Math.abs(diff)}d`, overdue: true };
+  if (diff === 0) return { label: 'Today', overdue: false };
+  return { label: `${diff}d`, overdue: false };
 }
 
 function progressPercent(changeDate: string | null, dueDate: string | null): number {
@@ -36,74 +51,98 @@ function progressPercent(changeDate: string | null, dueDate: string | null): num
 export default function ActiveTestsTable({ tests }: Props) {
   if (tests.length === 0) {
     return (
-      <div className="text-center py-12 text-muted-foreground">
-        <p className="text-lg font-medium">No active A/B tests</p>
-        <p className="mt-1 text-sm">Create a test to start optimizing listings.</p>
-      </div>
+      <Card>
+        <CardContent className="p-0">
+          <EmptyState
+            icon={FlaskConical}
+            title="No active A/B tests"
+            description="Create a test to start optimizing listings with measurable, controlled changes."
+          />
+        </CardContent>
+      </Card>
     );
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full divide-y divide-[var(--border)]">
-        <thead className="bg-muted">
-          <tr>
-            <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Property</th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Type</th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Thesis</th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Target</th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Status</th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Progress</th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Before</th>
-          </tr>
-        </thead>
-        <tbody className="bg-card divide-y divide-[var(--border)]">
-          {tests.map((test) => {
-            const badge = STATUS_BADGES[test.status] || STATUS_BADGES.pending;
-            const targetBefore = test.before_metrics?.[test.target_metric];
-            const pct = progressPercent(test.change_executed_date, test.after_snapshot_due_date);
-            const remaining = daysRemaining(test.after_snapshot_due_date);
+    <Card>
+      <CardContent className="p-0">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Property</TableHead>
+              <TableHead>Type</TableHead>
+              <TableHead>Thesis</TableHead>
+              <TableHead>Target</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Progress</TableHead>
+              <TableHead className="text-right">Before</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {tests.map((test) => {
+              const badge = STATUS_BADGES[test.status] || STATUS_BADGES.pending;
+              const targetBefore = test.before_metrics?.[test.target_metric];
+              const pct = progressPercent(test.change_executed_date, test.after_snapshot_due_date);
+              const remaining = daysRemaining(test.after_snapshot_due_date);
+              const variant = remaining.overdue ? 'danger' : badge.variant;
 
-            return (
-              <tr key={test.id} className="hover:bg-accent">
-                <td className="px-4 py-3 text-sm font-medium text-foreground">
-                  {test.property_name || test.property_id.slice(0, 8)}
-                </td>
-                <td className="px-4 py-3 text-sm text-muted-foreground">
-                  {test.test_type.replace(/_/g, ' ')}
-                </td>
-                <td className="px-4 py-3 text-sm text-muted-foreground max-w-xs truncate">
-                  {test.thesis}
-                </td>
-                <td className="px-4 py-3 text-sm text-muted-foreground">
-                  {test.target_metric.replace(/_/g, ' ')}
-                </td>
-                <td className="px-4 py-3">
-                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${badge.color}`}>
-                    {badge.label}
-                  </span>
-                </td>
-                <td className="px-4 py-3">
-                  <div className="flex items-center gap-2">
-                    <div className="w-20 bg-muted rounded-full h-1.5">
-                      <div
-                        className={`h-1.5 rounded-full ${
-                          pct >= 100 ? 'bg-health-yellow' : 'bg-chart-2'
-                        }`}
-                        style={{ width: `${pct}%` }}
-                      />
+              return (
+                <TableRow key={test.id}>
+                  <TableCell className="font-medium">
+                    {test.lc_properties?.property_name ||
+                      test.property_name ||
+                      test.property_id.slice(0, 8)}
+                  </TableCell>
+                  <TableCell className="text-muted-foreground capitalize">
+                    {test.test_type.replace(/_/g, ' ')}
+                  </TableCell>
+                  <TableCell className="text-muted-foreground max-w-xs truncate">
+                    {test.thesis}
+                  </TableCell>
+                  <TableCell className="text-muted-foreground capitalize">
+                    {test.target_metric.replace(/_/g, ' ')}
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant={variant} dot>
+                      {remaining.overdue ? 'Overdue' : badge.label}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      <div className="w-20 bg-muted rounded-full h-1.5 overflow-hidden">
+                        <div
+                          className={cn(
+                            'h-1.5 rounded-full transition-all',
+                            remaining.overdue
+                              ? 'bg-destructive'
+                              : pct >= 100
+                                ? 'bg-health-orange'
+                                : 'bg-chart-2',
+                          )}
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
+                      <span
+                        className={cn(
+                          'text-xs tabular-nums',
+                          remaining.overdue
+                            ? 'text-destructive font-medium'
+                            : 'text-muted-foreground',
+                        )}
+                      >
+                        {remaining.label}
+                      </span>
                     </div>
-                    <span className="text-xs text-muted-foreground">{remaining}</span>
-                  </div>
-                </td>
-                <td className="px-4 py-3 text-sm text-muted-foreground">
-                  {targetBefore != null ? `${targetBefore}%` : '\u2014'}
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </div>
+                  </TableCell>
+                  <TableCell className="text-right text-muted-foreground tabular-nums">
+                    {targetBefore != null ? `${targetBefore}%` : '—'}
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </CardContent>
+    </Card>
   );
 }
