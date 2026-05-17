@@ -10,17 +10,83 @@
  * the live DB instead.
  */
 
+let _logged = false;
+
 export function isMockMode(): boolean {
-  if (process.env.LC_MOCK_DATA === 'true') return true;
-  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) return true;
-  return false;
+  const active =
+    process.env.LC_MOCK_DATA === 'true' ||
+    !process.env.SUPABASE_URL ||
+    !process.env.SUPABASE_SERVICE_KEY;
+  if (active && !_logged) {
+    // One-time log per server boot so it's obvious mock mode is active.
+    console.log(
+      '[mock-data] Mock mode ACTIVE — set SUPABASE_URL + SUPABASE_SERVICE_KEY to query the real DB.',
+    );
+    _logged = true;
+  }
+  return active;
+}
+
+// ============================================================
+// Listing presence (Phase D-1 layer)
+// ============================================================
+
+export function mockListingPresence() {
+  // Build per (unit × OTA) presence rows from the property fixtures.
+  // Captures the same reconciliation columns the diagnostic layer surfaces.
+  const rows: Array<{
+    unit_id: string;
+    property_name: string;
+    market: string;
+    ota: string;
+    streamline_distributed: boolean;
+    publicly_found: boolean | null;
+    extranet_active: boolean | null;
+    public_url: string | null;
+    extranet_listing_id: string | null;
+    last_public_check_at: string | null;
+    last_extranet_check_at: string | null;
+    mismatch_flags: string[];
+  }> = [];
+
+  for (const p of MOCK_PROPERTIES) {
+    const channels: Array<{ ota: string; id: string | undefined; urlBase: string }> = [
+      { ota: 'airbnb', id: p.airbnb, urlBase: 'https://www.airbnb.com/rooms/' },
+      { ota: 'vrbo', id: p.vrbo, urlBase: 'https://www.vrbo.com/' },
+      { ota: 'booking', id: p.booking, urlBase: 'https://www.booking.com/hotel/' },
+    ];
+    for (const c of channels) {
+      if (!c.id) continue;
+      // Synthesize a couple of mismatches deterministically so the audit
+      // surfaces something to act on.
+      const mismatch_flags: string[] = [];
+      if (p.id === 'prop-003') mismatch_flags.push('stale_content');
+      if (p.id === 'prop-008') mismatch_flags.push('streamline_on_public_off');
+      if (p.id === 'prop-013') mismatch_flags.push('low_photo_count');
+      rows.push({
+        unit_id: p.id,
+        property_name: p.name,
+        market: p.market,
+        ota: c.ota,
+        streamline_distributed: true,
+        publicly_found: p.id !== 'prop-008',
+        extranet_active: p.id !== 'prop-013',
+        public_url: `${c.urlBase}${c.id}`,
+        extranet_listing_id: c.id,
+        last_public_check_at: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2).toISOString(),
+        last_extranet_check_at: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
+        mismatch_flags,
+      });
+    }
+  }
+  return rows;
 }
 
 // ============================================================
 // Command Grid (dashboard)
 // ============================================================
 
-const MOCK_PROPERTIES: Array<{
+export const MOCK_PROPERTIES: Array<{
   id: string;
   name: string;
   market: string;
