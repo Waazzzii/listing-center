@@ -4,8 +4,12 @@ import { getSupabase } from '@/lib/supabase';
 import { isMockMode, mockABTests } from '@/lib/mock-data';
 
 export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+
   if (isMockMode()) {
-    const data = mockABTests();
+    const propertyId = searchParams.get('property_id');
+    let data = mockABTests();
+    if (propertyId) data = data.filter((t) => t.property_id === propertyId);
     return NextResponse.json({
       data,
       active_count: data.filter((t) =>
@@ -14,7 +18,6 @@ export async function GET(req: NextRequest) {
     });
   }
   const supabase = getSupabase();
-  const { searchParams } = new URL(req.url);
 
   let query = supabase
     .from('lc_ab_tests')

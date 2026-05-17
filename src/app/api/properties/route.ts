@@ -2,12 +2,27 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
 import { validatePropertyInput } from '@/lib/validators';
+import { isMockMode, mockProperties, mockPropertyByUnitId } from '@/lib/mock-data';
 
 export async function GET(req: NextRequest) {
-  const supabase = getSupabase();
   const { searchParams } = new URL(req.url);
 
+  if (isMockMode()) {
+    const streamlineId = searchParams.get('streamline_unit_id');
+    if (streamlineId) {
+      const single = mockPropertyByUnitId(streamlineId);
+      return NextResponse.json({ data: single ? [single] : [], count: single ? 1 : 0 });
+    }
+    const all = mockProperties();
+    return NextResponse.json({ data: all, count: all.length });
+  }
+
+  const supabase = getSupabase();
+
   let query = supabase.from('lc_properties').select('*', { count: 'exact' }).eq('is_active', true);
+
+  const streamlineId = searchParams.get('streamline_unit_id');
+  if (streamlineId) query = query.eq('streamline_unit_id', streamlineId);
 
   const market = searchParams.get('market');
   if (market) query = query.eq('market', market);

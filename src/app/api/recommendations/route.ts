@@ -1,10 +1,21 @@
 export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
+import { isMockMode, mockRecommendations } from '@/lib/mock-data';
 
 export async function GET(req: NextRequest) {
-  const supabase = getSupabase();
   const { searchParams } = new URL(req.url);
+
+  if (isMockMode()) {
+    const propertyId = searchParams.get('property_id');
+    const data = mockRecommendations(propertyId);
+    return NextResponse.json({
+      data,
+      pending_count: data.filter((r) => r.status === 'pending').length,
+    });
+  }
+
+  const supabase = getSupabase();
 
   let query = supabase
     .from('lc_recommendations')

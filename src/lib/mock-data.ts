@@ -28,6 +28,229 @@ export function isMockMode(): boolean {
 }
 
 // ============================================================
+// Property detail — single property + history + recommendations
+// ============================================================
+
+function buildPropertyRow(p: typeof MOCK_PROPERTIES[number]) {
+  return {
+    id: p.id,
+    streamline_unit_id: p.id, // use same id as the URL param
+    property_name: p.name,
+    market: p.market,
+    quality_tier: p.tier,
+    quality_tier_numeric:
+      { standard: 1, silver: 2, gold: 3, platinum: 4, diamond: 5 }[p.tier] ?? 1,
+    airbnb_listing_id: p.airbnb ?? null,
+    airbnb_account_id: null,
+    vrbo_listing_id: p.vrbo ?? null,
+    booking_property_id: p.booking ?? null,
+    bedrooms: p.bedrooms,
+    bathrooms: p.bedrooms - 0.5,
+    max_occupancy: p.bedrooms * 2,
+    property_type: p.type,
+    adr_range: '$200-300',
+    is_active: true,
+    created_at: new Date(Date.now() - 1000 * 60 * 60 * 24 * 365).toISOString(),
+    updated_at: new Date().toISOString(),
+  };
+}
+
+export function mockPropertyByUnitId(unitId: string) {
+  const p = MOCK_PROPERTIES.find((x) => x.id === unitId);
+  return p ? buildPropertyRow(p) : null;
+}
+
+export function mockProperties() {
+  return MOCK_PROPERTIES.map(buildPropertyRow);
+}
+
+function buildSnapshot(p: typeof MOCK_PROPERTIES[number], daysAgo: number) {
+  // Walk the metrics slightly so the history chart shows a believable trend.
+  const drift = (daysAgo / 30) * 0.95 + Math.sin(daysAgo / 4) * 0.02;
+  const date = new Date();
+  date.setDate(date.getDate() - daysAgo);
+  return {
+    id: `snap-${p.id}-${daysAgo}`,
+    property_id: p.id,
+    snapshot_date: date.toISOString().split('T')[0],
+    snapshot_source: 'weekly_full_scan',
+    scrape_completeness: 'complete' as const,
+    pages_scraped: 8,
+    scrape_run_id: null,
+    airbnb_overall_conversion_rate: p.conversion * drift,
+    airbnb_first_page_impression_rate: p.impression * drift,
+    airbnb_first_page_impressions: Math.round(p.pageViews * drift * 4),
+    airbnb_search_to_listing_ctr: p.ctr * drift,
+    airbnb_listing_to_booking_conversion: p.conversion * drift,
+    airbnb_page_views: Math.round(p.pageViews * drift),
+    airbnb_wishlist_additions: Math.round(p.wishlists * drift),
+    airbnb_booking_lead_time_days: 18.5,
+    airbnb_returning_guest_rate: 14.2,
+    airbnb_occupancy_rate: p.occupancy30 * drift,
+    airbnb_nights_booked: Math.round((p.occupancy30 / 100) * 30 * drift),
+    airbnb_nights_blocked: 2,
+    airbnb_unbooked_nights: Math.round(30 - (p.occupancy30 / 100) * 30 * drift),
+    airbnb_check_ins: Math.round((p.occupancy30 / 100) * 4),
+    airbnb_cancellation_rate: 2.4,
+    airbnb_avg_length_of_stay_days: 3.8,
+    airbnb_avg_nightly_rate: p.basePrice,
+    airbnb_overall_rating: p.rating,
+    airbnb_5star_overall_pct: p.rating * 18,
+    airbnb_5star_accuracy_pct: 92.4,
+    airbnb_5star_checkin_pct: 95.1,
+    airbnb_5star_cleanliness_pct: 91.8,
+    airbnb_5star_communication_pct: 96.2,
+    airbnb_5star_location_pct: 94.6,
+    airbnb_5star_value_pct: 88.4,
+    airbnb_review_count: p.reviewCount,
+    airbnb_superhost_status: p.healthScore >= 75 ? 'active' : 'eligible',
+    airbnb_superhost_rating: p.rating,
+    airbnb_superhost_response_rate: 98.5,
+    airbnb_superhost_cancellation_rate: 1.2,
+    airbnb_opportunities_completion_pct: 78.4,
+    airbnb_has_issues: p.healthScore < 50,
+    airbnb_issue_status: p.healthScore < 50 ? 'open' : null,
+    airbnb_similar_listings_impression_rate: p.impression * 0.92,
+    airbnb_similar_listings_ctr: p.ctr * 0.96,
+    airbnb_similar_listings_conversion: p.conversion * 0.94,
+    airbnb_period_over_period_delta: null,
+    vrbo_milestone_tier: null,
+    vrbo_offer_strength_score: null,
+    vrbo_search_impressions: null,
+    health_status: p.healthStatus,
+    created_at: date.toISOString(),
+  };
+}
+
+export function mockSnapshots(propertyId: string, limit = 12) {
+  const p = MOCK_PROPERTIES.find((x) => x.id === propertyId);
+  if (!p) return [];
+  // Most recent first, walking back week-by-week
+  return Array.from({ length: limit }).map((_, i) => buildSnapshot(p, i * 7));
+}
+
+export function mockRecommendations(propertyId?: string | null) {
+  // Generate 0-3 recs per property; some carry a real action vibe.
+  const ALL_RECS: Array<{
+    id: string;
+    property_id: string;
+    agent_name: string;
+    recommendation_type: string;
+    title: string;
+    description: string;
+    predicted_impact: string | null;
+    diagnosed_issue: string | null;
+    funnel_stage: string | null;
+    severity: string | null;
+    proposed_change: Record<string, unknown> | null;
+    status: string;
+    reviewed_by: string | null;
+    reviewed_at: string | null;
+    rejection_reason: string | null;
+    defer_until: string | null;
+    change_log_id: string | null;
+    ab_test_id: string | null;
+    created_at: string;
+    updated_at: string;
+  }> = [
+    {
+      id: 'rec-001',
+      property_id: 'prop-002',
+      agent_name: 'pricing-optimizer',
+      recommendation_type: 'pricing',
+      title: 'Raise base rate $395 → $410',
+      description:
+        'Wheelhouse projects $15 nightly upside without occupancy loss based on the last 14-day pace and comp-set positioning.',
+      predicted_impact: '+$450/month RevPAR',
+      diagnosed_issue: null,
+      funnel_stage: null,
+      severity: 'medium',
+      proposed_change: { base_price: 410 },
+      status: 'pending',
+      reviewed_by: null,
+      reviewed_at: null,
+      rejection_reason: null,
+      defer_until: null,
+      change_log_id: null,
+      ab_test_id: null,
+      created_at: new Date(Date.now() - 1000 * 60 * 60 * 36).toISOString(),
+      updated_at: new Date(Date.now() - 1000 * 60 * 60 * 36).toISOString(),
+    },
+    {
+      id: 'rec-002',
+      property_id: 'prop-002',
+      agent_name: 'content-optimizer',
+      recommendation_type: 'content',
+      title: 'Add "Mountain views" to first sentence',
+      description:
+        'Top 5 similar comps with mountain-view titles see 11% higher CTR. The view photo is already the cover image.',
+      predicted_impact: '+8-12% CTR',
+      diagnosed_issue: 'low_ctr',
+      funnel_stage: 'click',
+      severity: 'low',
+      proposed_change: { title_suffix: 'Mountain views from every room' },
+      status: 'pending',
+      reviewed_by: null,
+      reviewed_at: null,
+      rejection_reason: null,
+      defer_until: null,
+      change_log_id: null,
+      ab_test_id: null,
+      created_at: new Date(Date.now() - 1000 * 60 * 60 * 12).toISOString(),
+      updated_at: new Date(Date.now() - 1000 * 60 * 60 * 12).toISOString(),
+    },
+    {
+      id: 'rec-003',
+      property_id: 'prop-002',
+      agent_name: 'revenue-pacer',
+      recommendation_type: 'pricing',
+      title: 'Open last-minute discount: 2-night stays',
+      description:
+        'May 28 – Jun 4 window has 3 unbooked nights. 12% last-minute discount on 2-night minimums historically captures 60% of remaining inventory.',
+      predicted_impact: '+$840 booked revenue',
+      diagnosed_issue: 'unbooked_inventory',
+      funnel_stage: 'book',
+      severity: 'medium',
+      proposed_change: { discount_pct: 12, min_stay: 2, applies: '2026-05-28..2026-06-04' },
+      status: 'approved',
+      reviewed_by: 'Jason Pratts',
+      reviewed_at: new Date(Date.now() - 1000 * 60 * 60 * 4).toISOString(),
+      rejection_reason: null,
+      defer_until: null,
+      change_log_id: null,
+      ab_test_id: null,
+      created_at: new Date(Date.now() - 1000 * 60 * 60 * 8).toISOString(),
+      updated_at: new Date(Date.now() - 1000 * 60 * 60 * 4).toISOString(),
+    },
+    {
+      id: 'rec-004',
+      property_id: 'prop-003',
+      agent_name: 'pricing-optimizer',
+      recommendation_type: 'pricing',
+      title: 'Lower base rate $165 → $145',
+      description:
+        'Conversion is at 0.9% vs market median 1.6% — pricing 18% above comp set median is the likely cause.',
+      predicted_impact: '+27% conversion',
+      diagnosed_issue: 'price_misalignment',
+      funnel_stage: 'book',
+      severity: 'high',
+      proposed_change: { base_price: 145 },
+      status: 'pending',
+      reviewed_by: null,
+      reviewed_at: null,
+      rejection_reason: null,
+      defer_until: null,
+      change_log_id: null,
+      ab_test_id: null,
+      created_at: new Date(Date.now() - 1000 * 60 * 60 * 4).toISOString(),
+      updated_at: new Date(Date.now() - 1000 * 60 * 60 * 4).toISOString(),
+    },
+  ];
+  if (!propertyId) return ALL_RECS;
+  return ALL_RECS.filter((r) => r.property_id === propertyId);
+}
+
+// ============================================================
 // Listing presence (Phase D-1 layer)
 // ============================================================
 

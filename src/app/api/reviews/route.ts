@@ -4,11 +4,16 @@ import { getSupabase } from '@/lib/supabase';
 import { isMockMode, mockReviews } from '@/lib/mock-data';
 
 export async function GET(req: NextRequest) {
-  if (isMockMode()) {
-    return NextResponse.json({ data: mockReviews() });
-  }
-  const supabase = getSupabase();
   const { searchParams } = new URL(req.url);
+
+  if (isMockMode()) {
+    const propertyId = searchParams.get('property_id');
+    let data = mockReviews();
+    if (propertyId) data = data.filter((r) => r.property_id === propertyId);
+    return NextResponse.json({ data });
+  }
+
+  const supabase = getSupabase();
 
   let query = supabase
     .from('lc_reviews')
