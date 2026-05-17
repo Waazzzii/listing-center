@@ -57,8 +57,8 @@ export default function MetricHistoryCharts({ snapshots, changeLogs = [], isLoad
 
   if (snapshots.length < MIN_WEEKS_FOR_TRENDS) {
     return (
-      <div className="bg-[var(--card-bg)] rounded-lg border border-lc-border p-6">
-        <h3 className="text-sm font-semibold text-[var(--text-secondary)] mb-4">Metric History (12-Week Trailing)</h3>
+      <div className="bg-card rounded-lg border border-border p-6">
+        <h3 className="text-sm font-semibold text-muted-foreground mb-4">Metric History (12-Week Trailing)</h3>
         <InsufficientDataState weeksAvailable={snapshots.length} />
       </div>
     );
@@ -68,13 +68,13 @@ export default function MetricHistoryCharts({ snapshots, changeLogs = [], isLoad
   const changeWeeks = chartData.filter((d) => d.hasChange);
 
   return (
-    <div className="bg-[var(--card-bg)] rounded-lg border border-lc-border p-6">
-      <h3 className="text-sm font-semibold text-[var(--text-secondary)] mb-4">Metric History (12-Week Trailing)</h3>
+    <div className="bg-card rounded-lg border border-border p-6">
+      <h3 className="text-sm font-semibold text-muted-foreground mb-4">Metric History (12-Week Trailing)</h3>
 
       {/* Change event legend */}
       {changeWeeks.length > 0 && (
-        <div className="mb-3 flex items-center gap-2 text-xs text-[var(--text-muted)]">
-          <span className="w-3 h-3 bg-amber-100 border border-amber-300 rounded" />
+        <div className="mb-3 flex items-center gap-2 text-xs text-muted-foreground">
+          <span className="w-3 h-3 bg-health-orange/15 border border-health-orange/40 rounded" />
           <span>Listing change events ({changeWeeks.length})</span>
         </div>
       )}

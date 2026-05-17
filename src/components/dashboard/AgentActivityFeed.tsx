@@ -30,9 +30,9 @@ const AGENT_LABELS: Record<string, string> = {
 };
 
 const STATUS_STYLES: Record<string, { bg: string; text: string; label: string }> = {
-  running: { bg: 'bg-[var(--badge-blue-bg)]', text: 'text-[var(--badge-blue-text)]', label: 'Running' },
-  completed: { bg: 'bg-green-100', text: 'text-green-700', label: 'Done' },
-  failed: { bg: 'bg-red-100', text: 'text-red-700', label: 'Failed' },
+  running: { bg: 'bg-secondary', text: 'text-secondary-foreground', label: 'Running' },
+  completed: { bg: 'bg-health-green/15', text: 'text-health-green', label: 'Done' },
+  failed: { bg: 'bg-destructive/15', text: 'text-destructive', label: 'Failed' },
 };
 
 export default function AgentActivityFeed({ executions, isLoading }: AgentActivityFeedProps) {
@@ -47,23 +47,23 @@ export default function AgentActivityFeed({ executions, isLoading }: AgentActivi
   const agentNames = Array.from(new Set(executions.map((e) => e.agent_name)));
 
   return (
-    <div className="bg-[var(--card-bg)] rounded-lg border border-lc-border">
+    <div className="bg-card rounded-lg border border-border">
       {/* Header */}
-      <div className="px-4 py-3 border-b border-lc-border flex items-center justify-between">
+      <div className="px-4 py-3 border-b border-border flex items-center justify-between">
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className="flex items-center gap-2 text-sm font-semibold text-[var(--text-secondary)]"
+          className="flex items-center gap-2 text-sm font-semibold text-muted-foreground"
         >
           <span className={`transition-transform ${isCollapsed ? '-rotate-90' : ''}`}>
             {'\u25BC'}
           </span>
           Agent Activity
-          <span className="text-xs font-normal text-[var(--text-muted)]">({executions.length})</span>
+          <span className="text-xs font-normal text-muted-foreground">({executions.length})</span>
         </button>
 
         {!isCollapsed && (
           <select
-            className="text-xs border border-[var(--border)] rounded px-2 py-1 bg-[var(--card-bg)] text-[var(--text-primary)]"
+            className="text-xs border border-border rounded px-2 py-1 bg-card text-foreground"
             value={agentFilter}
             onChange={(e) => setAgentFilter(e.target.value)}
           >
@@ -81,17 +81,17 @@ export default function AgentActivityFeed({ executions, isLoading }: AgentActivi
       {!isCollapsed && (
         <div className="max-h-96 overflow-y-auto divide-y divide-[var(--border)]">
           {isLoading ? (
-            <div className="p-4 text-center text-sm text-[var(--text-muted)]">Loading...</div>
+            <div className="p-4 text-center text-sm text-muted-foreground">Loading...</div>
           ) : filtered.length === 0 ? (
-            <div className="p-4 text-center text-sm text-[var(--text-muted)]">No agent activity yet.</div>
+            <div className="p-4 text-center text-sm text-muted-foreground">No agent activity yet.</div>
           ) : (
             filtered.map((exec) => {
               const style = STATUS_STYLES[exec.status] || STATUS_STYLES.completed;
 
               return (
-                <div key={exec.id} className="px-4 py-3 hover:bg-[var(--table-row-hover)] transition-colors">
+                <div key={exec.id} className="px-4 py-3 hover:bg-accent transition-colors">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-[var(--text-primary)]">
+                    <span className="text-sm font-medium text-foreground">
                       {AGENT_LABELS[exec.agent_name] || exec.agent_name}
                     </span>
                     <span className={`text-xs px-1.5 py-0.5 rounded ${style.bg} ${style.text}`}>
@@ -99,15 +99,15 @@ export default function AgentActivityFeed({ executions, isLoading }: AgentActivi
                     </span>
                   </div>
                   {exec.summary && (
-                    <p className="text-xs text-[var(--text-muted)] mt-0.5 line-clamp-2">{exec.summary}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">{exec.summary}</p>
                   )}
-                  <div className="flex items-center gap-3 mt-1 text-xs text-[var(--text-muted)]">
+                  <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
                     <span>{formatDate(exec.started_at?.split('T')[0])}</span>
                     {exec.properties_processed !== null && (
                       <span>{exec.properties_processed} properties</span>
                     )}
                     {exec.errors_count !== null && exec.errors_count > 0 && (
-                      <span className="text-red-500">{exec.errors_count} errors</span>
+                      <span className="text-destructive">{exec.errors_count} errors</span>
                     )}
                   </div>
                 </div>

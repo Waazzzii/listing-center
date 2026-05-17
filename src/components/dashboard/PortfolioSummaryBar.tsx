@@ -40,9 +40,9 @@ function SummaryMetric({
 }) {
   return (
     <div className="flex flex-col">
-      <span className="text-xs text-[var(--text-muted)] font-medium">{label}</span>
+      <span className="text-xs text-muted-foreground font-medium">{label}</span>
       <span className="flex items-center gap-1">
-        <span className="text-sm font-semibold text-[var(--text-primary)]">{value}</span>
+        <span className="text-sm font-semibold text-foreground">{value}</span>
         {trend && <TrendArrow direction={trend} size="sm" />}
       </span>
     </div>
@@ -51,14 +51,14 @@ function SummaryMetric({
 
 function SummaryBadge({ label, count, variant }: { label: string; count: number; variant: 'red' | 'blue' | 'amber' }) {
   const colors = {
-    red: count > 0 ? 'bg-red-100 text-red-700' : 'bg-[var(--surface)] text-[var(--text-muted)]',
-    blue: count > 0 ? 'bg-[var(--badge-blue-bg)] text-[var(--badge-blue-text)]' : 'bg-[var(--surface)] text-[var(--text-muted)]',
-    amber: count > 0 ? 'bg-[var(--badge-orange-bg)] text-[var(--badge-orange-text)]' : 'bg-[var(--surface)] text-[var(--text-muted)]',
+    red: count > 0 ? 'bg-destructive/15 text-destructive' : 'bg-muted text-muted-foreground',
+    blue: count > 0 ? 'bg-secondary text-secondary-foreground' : 'bg-muted text-muted-foreground',
+    amber: count > 0 ? 'bg-chart-1/15 text-chart-1' : 'bg-muted text-muted-foreground',
   };
 
   return (
     <div className="flex flex-col">
-      <span className="text-xs text-[var(--text-muted)] font-medium">{label}</span>
+      <span className="text-xs text-muted-foreground font-medium">{label}</span>
       <span className={`inline-flex items-center px-2 py-0.5 rounded text-sm font-semibold ${colors[variant]}`}>
         {count}
       </span>
@@ -81,7 +81,7 @@ export default function PortfolioSummaryBar({
   const impTrend = computeTrend(summary.avg_impression_rate, previousSummary?.avg_impression_rate);
 
   return (
-    <div className="sticky top-14 z-10 bg-[var(--card-bg)] border-b border-lc-border px-6 py-3 flex items-center gap-6 overflow-x-auto">
+    <div className="sticky top-14 z-10 bg-card border-b border-border px-6 py-3 flex items-center gap-6 overflow-x-auto">
       <SummaryMetric
         label="Properties"
         value={formatNumber(summary.total_properties)}

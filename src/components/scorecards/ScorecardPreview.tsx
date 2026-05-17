@@ -49,22 +49,22 @@ export default function ScorecardPreview({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-[var(--card-bg)] rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+      <div className="bg-card rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
         {/* Sticky header */}
-        <div className="border-b border-[var(--border)] px-6 py-4 flex justify-between items-center flex-shrink-0">
-          <h2 className="text-lg font-bold text-[var(--text-primary)]">
+        <div className="border-b border-border px-6 py-4 flex justify-between items-center flex-shrink-0">
+          <h2 className="text-lg font-bold text-foreground">
             Scorecard Preview
           </h2>
           <div className="flex items-center gap-3">
             <button
-              className="px-3 py-1.5 bg-green-600 text-white rounded-md text-sm font-medium hover:bg-green-700 transition-colors"
+              className="px-3 py-1.5 bg-health-green text-white rounded-md text-sm font-medium hover:bg-health-green/90 transition-colors"
               title="Approve and mark as ready to send (delivery infrastructure TBD)"
             >
               Approve &amp; Send
             </button>
             <button
               onClick={onClose}
-              className="text-[var(--text-muted)] hover:text-[var(--text-secondary)] text-2xl leading-none transition-colors"
+              className="text-muted-foreground hover:text-muted-foreground text-2xl leading-none transition-colors"
               aria-label="Close preview"
             >
               &times;
@@ -79,15 +79,15 @@ export default function ScorecardPreview({
               {[1, 2, 3].map((i) => (
                 <div
                   key={i}
-                  className="h-24 bg-[var(--surface)] rounded-lg animate-pulse"
+                  className="h-24 bg-muted rounded-lg animate-pulse"
                 />
               ))}
             </div>
           )}
 
           {error && (
-            <div className="bg-red-50 border border-red-200 rounded-md p-4">
-              <p className="text-sm text-red-700">
+            <div className="bg-destructive/10 border border-destructive/30 rounded-md p-4">
+              <p className="text-sm text-destructive">
                 Failed to load scorecard: {error}
               </p>
             </div>
@@ -96,7 +96,7 @@ export default function ScorecardPreview({
           {!isLoading && !error && data && <ScorecardTemplate data={data} />}
 
           {!isLoading && !error && !data && (
-            <div className="text-center py-8 text-[var(--text-muted)]">
+            <div className="text-center py-8 text-muted-foreground">
               <p>Scorecard data is not yet available.</p>
               <p className="text-sm mt-1">
                 This scorecard may still be pending generation.

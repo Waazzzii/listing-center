@@ -1,3 +1,14 @@
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+/**
+ * Merge Tailwind classes with conflict resolution.
+ * Standard shadcn/ui helper used by all UI primitives.
+ */
+export function cn(...inputs: ClassValue[]): string {
+  return twMerge(clsx(inputs));
+}
+
 /**
  * Format a number as a percentage string.
  * formatPct(50.9) => "50.9%"
@@ -104,7 +115,7 @@ export function scoreToGrade(score: number | null | undefined): string {
  * Get color class for health score.
  */
 export function scoreColor(score: number | null | undefined): string {
-  if (score === null || score === undefined) return 'text-[var(--text-muted)]';
+  if (score === null || score === undefined) return 'text-muted-foreground';
   if (score >= 80) return 'text-health-green';
   if (score >= 60) return 'text-health-yellow';
   if (score >= 40) return 'text-health-orange';
@@ -120,7 +131,7 @@ export function paceColor(status: string | null | undefined): string {
     case 'on_track': return 'text-health-green';
     case 'behind': return 'text-health-orange';
     case 'at_risk': return 'text-health-red';
-    default: return 'text-[var(--text-muted)]';
+    default: return 'text-muted-foreground';
   }
 }
 

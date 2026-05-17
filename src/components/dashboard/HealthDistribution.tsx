@@ -60,15 +60,15 @@ export default function HealthDistribution({ counts, onSegmentClick, activeFilte
 
   if (total === 0) {
     return (
-      <div className="bg-[var(--card-bg)] rounded-lg border border-lc-border p-6 text-center text-[var(--text-muted)]">
+      <div className="bg-card rounded-lg border border-border p-6 text-center text-muted-foreground">
         No property data available
       </div>
     );
   }
 
   return (
-    <div className="bg-[var(--card-bg)] rounded-lg border border-lc-border p-6">
-      <h3 className="text-sm font-semibold text-[var(--text-secondary)] mb-4">Health Distribution</h3>
+    <div className="bg-card rounded-lg border border-border p-6">
+      <h3 className="text-sm font-semibold text-muted-foreground mb-4">Health Distribution</h3>
 
       <div className="flex items-center gap-8">
         {/* Donut chart */}
@@ -91,7 +91,7 @@ export default function HealthDistribution({ counts, onSegmentClick, activeFilte
                     key={entry.status}
                     fill={entry.fill}
                     opacity={activeFilter && activeFilter !== entry.status ? 0.3 : 1}
-                    stroke={activeFilter === entry.status ? 'var(--text-primary)' : 'transparent'}
+                    stroke={activeFilter === entry.status ? 'oklch(var(--foreground))' : 'transparent'}
                     strokeWidth={activeFilter === entry.status ? 2 : 0}
                   />
                 ))}
@@ -111,17 +111,17 @@ export default function HealthDistribution({ counts, onSegmentClick, activeFilte
               onClick={() => onSegmentClick?.(entry.status)}
               className={`flex items-center gap-3 px-3 py-1.5 rounded-md text-left transition-colors ${
                 activeFilter === entry.status
-                  ? 'bg-[var(--surface)] ring-1 ring-[var(--border-strong)]'
-                  : 'hover:bg-[var(--surface)]'
+                  ? 'bg-muted ring-1 ring-[var(--border-strong)]'
+                  : 'hover:bg-muted'
               }`}
             >
               <span
                 className="w-3 h-3 rounded-full flex-shrink-0"
                 style={{ backgroundColor: entry.fill }}
               />
-              <span className="text-sm font-medium text-[var(--text-secondary)] w-24">{entry.name}</span>
-              <span className="text-sm font-semibold text-[var(--text-primary)]">{entry.value}</span>
-              <span className="text-xs text-[var(--text-muted)]">
+              <span className="text-sm font-medium text-muted-foreground w-24">{entry.name}</span>
+              <span className="text-sm font-semibold text-foreground">{entry.value}</span>
+              <span className="text-xs text-muted-foreground">
                 ({((entry.value / total) * 100).toFixed(0)}%)
               </span>
             </button>
@@ -130,7 +130,7 @@ export default function HealthDistribution({ counts, onSegmentClick, activeFilte
           {activeFilter && (
             <button
               onClick={() => onSegmentClick?.(activeFilter)}
-              className="mt-1 text-xs text-lc-primary hover:underline self-start"
+              className="mt-1 text-xs text-primary hover:underline self-start"
             >
               Clear filter
             </button>

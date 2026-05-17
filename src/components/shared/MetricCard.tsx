@@ -36,14 +36,14 @@ export default function MetricCard({
     : 'border-l-4 border-transparent';
 
   return (
-    <div className={`bg-[var(--card-bg)] rounded-lg border border-lc-border p-4 ${borderColor}`}>
-      <p className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">{label}</p>
-      <div className="mt-1 flex items-baseline gap-2">
-        <span className="text-2xl font-bold text-[var(--text-primary)]">{formattedValue}</span>
+    <div className={`bg-card rounded-md border border-border shadow-sm p-4 ${borderColor}`}>
+      <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wide">{label}</p>
+      <div className="mt-2 flex items-baseline gap-2">
+        <span className="text-2xl font-semibold text-foreground tabular-nums leading-none">{formattedValue}</span>
         {trend && <TrendArrow direction={trend} upIsGood={upIsGood} />}
       </div>
       {benchmark !== null && benchmark !== undefined && (
-        <p className="mt-1 text-xs text-[var(--text-muted)]">
+        <p className="mt-1.5 text-[11px] text-muted-foreground">
           {benchmarkLabel || 'Benchmark'}: {format === 'pct' ? formatPct(benchmark) : formatNumber(benchmark)}
         </p>
       )}

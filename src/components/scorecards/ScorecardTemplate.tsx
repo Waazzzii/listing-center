@@ -74,43 +74,43 @@ interface Props {
 // ---- Status / benchmark config ----
 
 const STATUS_COLORS: Record<string, string> = {
-  red: 'bg-red-500',
-  orange: 'bg-orange-500',
-  yellow: 'bg-yellow-500',
-  green: 'bg-green-500',
-  blue_spell: 'bg-blue-500',
-  unknown: 'bg-[var(--text-muted)]',
+  red: 'bg-destructive',
+  orange: 'bg-health-orange',
+  yellow: 'bg-health-yellow',
+  green: 'bg-health-green',
+  blue_spell: 'bg-chart-2',
+  unknown: 'bg-muted-foreground',
 };
 
 const BENCHMARK_CONFIG: Record<
   string,
   { label: string; bg: string; text: string }
 > = {
-  below: { label: 'Below Benchmark', bg: 'bg-red-50', text: 'text-red-700' },
+  below: { label: 'Below Benchmark', bg: 'bg-destructive/10', text: 'text-destructive' },
   in_range: {
     label: 'In Range',
-    bg: 'bg-green-50',
-    text: 'text-green-700',
+    bg: 'bg-health-green/10',
+    text: 'text-health-green',
   },
   above: {
     label: 'Above Benchmark',
-    bg: 'bg-blue-50',
-    text: 'text-blue-700',
+    bg: 'bg-chart-2/10',
+    text: 'text-chart-2',
   },
 };
 
 const SEVERITY_COLORS: Record<string, string> = {
-  high: 'border-red-300 bg-red-50',
-  medium: 'border-yellow-300 bg-yellow-50',
-  low: 'border-blue-300 bg-blue-50',
+  high: 'border-destructive/40 bg-destructive/10',
+  medium: 'border-health-yellow/40 bg-health-yellow/10',
+  low: 'border-chart-2/40 bg-chart-2/10',
 };
 
 // ---- Helper components ----
 
 function ChangeIndicator({ change }: { change: number | null }) {
-  if (change == null) return <span className="text-[var(--text-muted)] text-xs">&mdash;</span>;
+  if (change == null) return <span className="text-muted-foreground text-xs">&mdash;</span>;
   const color =
-    change > 0 ? 'text-green-600' : change < 0 ? 'text-red-600' : 'text-[var(--text-muted)]';
+    change > 0 ? 'text-health-green' : change < 0 ? 'text-destructive' : 'text-muted-foreground';
   const arrow = change > 0 ? '\u2191' : change < 0 ? '\u2193' : '\u2192';
   const prefix = change > 0 ? '+' : '';
   return (
@@ -134,9 +134,9 @@ function MetricCard({
 }) {
   const displayValue = unit === '$' ? `$${value}` : unit ? `${value}${unit}` : `${value}`;
   return (
-    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-lg p-3 text-center">
-      <div className="text-2xl font-bold text-[var(--text-primary)]">{displayValue}</div>
-      <div className="text-xs text-[var(--text-muted)] uppercase mt-1">{label}</div>
+    <div className="bg-muted border border-border rounded-lg p-3 text-center">
+      <div className="text-2xl font-bold text-foreground">{displayValue}</div>
+      <div className="text-xs text-muted-foreground uppercase mt-1">{label}</div>
       <div className="mt-1">
         <ChangeIndicator change={change} />
       </div>
@@ -157,7 +157,7 @@ function BenchmarkBadge({ position }: { position: string }) {
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
-    <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-3 pb-2 border-b border-[var(--border)]">
+    <h3 className="text-lg font-semibold text-foreground mb-3 pb-2 border-b border-border">
       {children}
     </h3>
   );
@@ -178,16 +178,16 @@ export default function ScorecardTemplate({ data }: Props) {
       {/* Header */}
       <div className="flex justify-between items-start">
         <div>
-          <h2 className="text-xl font-bold text-[var(--text-primary)]">
+          <h2 className="text-xl font-bold text-foreground">
             {data.metadata.property_name}
           </h2>
-          <p className="text-sm text-[var(--text-muted)]">
+          <p className="text-sm text-muted-foreground">
             {data.competitive_context.market_label} &middot;{' '}
             {data.competitive_context.tier_label} &middot; {monthLabel}
           </p>
         </div>
         <span
-          className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold text-white ${STATUS_COLORS[lh.health_status] || 'bg-[var(--text-muted)]'}`}
+          className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold text-white ${STATUS_COLORS[lh.health_status] || 'bg-muted-foreground'}`}
         >
           {lh.health_status.replace('_', ' ').toUpperCase()}
         </span>
@@ -234,7 +234,7 @@ export default function ScorecardTemplate({ data }: Props) {
             change={null}
           />
         </div>
-        <div className="flex gap-6 mt-3 text-xs text-[var(--text-muted)]">
+        <div className="flex gap-6 mt-3 text-xs text-muted-foreground">
           <span>{lh.nights_booked.current} nights booked this month</span>
           <span>{lh.page_views.current} page views</span>
           <span>{lh.wishlist_additions.current} wishlist saves</span>
@@ -246,26 +246,26 @@ export default function ScorecardTemplate({ data }: Props) {
         <SectionHeading>Reviews This Month</SectionHeading>
         <div className="flex gap-6 text-sm mb-3">
           <span>
-            <strong className="text-[var(--text-primary)]">
+            <strong className="text-foreground">
               {data.reviews.total_this_month}
             </strong>{' '}
             total reviews
           </span>
           <span>
             Avg rating:{' '}
-            <strong className="text-[var(--text-primary)]">
+            <strong className="text-foreground">
               {data.reviews.avg_rating_this_month}/5
             </strong>
           </span>
-          <span className="text-green-600">
+          <span className="text-health-green">
             {data.reviews.positive_count} positive
           </span>
           {data.reviews.neutral_count > 0 && (
-            <span className="text-[var(--text-muted)]">
+            <span className="text-muted-foreground">
               {data.reviews.neutral_count} neutral
             </span>
           )}
-          <span className="text-red-600">
+          <span className="text-destructive">
             {data.reviews.negative_count} negative
           </span>
         </div>
@@ -274,10 +274,10 @@ export default function ScorecardTemplate({ data }: Props) {
             {data.reviews.highlights.map((r, i) => (
               <div
                 key={i}
-                className="text-sm py-1.5 border-b border-[var(--border)] last:border-0"
+                className="text-sm py-1.5 border-b border-border last:border-0"
               >
-                <strong className="text-[var(--text-primary)]">{r.guest_name}</strong>
-                <span className="text-[var(--text-muted)] ml-2">
+                <strong className="text-foreground">{r.guest_name}</strong>
+                <span className="text-muted-foreground ml-2">
                   {r.rating}/5 ({r.sentiment})
                 </span>
               </div>
@@ -285,7 +285,7 @@ export default function ScorecardTemplate({ data }: Props) {
           </div>
         )}
         {data.reviews.total_this_month === 0 && (
-          <p className="text-sm text-[var(--text-muted)]">No reviews received this month.</p>
+          <p className="text-sm text-muted-foreground">No reviews received this month.</p>
         )}
       </div>
 
@@ -297,23 +297,23 @@ export default function ScorecardTemplate({ data }: Props) {
             {data.optimizations.changes_made.map((c, i) => (
               <div
                 key={i}
-                className="flex items-start gap-3 text-sm border-b border-[var(--border)] pb-2 last:border-0"
+                className="flex items-start gap-3 text-sm border-b border-border pb-2 last:border-0"
               >
-                <span className="inline-flex items-center px-2 py-0.5 bg-[var(--surface)] rounded text-xs font-medium text-[var(--text-secondary)] capitalize whitespace-nowrap">
+                <span className="inline-flex items-center px-2 py-0.5 bg-muted rounded text-xs font-medium text-muted-foreground capitalize whitespace-nowrap">
                   {c.change_type.replace(/_/g, ' ')}
                 </span>
                 <div className="flex-1">
-                  <span className="text-[var(--text-secondary)]">{c.thesis}</span>
-                  <span className="text-[var(--text-muted)] ml-2 text-xs">
+                  <span className="text-muted-foreground">{c.thesis}</span>
+                  <span className="text-muted-foreground ml-2 text-xs">
                     {c.change_date}
                   </span>
                 </div>
-                <span className="text-xs text-[var(--text-muted)]">[{c.status}]</span>
+                <span className="text-xs text-muted-foreground">[{c.status}]</span>
               </div>
             ))}
           </div>
         ) : (
-          <p className="text-sm text-[var(--text-muted)]">
+          <p className="text-sm text-muted-foreground">
             No optimizations were made this month.
           </p>
         )}
@@ -322,26 +322,26 @@ export default function ScorecardTemplate({ data }: Props) {
       {/* Section 4: Competitive Context */}
       <div>
         <SectionHeading>Competitive Context</SectionHeading>
-        <p className="text-sm text-[var(--text-secondary)] mb-3">
+        <p className="text-sm text-muted-foreground mb-3">
           Compared to{' '}
           <strong>{data.competitive_context.tier_label}</strong> properties in{' '}
           <strong>{data.competitive_context.market_label}</strong>:
         </p>
         <div className="space-y-2">
           <div className="flex justify-between items-center py-1.5">
-            <span className="text-sm text-[var(--text-secondary)]">Impression Rate</span>
+            <span className="text-sm text-muted-foreground">Impression Rate</span>
             <BenchmarkBadge
               position={data.competitive_context.vs_benchmark.impression_rate}
             />
           </div>
           <div className="flex justify-between items-center py-1.5">
-            <span className="text-sm text-[var(--text-secondary)]">Click-Through Rate</span>
+            <span className="text-sm text-muted-foreground">Click-Through Rate</span>
             <BenchmarkBadge
               position={data.competitive_context.vs_benchmark.ctr}
             />
           </div>
           <div className="flex justify-between items-center py-1.5">
-            <span className="text-sm text-[var(--text-secondary)]">Booking Conversion</span>
+            <span className="text-sm text-muted-foreground">Booking Conversion</span>
             <BenchmarkBadge
               position={data.competitive_context.vs_benchmark.conversion}
             />
@@ -357,24 +357,24 @@ export default function ScorecardTemplate({ data }: Props) {
             {data.upcoming_actions.map((a, i) => (
               <div
                 key={i}
-                className={`border rounded-md p-3 text-sm ${SEVERITY_COLORS[a.severity] || 'border-[var(--border)] bg-[var(--surface)]'}`}
+                className={`border rounded-md p-3 text-sm ${SEVERITY_COLORS[a.severity] || 'border-border bg-muted'}`}
               >
-                <span className="font-medium text-[var(--text-primary)]">{a.title}</span>
-                <span className="text-[var(--text-muted)] ml-2 text-xs">
+                <span className="font-medium text-foreground">{a.title}</span>
+                <span className="text-muted-foreground ml-2 text-xs">
                   ({a.severity} priority &middot; {a.funnel_stage} funnel)
                 </span>
               </div>
             ))}
           </div>
         ) : (
-          <p className="text-sm text-[var(--text-muted)]">
+          <p className="text-sm text-muted-foreground">
             No pending actions. Your listing is in great shape!
           </p>
         )}
       </div>
 
       {/* Footer */}
-      <div className="pt-4 border-t border-[var(--border)] text-center text-xs text-[var(--text-muted)]">
+      <div className="pt-4 border-t border-border text-center text-xs text-muted-foreground">
         Generated by Casago Listing Center &middot;{' '}
         {new Date(data.metadata.generated_at).toLocaleDateString()} &middot;
         Powered by AI-driven listing optimization

@@ -87,15 +87,15 @@ export default function DataTable<T>({
   }, [data, sortKey, sortDir, columns]);
 
   return (
-    <div className="bg-[var(--card-bg)] rounded-lg border border-lc-border overflow-hidden">
+    <div className="bg-card rounded-lg border border-border overflow-hidden">
       {/* Filters bar */}
       {filters.length > 0 && (
-        <div className="px-4 py-3 border-b border-lc-border flex items-center gap-4 flex-wrap">
+        <div className="px-4 py-3 border-b border-border flex items-center gap-4 flex-wrap">
           {filters.map((filter) => (
             <div key={filter.key} className="flex items-center gap-2">
-              <label className="text-xs font-medium text-[var(--text-secondary)]">{filter.label}:</label>
+              <label className="text-xs font-medium text-muted-foreground">{filter.label}:</label>
               <select
-                className="text-sm border border-[var(--border)] rounded-md px-2 py-1 bg-[var(--card-bg)] text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-lc-primary"
+                className="text-sm border border-border rounded-md px-2 py-1 bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
                 value={activeFilters[filter.key] || ''}
                 onChange={(e) => handleFilterChange(filter.key, e.target.value)}
               >
@@ -109,7 +109,7 @@ export default function DataTable<T>({
           {Object.keys(activeFilters).length > 0 && (
             <button
               onClick={() => setActiveFilters({})}
-              className="text-xs text-lc-primary hover:underline"
+              className="text-xs text-primary hover:underline"
             >
               Clear filters
             </button>
@@ -121,12 +121,12 @@ export default function DataTable<T>({
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead className={stickyHeader ? 'sticky top-0 z-10' : ''}>
-            <tr className="bg-[var(--table-header-bg)] border-b border-lc-border">
+            <tr className="bg-muted/50 border-b border-border">
               {columns.map((col) => (
                 <th
                   key={col.key}
-                  className={`px-4 py-3 text-left text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider ${
-                    col.sortable ? 'cursor-pointer select-none hover:text-[var(--text-primary)]' : ''
+                  className={`px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider ${
+                    col.sortable ? 'cursor-pointer select-none hover:text-foreground' : ''
                   }`}
                   style={col.width ? { width: col.width } : undefined}
                   onClick={col.sortable ? () => handleSort(col.key) : undefined}
@@ -134,7 +134,7 @@ export default function DataTable<T>({
                   <span className="flex items-center gap-1">
                     {col.header}
                     {col.sortable && sortKey === col.key && (
-                      <span className="text-lc-primary">
+                      <span className="text-primary">
                         {sortDir === 'asc' ? '\u25B2' : '\u25BC'}
                       </span>
                     )}
@@ -143,14 +143,14 @@ export default function DataTable<T>({
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-[var(--border)]">
+          <tbody className="divide-y divide-border">
             {isLoading ? (
               Array.from({ length: 10 }).map((_, i) => (
                 <TableRowSkeleton key={i} columns={columns.length} />
               ))
             ) : sortedData.length === 0 ? (
               <tr>
-                <td colSpan={columns.length} className="px-4 py-12 text-center text-[var(--text-muted)]">
+                <td colSpan={columns.length} className="px-4 py-12 text-center text-muted-foreground">
                   {emptyMessage}
                 </td>
               </tr>
@@ -159,7 +159,7 @@ export default function DataTable<T>({
                 <tr
                   key={rowKey(row)}
                   className={`${
-                    onRowClick ? 'cursor-pointer hover:bg-[var(--table-row-hover)]' : ''
+                    onRowClick ? 'cursor-pointer hover:bg-accent' : ''
                   } transition-colors`}
                   onClick={onRowClick ? () => onRowClick(row) : undefined}
                 >
@@ -177,7 +177,7 @@ export default function DataTable<T>({
 
       {/* Footer: row count */}
       {!isLoading && sortedData.length > 0 && (
-        <div className="px-4 py-2 border-t border-lc-border text-xs text-[var(--text-muted)]">
+        <div className="px-4 py-2 border-t border-border text-xs text-muted-foreground">
           {sortedData.length} propert{sortedData.length === 1 ? 'y' : 'ies'}
         </div>
       )}

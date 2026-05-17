@@ -9,11 +9,11 @@ interface Props {
 }
 
 const STATUS_BADGES: Record<string, { label: string; color: string }> = {
-  pending: { label: 'Pending', color: 'bg-[var(--surface)] text-[var(--text-secondary)]' },
-  generated: { label: 'Generated', color: 'bg-[var(--badge-blue-bg)] text-[var(--badge-blue-text)]' },
-  reviewed: { label: 'Reviewed', color: 'bg-yellow-100 text-yellow-700' },
-  sent: { label: 'Sent', color: 'bg-green-100 text-green-700' },
-  failed: { label: 'Failed', color: 'bg-red-100 text-red-700' },
+  pending: { label: 'Pending', color: 'bg-muted text-muted-foreground' },
+  generated: { label: 'Generated', color: 'bg-secondary text-secondary-foreground' },
+  reviewed: { label: 'Reviewed', color: 'bg-health-yellow/15 text-health-yellow' },
+  sent: { label: 'Sent', color: 'bg-health-green/15 text-health-green' },
+  failed: { label: 'Failed', color: 'bg-destructive/15 text-destructive' },
 };
 
 type StatusFilter = 'all' | 'pending' | 'generated' | 'reviewed' | 'sent' | 'failed';
@@ -28,7 +28,7 @@ export default function ScorecardQueue({ scorecards, onPreview }: Props) {
 
   if (scorecards.length === 0) {
     return (
-      <div className="text-center py-12 text-[var(--text-muted)]">
+      <div className="text-center py-12 text-muted-foreground">
         <p className="text-lg font-medium">No scorecards generated yet</p>
         <p className="mt-1 text-sm">
           Scorecards are generated monthly at the end of each month.
@@ -53,8 +53,8 @@ export default function ScorecardQueue({ scorecards, onPreview }: Props) {
                 onClick={() => setFilter(status)}
                 className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
                   filter === status
-                    ? 'bg-[var(--sidebar-bg)] text-white'
-                    : 'bg-[var(--surface)] text-[var(--text-secondary)] hover:bg-[var(--table-row-hover)]'
+                    ? 'bg-sidebar text-white'
+                    : 'bg-muted text-muted-foreground hover:bg-accent'
                 }`}
               >
                 {status.charAt(0).toUpperCase() + status.slice(1)}{' '}
@@ -66,34 +66,34 @@ export default function ScorecardQueue({ scorecards, onPreview }: Props) {
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto bg-[var(--card-bg)] border border-[var(--border)] rounded-lg">
+      <div className="overflow-x-auto bg-card border border-border rounded-lg">
         <table className="min-w-full divide-y divide-[var(--border)]">
-          <thead className="bg-[var(--surface)]">
+          <thead className="bg-muted">
             <tr>
-              <th className="px-4 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase">
+              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">
                 Property
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase">
+              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">
                 Market
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase">
+              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">
                 Report Month
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase">
+              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">
                 Status
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase">
+              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">
                 Generated
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase">
+              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">
                 Delivered
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase">
+              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">
                 Action
               </th>
             </tr>
           </thead>
-          <tbody className="bg-[var(--card-bg)] divide-y divide-[var(--border)]">
+          <tbody className="bg-card divide-y divide-[var(--border)]">
             {filtered.map((sc) => {
               const badge =
                 STATUS_BADGES[sc.generation_status] || STATUS_BADGES.pending;
@@ -104,14 +104,14 @@ export default function ScorecardQueue({ scorecards, onPreview }: Props) {
               });
 
               return (
-                <tr key={sc.id} className="hover:bg-[var(--table-row-hover)]">
-                  <td className="px-4 py-3 text-sm font-medium text-[var(--text-primary)]">
+                <tr key={sc.id} className="hover:bg-accent">
+                  <td className="px-4 py-3 text-sm font-medium text-foreground">
                     {sc.property_name || sc.property_id.slice(0, 8)}
                   </td>
-                  <td className="px-4 py-3 text-sm text-[var(--text-secondary)] capitalize">
+                  <td className="px-4 py-3 text-sm text-muted-foreground capitalize">
                     {(sc.market || '').replace(/_/g, ' ')}
                   </td>
-                  <td className="px-4 py-3 text-sm text-[var(--text-secondary)]">
+                  <td className="px-4 py-3 text-sm text-muted-foreground">
                     {monthLabel}
                   </td>
                   <td className="px-4 py-3">
@@ -121,12 +121,12 @@ export default function ScorecardQueue({ scorecards, onPreview }: Props) {
                       {badge.label}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-sm text-[var(--text-muted)]">
+                  <td className="px-4 py-3 text-sm text-muted-foreground">
                     {sc.generated_at
                       ? new Date(sc.generated_at).toLocaleDateString()
                       : '\u2014'}
                   </td>
-                  <td className="px-4 py-3 text-sm text-[var(--text-muted)]">
+                  <td className="px-4 py-3 text-sm text-muted-foreground">
                     {sc.delivered_at
                       ? new Date(sc.delivered_at).toLocaleDateString()
                       : '\u2014'}
@@ -136,19 +136,19 @@ export default function ScorecardQueue({ scorecards, onPreview }: Props) {
                     sc.generation_status === 'reviewed' ? (
                       <button
                         onClick={() => onPreview(sc.id)}
-                        className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                        className="text-sm text-chart-2 hover:text-chart-2 font-medium"
                       >
                         Preview
                       </button>
                     ) : sc.generation_status === 'sent' ? (
                       <button
                         onClick={() => onPreview(sc.id)}
-                        className="text-sm text-[var(--text-muted)] hover:text-[var(--text-secondary)] font-medium"
+                        className="text-sm text-muted-foreground hover:text-muted-foreground font-medium"
                       >
                         View
                       </button>
                     ) : (
-                      <span className="text-sm text-[var(--text-muted)]">{'\u2014'}</span>
+                      <span className="text-sm text-muted-foreground">{'\u2014'}</span>
                     )}
                   </td>
                 </tr>
@@ -158,7 +158,7 @@ export default function ScorecardQueue({ scorecards, onPreview }: Props) {
               <tr>
                 <td
                   colSpan={7}
-                  className="px-4 py-8 text-center text-sm text-[var(--text-muted)]"
+                  className="px-4 py-8 text-center text-sm text-muted-foreground"
                 >
                   No scorecards match this filter.
                 </td>

@@ -17,7 +17,7 @@ interface FunnelStage {
 export default function FunnelVisualization({ snapshot }: FunnelVisualizationProps) {
   if (!snapshot) {
     return (
-      <div className="bg-[var(--card-bg)] rounded-lg border border-lc-border p-6 text-center text-[var(--text-muted)]">
+      <div className="bg-card rounded-lg border border-border p-6 text-center text-muted-foreground">
         No funnel data available
       </div>
     );
@@ -39,19 +39,19 @@ export default function FunnelVisualization({ snapshot }: FunnelVisualizationPro
     : null;
 
   const stages: FunnelStage[] = [
-    { label: 'Impressions', value: impressions, color: 'bg-blue-400', dropoffPct: null },
-    { label: 'Clicks', value: clicks, color: 'bg-blue-500', dropoffPct: calcDropoff(impressions, clicks) },
-    { label: 'Page Views', value: pageViews, color: 'bg-indigo-500', dropoffPct: calcDropoff(clicks, pageViews) },
-    { label: 'Wishlists', value: wishlists, color: 'bg-purple-500', dropoffPct: calcDropoff(pageViews, wishlists) },
-    { label: 'Bookings', value: bookings, color: 'bg-green-500', dropoffPct: calcDropoff(wishlists, bookings) },
+    { label: 'Impressions', value: impressions, color: 'bg-chart-2', dropoffPct: null },
+    { label: 'Clicks', value: clicks, color: 'bg-chart-2', dropoffPct: calcDropoff(impressions, clicks) },
+    { label: 'Page Views', value: pageViews, color: 'bg-chart-3', dropoffPct: calcDropoff(clicks, pageViews) },
+    { label: 'Wishlists', value: wishlists, color: 'bg-chart-4', dropoffPct: calcDropoff(pageViews, wishlists) },
+    { label: 'Bookings', value: bookings, color: 'bg-health-green', dropoffPct: calcDropoff(wishlists, bookings) },
   ];
 
   // Find max value for width scaling
   const maxVal = Math.max(...stages.map((s) => s.value ?? 0), 1);
 
   return (
-    <div className="bg-[var(--card-bg)] rounded-lg border border-lc-border p-6">
-      <h3 className="text-sm font-semibold text-[var(--text-secondary)] mb-4">Conversion Funnel</h3>
+    <div className="bg-card rounded-lg border border-border p-6">
+      <h3 className="text-sm font-semibold text-muted-foreground mb-4">Conversion Funnel</h3>
 
       <div className="space-y-3">
         {stages.map((stage, index) => {
@@ -62,11 +62,11 @@ export default function FunnelVisualization({ snapshot }: FunnelVisualizationPro
               {/* Drop-off indicator between stages */}
               {index > 0 && stage.dropoffPct !== null && (
                 <div className="flex items-center gap-2 pl-4 -mt-1 mb-1">
-                  <svg className="w-3 h-3 text-[var(--text-muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <svg className="w-3 h-3 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
                   </svg>
                   <span className={`text-xs font-medium ${
-                    stage.dropoffPct > 90 ? 'text-red-500' : stage.dropoffPct > 70 ? 'text-amber-500' : 'text-[var(--text-muted)]'
+                    stage.dropoffPct > 90 ? 'text-destructive' : stage.dropoffPct > 70 ? 'text-health-orange' : 'text-muted-foreground'
                   }`}>
                     {stage.dropoffPct.toFixed(0)}% drop-off
                   </span>
@@ -75,10 +75,10 @@ export default function FunnelVisualization({ snapshot }: FunnelVisualizationPro
 
               {/* Bar */}
               <div className="flex items-center gap-3">
-                <span className="text-xs font-medium text-[var(--text-muted)] w-20 text-right flex-shrink-0">
+                <span className="text-xs font-medium text-muted-foreground w-20 text-right flex-shrink-0">
                   {stage.label}
                 </span>
-                <div className="flex-1 h-8 bg-[var(--surface)] rounded-lg overflow-hidden relative">
+                <div className="flex-1 h-8 bg-muted rounded-lg overflow-hidden relative">
                   <div
                     className={`h-full ${stage.color} rounded-lg transition-all duration-500 flex items-center px-3`}
                     style={{ width: `${widthPct}%` }}
@@ -95,17 +95,17 @@ export default function FunnelVisualization({ snapshot }: FunnelVisualizationPro
       </div>
 
       {/* Summary rates */}
-      <div className="mt-4 pt-4 border-t border-[var(--border)] grid grid-cols-3 gap-4">
+      <div className="mt-4 pt-4 border-t border-border grid grid-cols-3 gap-4">
         <div className="text-center">
-          <p className="text-xs text-[var(--text-muted)]">Impression Rate</p>
+          <p className="text-xs text-muted-foreground">Impression Rate</p>
           <p className="text-sm font-semibold">{formatPct(snapshot.airbnb_first_page_impression_rate)}</p>
         </div>
         <div className="text-center">
-          <p className="text-xs text-[var(--text-muted)]">CTR</p>
+          <p className="text-xs text-muted-foreground">CTR</p>
           <p className="text-sm font-semibold">{formatPct(snapshot.airbnb_search_to_listing_ctr)}</p>
         </div>
         <div className="text-center">
-          <p className="text-xs text-[var(--text-muted)]">Conversion</p>
+          <p className="text-xs text-muted-foreground">Conversion</p>
           <p className="text-sm font-semibold">{formatPct(snapshot.airbnb_listing_to_booking_conversion)}</p>
         </div>
       </div>

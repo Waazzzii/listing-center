@@ -11,8 +11,8 @@ export default function DataFreshnessTag({ lastScanDate }: DataFreshnessTagProps
 
   if (!lastScanDate) {
     return (
-      <span className="inline-flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
-        <span className="w-2 h-2 rounded-full bg-[var(--text-muted)]" />
+      <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+        <span className="w-2 h-2 rounded-full bg-muted-foreground" />
         No scan data
       </span>
     );
@@ -21,12 +21,12 @@ export default function DataFreshnessTag({ lastScanDate }: DataFreshnessTagProps
   return (
     <span
       className={`inline-flex items-center gap-1.5 text-xs ${
-        isStale ? 'text-amber-600 font-medium' : 'text-[var(--text-muted)]'
+        isStale ? 'text-health-orange font-medium' : 'text-muted-foreground'
       }`}
     >
       <span
         className={`w-2 h-2 rounded-full ${
-          isStale ? 'bg-amber-500 animate-pulse' : 'bg-green-400'
+          isStale ? 'bg-health-orange animate-pulse' : 'bg-health-green'
         }`}
       />
       Last scan: {formatDate(lastScanDate)}

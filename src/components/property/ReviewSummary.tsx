@@ -27,15 +27,17 @@ export default function ReviewSummary({ reviews, overallRating, reviewCount, isL
   const sentimentTags = useMemo(() => {
     const tags = new Map<string, number>();
     reviews.forEach((r) => {
-      const themes = Array.isArray(r.themes)
-        ? r.themes
-        : typeof r.themes === 'string'
+      const themesRaw: unknown = r.themes;
+      const themes: string[] = Array.isArray(themesRaw)
+        ? (themesRaw as string[])
+        : typeof themesRaw === 'string'
           ? (() => {
+              const str = themesRaw as string;
               try {
-                const parsed = JSON.parse(r.themes);
-                return Array.isArray(parsed) ? parsed : [];
+                const parsed = JSON.parse(str);
+                return Array.isArray(parsed) ? (parsed as string[]) : [];
               } catch {
-                return r.themes.split(',').map((t) => t.trim()).filter(Boolean);
+                return str.split(',').map((t: string) => t.trim()).filter(Boolean);
               }
             })()
           : [];
@@ -52,24 +54,24 @@ export default function ReviewSummary({ reviews, overallRating, reviewCount, isL
 
   if (isLoading) {
     return (
-      <div className="bg-[var(--card-bg)] rounded-lg border border-lc-border p-6">
-        <h3 className="text-sm font-semibold text-[var(--text-secondary)] mb-4">Reviews</h3>
-        <div className="animate-pulse h-32 bg-[var(--surface)] rounded" />
+      <div className="bg-card rounded-lg border border-border p-6">
+        <h3 className="text-sm font-semibold text-muted-foreground mb-4">Reviews</h3>
+        <div className="animate-pulse h-32 bg-muted rounded" />
       </div>
     );
   }
 
   return (
-    <div className="bg-[var(--card-bg)] rounded-lg border border-lc-border p-6">
-      <h3 className="text-sm font-semibold text-[var(--text-secondary)] mb-4">Reviews</h3>
+    <div className="bg-card rounded-lg border border-border p-6">
+      <h3 className="text-sm font-semibold text-muted-foreground mb-4">Reviews</h3>
 
       <div className="grid grid-cols-12 gap-6">
         {/* Overall rating */}
         <div className="col-span-3 text-center">
-          <p className="text-4xl font-bold text-[var(--text-primary)]">
+          <p className="text-4xl font-bold text-foreground">
             {overallRating !== null ? overallRating.toFixed(2) : '\u2014'}
           </p>
-          <p className="text-xs text-[var(--text-muted)] mt-1">
+          <p className="text-xs text-muted-foreground mt-1">
             {reviewCount !== null ? `${reviewCount} reviews` : 'No reviews'}
           </p>
           {/* Star visualization */}
@@ -79,8 +81,8 @@ export default function ReviewSummary({ reviews, overallRating, reviewCount, isL
                 key={i}
                 className={`w-4 h-4 ${
                   overallRating !== null && i < Math.round(overallRating)
-                    ? 'text-amber-400'
-                    : 'text-[var(--text-muted)]'
+                    ? 'text-health-orange'
+                    : 'text-muted-foreground'
                 }`}
                 fill="currentColor"
                 viewBox="0 0 20 20"
@@ -99,14 +101,14 @@ export default function ReviewSummary({ reviews, overallRating, reviewCount, isL
 
             return (
               <div key={star} className="flex items-center gap-2">
-                <span className="text-xs text-[var(--text-muted)] w-3">{star}</span>
-                <div className="flex-1 h-3 bg-[var(--surface)] rounded-full overflow-hidden">
+                <span className="text-xs text-muted-foreground w-3">{star}</span>
+                <div className="flex-1 h-3 bg-muted rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-amber-400 rounded-full"
+                    className="h-full bg-health-orange rounded-full"
                     style={{ width: `${widthPct}%` }}
                   />
                 </div>
-                <span className="text-xs text-[var(--text-muted)] w-4 text-right">{count}</span>
+                <span className="text-xs text-muted-foreground w-4 text-right">{count}</span>
               </div>
             );
           })}
@@ -114,15 +116,15 @@ export default function ReviewSummary({ reviews, overallRating, reviewCount, isL
 
         {/* Sentiment tags */}
         <div className="col-span-5">
-          <p className="text-xs text-[var(--text-muted)] mb-2">Common Themes</p>
+          <p className="text-xs text-muted-foreground mb-2">Common Themes</p>
           <div className="flex flex-wrap gap-1.5">
             {sentimentTags.length === 0 ? (
-              <span className="text-xs text-[var(--text-muted)]">No themes extracted yet</span>
+              <span className="text-xs text-muted-foreground">No themes extracted yet</span>
             ) : (
               sentimentTags.map(([tag, count]) => (
                 <span
                   key={tag}
-                  className="px-2 py-0.5 bg-[var(--surface)] text-[var(--text-secondary)] rounded-full text-xs"
+                  className="px-2 py-0.5 bg-muted text-muted-foreground rounded-full text-xs"
                 >
                   {tag} ({count})
                 </span>
@@ -134,26 +136,26 @@ export default function ReviewSummary({ reviews, overallRating, reviewCount, isL
 
       {/* Recent reviews */}
       {reviews.length > 0 && (
-        <div className="mt-4 pt-4 border-t border-[var(--border)] space-y-3">
-          <p className="text-xs font-medium text-[var(--text-muted)]">Recent Reviews</p>
+        <div className="mt-4 pt-4 border-t border-border space-y-3">
+          <p className="text-xs font-medium text-muted-foreground">Recent Reviews</p>
           {reviews.slice(0, 3).map((review) => (
             <div key={review.id} className="text-sm">
               <div className="flex items-center gap-2">
-                <span className="font-medium text-[var(--text-secondary)]">{review.guest_name || 'Guest'}</span>
-                <span className="text-amber-500 text-xs">
+                <span className="font-medium text-muted-foreground">{review.guest_name || 'Guest'}</span>
+                <span className="text-health-orange text-xs">
                   {'*'.repeat(review.rating || 0)}
                 </span>
-                <span className="text-xs text-[var(--text-muted)]">{formatDate(review.review_date)}</span>
+                <span className="text-xs text-muted-foreground">{formatDate(review.review_date)}</span>
                 <span className={`text-xs px-1.5 py-0.5 rounded ${
-                  review.response_status === 'responded' ? 'bg-green-100 text-green-600' :
-                  review.response_status === 'pending' ? 'bg-amber-100 text-amber-600' :
-                  'bg-[var(--surface)] text-[var(--text-muted)]'
+                  review.response_status === 'responded' ? 'bg-health-green/15 text-health-green' :
+                  review.response_status === 'pending' ? 'bg-health-orange/15 text-health-orange' :
+                  'bg-muted text-muted-foreground'
                 }`}>
                   {review.response_status}
                 </span>
               </div>
               {review.review_text && (
-                <p className="text-xs text-[var(--text-muted)] mt-0.5 line-clamp-2">{review.review_text}</p>
+                <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">{review.review_text}</p>
               )}
             </div>
           ))}

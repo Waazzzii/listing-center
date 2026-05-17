@@ -41,8 +41,8 @@ export default function PropertyDetailPage() {
   if (error) {
     return (
       <div className="p-8 text-center">
-        <h2 className="text-lg font-semibold text-[var(--text-primary)]">Property Not Found</h2>
-        <p className="text-sm text-[var(--text-muted)] mt-1">{error}</p>
+        <h2 className="text-lg font-semibold text-foreground">Property Not Found</h2>
+        <p className="text-sm text-muted-foreground mt-1">{error}</p>
       </div>
     );
   }
@@ -54,7 +54,7 @@ export default function PropertyDetailPage() {
 
   if (!property) {
     return (
-      <div className="p-8 text-center text-[var(--text-muted)]">No property data available.</div>
+      <div className="p-8 text-center text-muted-foreground">No property data available.</div>
     );
   }
 

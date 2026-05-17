@@ -6,7 +6,7 @@ export function SkeletonBar({ className = '' }: { className?: string }) {
 /** Skeleton for MetricCard */
 export function MetricCardSkeleton() {
   return (
-    <div className="bg-[var(--card-bg)] rounded-lg border border-lc-border p-4">
+    <div className="bg-card rounded-lg border border-border p-4">
       <SkeletonBar className="h-3 w-20 mb-3" />
       <SkeletonBar className="h-7 w-24 mb-2" />
       <SkeletonBar className="h-3 w-28" />
@@ -30,7 +30,7 @@ export function TableRowSkeleton({ columns = 9 }: { columns?: number }) {
 /** Skeleton for the full portfolio summary bar */
 export function SummaryBarSkeleton() {
   return (
-    <div className="bg-[var(--card-bg)] border-b border-lc-border px-6 py-3 flex items-center gap-8">
+    <div className="bg-card border-b border-border px-6 py-3 flex items-center gap-8">
       {Array.from({ length: 7 }).map((_, i) => (
         <div key={i} className="flex flex-col gap-1">
           <SkeletonBar className="h-3 w-16" />
@@ -44,8 +44,8 @@ export function SummaryBarSkeleton() {
 /** Skeleton for a chart area */
 export function ChartSkeleton({ height = 'h-64' }: { height?: string }) {
   return (
-    <div className={`animate-pulse bg-[var(--surface)] rounded-lg border border-lc-border ${height} flex items-center justify-center`}>
-      <div className="text-[var(--text-muted)] text-sm">Loading chart...</div>
+    <div className={`animate-pulse bg-muted rounded-lg border border-border ${height} flex items-center justify-center`}>
+      <div className="text-muted-foreground text-sm">Loading chart...</div>
     </div>
   );
 }
@@ -59,7 +59,7 @@ export function DashboardSkeleton() {
         <ChartSkeleton />
         <ChartSkeleton />
       </div>
-      <div className="bg-[var(--card-bg)] rounded-lg border border-lc-border p-4">
+      <div className="bg-card rounded-lg border border-border p-4">
         <table className="w-full">
           <tbody>
             {Array.from({ length: 8 }).map((_, i) => (

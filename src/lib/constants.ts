@@ -6,7 +6,7 @@ export const HEALTH_STATUS_CONFIG: Record<HealthStatus, { label: string; color: 
   yellow:     { label: 'Value Capture', color: 'text-health-yellow', bgColor: 'bg-health-yellow', sortOrder: 3 },
   green:      { label: 'Healthy',       color: 'text-health-green',  bgColor: 'bg-health-green',  sortOrder: 4 },
   blue_spell: { label: 'Blue Spell',    color: 'text-health-blue',   bgColor: 'bg-health-blue',   sortOrder: 5 },
-  unknown:    { label: 'No Data',       color: 'text-gray-400',      bgColor: 'bg-gray-200',      sortOrder: 6 },
+  unknown:    { label: 'No Data',       color: 'text-muted-foreground',      bgColor: 'bg-muted',      sortOrder: 6 },
 };
 
 export const QUALITY_TIER_CONFIG: Record<QualityTier, { label: string; numeric: number; adrRange: string }> = {

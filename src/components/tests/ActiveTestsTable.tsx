@@ -8,9 +8,9 @@ interface Props {
 }
 
 const STATUS_BADGES: Record<string, { label: string; color: string }> = {
-  pending: { label: 'Pending', color: 'bg-[var(--surface)] text-[var(--text-secondary)]' },
-  active: { label: 'Active', color: 'bg-[var(--badge-blue-bg)] text-[var(--badge-blue-text)]' },
-  snapshot_due: { label: 'Snapshot Due', color: 'bg-yellow-100 text-yellow-700' },
+  pending: { label: 'Pending', color: 'bg-muted text-muted-foreground' },
+  active: { label: 'Active', color: 'bg-secondary text-secondary-foreground' },
+  snapshot_due: { label: 'Snapshot Due', color: 'bg-health-yellow/15 text-health-yellow' },
 };
 
 function daysRemaining(dueDate: string | null): string {
@@ -36,7 +36,7 @@ function progressPercent(changeDate: string | null, dueDate: string | null): num
 export default function ActiveTestsTable({ tests }: Props) {
   if (tests.length === 0) {
     return (
-      <div className="text-center py-12 text-[var(--text-muted)]">
+      <div className="text-center py-12 text-muted-foreground">
         <p className="text-lg font-medium">No active A/B tests</p>
         <p className="mt-1 text-sm">Create a test to start optimizing listings.</p>
       </div>
@@ -46,18 +46,18 @@ export default function ActiveTestsTable({ tests }: Props) {
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full divide-y divide-[var(--border)]">
-        <thead className="bg-[var(--surface)]">
+        <thead className="bg-muted">
           <tr>
-            <th className="px-4 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase">Property</th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase">Type</th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase">Thesis</th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase">Target</th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase">Status</th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase">Progress</th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase">Before</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Property</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Type</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Thesis</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Target</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Status</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Progress</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Before</th>
           </tr>
         </thead>
-        <tbody className="bg-[var(--card-bg)] divide-y divide-[var(--border)]">
+        <tbody className="bg-card divide-y divide-[var(--border)]">
           {tests.map((test) => {
             const badge = STATUS_BADGES[test.status] || STATUS_BADGES.pending;
             const targetBefore = test.before_metrics?.[test.target_metric];
@@ -65,17 +65,17 @@ export default function ActiveTestsTable({ tests }: Props) {
             const remaining = daysRemaining(test.after_snapshot_due_date);
 
             return (
-              <tr key={test.id} className="hover:bg-[var(--table-row-hover)]">
-                <td className="px-4 py-3 text-sm font-medium text-[var(--text-primary)]">
+              <tr key={test.id} className="hover:bg-accent">
+                <td className="px-4 py-3 text-sm font-medium text-foreground">
                   {test.property_name || test.property_id.slice(0, 8)}
                 </td>
-                <td className="px-4 py-3 text-sm text-[var(--text-secondary)]">
+                <td className="px-4 py-3 text-sm text-muted-foreground">
                   {test.test_type.replace(/_/g, ' ')}
                 </td>
-                <td className="px-4 py-3 text-sm text-[var(--text-secondary)] max-w-xs truncate">
+                <td className="px-4 py-3 text-sm text-muted-foreground max-w-xs truncate">
                   {test.thesis}
                 </td>
-                <td className="px-4 py-3 text-sm text-[var(--text-secondary)]">
+                <td className="px-4 py-3 text-sm text-muted-foreground">
                   {test.target_metric.replace(/_/g, ' ')}
                 </td>
                 <td className="px-4 py-3">
@@ -85,18 +85,18 @@ export default function ActiveTestsTable({ tests }: Props) {
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-2">
-                    <div className="w-20 bg-[var(--surface)] rounded-full h-1.5">
+                    <div className="w-20 bg-muted rounded-full h-1.5">
                       <div
                         className={`h-1.5 rounded-full ${
-                          pct >= 100 ? 'bg-yellow-500' : 'bg-blue-500'
+                          pct >= 100 ? 'bg-health-yellow' : 'bg-chart-2'
                         }`}
                         style={{ width: `${pct}%` }}
                       />
                     </div>
-                    <span className="text-xs text-[var(--text-muted)]">{remaining}</span>
+                    <span className="text-xs text-muted-foreground">{remaining}</span>
                   </div>
                 </td>
-                <td className="px-4 py-3 text-sm text-[var(--text-secondary)]">
+                <td className="px-4 py-3 text-sm text-muted-foreground">
                   {targetBefore != null ? `${targetBefore}%` : '\u2014'}
                 </td>
               </tr>

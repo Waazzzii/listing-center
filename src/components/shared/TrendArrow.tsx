@@ -10,18 +10,18 @@ interface TrendArrowProps {
 const ARROW_CONFIG = {
   up: {
     symbol: '\u2191',
-    goodColor: 'text-green-600',
-    badColor: 'text-red-600',
+    goodColor: 'text-health-green',
+    badColor: 'text-destructive',
   },
   down: {
     symbol: '\u2193',
-    goodColor: 'text-red-600',
-    badColor: 'text-green-600',
+    goodColor: 'text-destructive',
+    badColor: 'text-health-green',
   },
   flat: {
     symbol: '\u2192',
-    goodColor: 'text-[var(--text-muted)]',
-    badColor: 'text-[var(--text-muted)]',
+    goodColor: 'text-muted-foreground',
+    badColor: 'text-muted-foreground',
   },
 };
 

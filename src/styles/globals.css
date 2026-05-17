@@ -2,74 +2,148 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================================
+   Wazzi Design System tokens
+   Source: Waazzzii/portfolio-center/styles/globals.css
+   oklch color space, shadcn/ui-style semantic naming
+============================================================ */
+
 @layer base {
   :root {
-    /* Light mode - Casago themed */
-    --background: #FFFFFF;
-    --surface: #F7F7F6;
-    --surface-raised: #FFFFFF;
-    --border: #E5E2DE;
-    --border-strong: #B8B3AD;
-    --text-primary: #1A1A1A;
-    --text-secondary: #5C5A57;
-    --text-muted: #969491;
-    --primary: #0092D3;
-    --primary-hover: #0078AD;
-    --primary-light: #E6F4FB;
-    --accent: #F57000;
-    --accent-hover: #CC5D00;
-    --accent-light: #FEF0E4;
-    --sidebar-bg: #1A2332;
-    --sidebar-hover: #243044;
-    --sidebar-active: #0092D3;
-    --sidebar-text: #B7B9BF;
-    --sidebar-text-active: #FFFFFF;
-    --topbar-bg: #FFFFFF;
-    --topbar-border: #E5E2DE;
-    --card-bg: #FFFFFF;
-    --card-border: #E5E2DE;
-    --table-header-bg: #F7F7F6;
-    --table-row-hover: #F7F7F6;
-    --badge-blue-bg: #E6F4FB;
-    --badge-blue-text: #0078AD;
-    --badge-orange-bg: #FEF0E4;
-    --badge-orange-text: #CC5D00;
+    /* Wazzi base tokens (oklch) */
+    --background: 1 0 0;
+    --foreground: 0.145 0 0;
+    --card: 1 0 0;
+    --card-foreground: 0.145 0 0;
+    --popover: 1 0 0;
+    --popover-foreground: 0.145 0 0;
+    --primary: 0.205 0 0;
+    --primary-foreground: 0.985 0 0;
+    --secondary: 0.97 0 0;
+    --secondary-foreground: 0.205 0 0;
+    --muted: 0.97 0 0;
+    --muted-foreground: 0.556 0 0;
+    --accent: 0.97 0 0;
+    --accent-foreground: 0.205 0 0;
+    --destructive: 0.577 0.245 27.325;
+    --destructive-foreground: 0.985 0 0;
+    --border: 0.922 0 0;
+    --input: 0.922 0 0;
+    --ring: 0.708 0 0;
+    --chart-1: 0.646 0.222 41.116;
+    --chart-2: 0.6 0.118 184.704;
+    --chart-3: 0.398 0.07 227.392;
+    --chart-4: 0.828 0.189 84.429;
+    --chart-5: 0.769 0.188 70.08;
+    --radius: 0.625rem;
+    --sidebar: 0.985 0 0;
+    --sidebar-foreground: 0.145 0 0;
+    --sidebar-primary: 0.205 0 0;
+    --sidebar-primary-foreground: 0.985 0 0;
+    --sidebar-accent: 0.97 0 0;
+    --sidebar-accent-foreground: 0.205 0 0;
+    --sidebar-border: 0.922 0 0;
+    --sidebar-ring: 0.708 0 0;
+
+    /* Health bucket palette — preserved for Listing Center semantics */
+    --health-red: 0.577 0.245 27.325;
+    --health-orange: 0.646 0.222 41.116;
+    --health-yellow: 0.828 0.189 84.429;
+    --health-green: 0.55 0.18 145;
+
+    /* Legacy alias names — point old variables to new tokens so any
+       remaining `var(--background)` / `var(--text-primary)` references
+       in untransformed files keep rendering during migration.
+       New code should use the semantic Tailwind classes instead. */
+    --surface: var(--background);
+    --surface-raised: var(--card);
+    --border-strong: var(--ring);
+    --text-primary: var(--foreground);
+    --text-secondary: var(--muted-foreground);
+    --text-muted: var(--muted-foreground);
+    --primary-hover: var(--primary);
+    --primary-light: var(--accent);
+    --accent-hover: var(--primary);
+    --accent-light: var(--accent);
+    --sidebar-bg: var(--sidebar);
+    --sidebar-hover: var(--sidebar-accent);
+    --sidebar-active: var(--primary);
+    --sidebar-text: var(--muted-foreground);
+    --sidebar-text-active: var(--primary-foreground);
+    --topbar-bg: var(--background);
+    --topbar-border: var(--border);
+    --card-bg: var(--card);
+    --card-border: var(--border);
+    --table-header-bg: var(--muted);
+    --table-row-hover: var(--accent);
+    --badge-blue-bg: var(--secondary);
+    --badge-blue-text: var(--secondary-foreground);
+    --badge-orange-bg: var(--secondary);
+    --badge-orange-text: var(--secondary-foreground);
   }
 
   .dark {
-    --background: #0F1419;
-    --surface: #1A2332;
-    --surface-raised: #1E2A3A;
-    --border: #2D3B4E;
-    --border-strong: #3D4F65;
-    --text-primary: #F0F0EE;
-    --text-secondary: #B7B9BF;
-    --text-muted: #7A8899;
-    --primary: #33A8DE;
-    --primary-hover: #0092D3;
-    --primary-light: #0D2A3D;
-    --accent: #FF8A2E;
-    --accent-hover: #F57000;
-    --accent-light: #2D1F0F;
-    --sidebar-bg: #0F1419;
-    --sidebar-hover: #1A2332;
-    --sidebar-active: #0092D3;
-    --sidebar-text: #7A8899;
-    --sidebar-text-active: #FFFFFF;
-    --topbar-bg: #1A2332;
-    --topbar-border: #2D3B4E;
-    --card-bg: #1E2A3A;
-    --card-border: #2D3B4E;
-    --table-header-bg: #1A2332;
-    --table-row-hover: #243044;
-    --badge-blue-bg: #0D2A3D;
-    --badge-blue-text: #33A8DE;
-    --badge-orange-bg: #2D1F0F;
-    --badge-orange-text: #FF8A2E;
+    --background: 0.145 0 0;
+    --foreground: 0.985 0 0;
+    --card: 0.145 0 0;
+    --card-foreground: 0.985 0 0;
+    --popover: 0.145 0 0;
+    --popover-foreground: 0.985 0 0;
+    --primary: 0.985 0 0;
+    --primary-foreground: 0.205 0 0;
+    --secondary: 0.269 0 0;
+    --secondary-foreground: 0.985 0 0;
+    --muted: 0.269 0 0;
+    --muted-foreground: 0.708 0 0;
+    --accent: 0.269 0 0;
+    --accent-foreground: 0.985 0 0;
+    --destructive: 0.396 0.141 25.723;
+    --destructive-foreground: 0.985 0 0;
+    --border: 0.269 0 0;
+    --input: 0.269 0 0;
+    --ring: 0.439 0 0;
+    --chart-1: 0.488 0.243 264.376;
+    --chart-2: 0.696 0.17 162.48;
+    --chart-3: 0.769 0.188 70.08;
+    --chart-4: 0.627 0.265 303.9;
+    --chart-5: 0.645 0.246 16.439;
+    --sidebar: 0.205 0 0;
+    --sidebar-foreground: 0.985 0 0;
+    --sidebar-primary: 0.488 0.243 264.376;
+    --sidebar-primary-foreground: 0.985 0 0;
+    --sidebar-accent: 0.269 0 0;
+    --sidebar-accent-foreground: 0.985 0 0;
+    --sidebar-border: 0.269 0 0;
+    --sidebar-ring: 0.439 0 0;
+
+    --health-red: 0.577 0.245 27.325;
+    --health-orange: 0.646 0.222 41.116;
+    --health-yellow: 0.828 0.189 84.429;
+    --health-green: 0.696 0.17 162.48;
   }
 
   body {
-    @apply bg-[var(--background)] text-[var(--text-primary)] antialiased;
+    background: oklch(var(--background));
+    color: oklch(var(--foreground));
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     font-feature-settings: "cv11", "ss01";
   }
+
+  /* Numeric columns / KPIs use tabular figures by default */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@layer utilities {
+  /* Health bucket utility classes */
+  .text-health-red { color: oklch(var(--health-red)); }
+  .text-health-orange { color: oklch(var(--health-orange)); }
+  .text-health-yellow { color: oklch(var(--health-yellow)); }
+  .text-health-green { color: oklch(var(--health-green)); }
+  .bg-health-red { background-color: oklch(var(--health-red)); }
+  .bg-health-orange { background-color: oklch(var(--health-orange)); }
+  .bg-health-yellow { background-color: oklch(var(--health-yellow)); }
+  .bg-health-green { background-color: oklch(var(--health-green)); }
 }

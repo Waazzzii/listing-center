@@ -30,8 +30,8 @@ export default function PropertyTable({ data, isLoading, healthFilter }: Propert
       width: '20%',
       render: (row) => (
         <div>
-          <p className="font-medium text-[var(--text-primary)] truncate max-w-xs">{row.property_name}</p>
-          <p className="text-xs text-[var(--text-muted)]">{MARKET_LABELS[row.market] || row.market}</p>
+          <p className="font-medium text-foreground truncate max-w-xs">{row.property_name}</p>
+          <p className="text-xs text-muted-foreground">{MARKET_LABELS[row.market] || row.market}</p>
         </div>
       ),
       sortValue: (row) => row.property_name,
@@ -42,7 +42,7 @@ export default function PropertyTable({ data, isLoading, healthFilter }: Propert
       sortable: true,
       width: '8%',
       render: (row) => (
-        <span className="text-xs font-medium text-[var(--text-secondary)] bg-[var(--surface)] px-2 py-0.5 rounded">
+        <span className="text-xs font-medium text-muted-foreground bg-muted px-2 py-0.5 rounded">
           {QUALITY_TIER_CONFIG[row.quality_tier]?.label || row.quality_tier}
         </span>
       ),
@@ -106,7 +106,7 @@ export default function PropertyTable({ data, isLoading, healthFilter }: Propert
       header: 'Last Change',
       sortable: true,
       render: (row) => (
-        <span className="text-sm text-[var(--text-secondary)]">{formatDate(row.snapshot_date)}</span>
+        <span className="text-sm text-muted-foreground">{formatDate(row.snapshot_date)}</span>
       ),
       sortValue: (row) => row.snapshot_date,
     },
@@ -120,7 +120,7 @@ export default function PropertyTable({ data, isLoading, healthFilter }: Propert
             e.stopPropagation();
             router.push(`/property/${row.property_id}`);
           }}
-          className="text-xs font-medium text-lc-primary hover:underline"
+          className="text-xs font-medium text-primary hover:underline"
         >
           View
         </button>

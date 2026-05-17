@@ -52,20 +52,20 @@ export default function TrendCharts({ snapshotsByWeek, weeksAvailable, isLoading
 
   if (weeksAvailable < MIN_WEEKS_FOR_TRENDS) {
     return (
-      <div className="bg-[var(--card-bg)] rounded-lg border border-lc-border p-6">
-        <h3 className="text-sm font-semibold text-[var(--text-secondary)] mb-4">Portfolio Trends (12-Week Trailing)</h3>
+      <div className="bg-card rounded-lg border border-border p-6">
+        <h3 className="text-sm font-semibold text-muted-foreground mb-4">Portfolio Trends (12-Week Trailing)</h3>
         <InsufficientDataState weeksAvailable={weeksAvailable} />
       </div>
     );
   }
 
   return (
-    <div className="bg-[var(--card-bg)] rounded-lg border border-lc-border p-6">
+    <div className="bg-card rounded-lg border border-border p-6">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-semibold text-[var(--text-secondary)]">Portfolio Trends (12-Week Trailing)</h3>
+        <h3 className="text-sm font-semibold text-muted-foreground">Portfolio Trends (12-Week Trailing)</h3>
 
         {/* Toggle buttons */}
-        <div className="flex items-center gap-1 bg-[var(--surface)] rounded-lg p-0.5">
+        <div className="flex items-center gap-1 bg-muted rounded-lg p-0.5">
           {[
             { key: 'all' as MetricToggle, label: 'All' },
             { key: 'impression_rate' as MetricToggle, label: 'Impressions' },
@@ -77,8 +77,8 @@ export default function TrendCharts({ snapshotsByWeek, weeksAvailable, isLoading
               onClick={() => setActiveMetric(toggle.key)}
               className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
                 activeMetric === toggle.key
-                  ? 'bg-[var(--card-bg)] text-[var(--text-primary)] shadow-sm'
-                  : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)]'
+                  ? 'bg-card text-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-muted-foreground'
               }`}
             >
               {toggle.label}

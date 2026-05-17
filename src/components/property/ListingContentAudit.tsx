@@ -23,10 +23,10 @@ interface AuditItem {
 }
 
 const STATUS_ICONS: Record<string, { icon: string; color: string }> = {
-  pass: { icon: '\u2713', color: 'text-green-600 bg-green-50' },
-  warn: { icon: '!', color: 'text-amber-600 bg-amber-50' },
-  fail: { icon: '\u2717', color: 'text-red-600 bg-red-50' },
-  unknown: { icon: '?', color: 'text-[var(--text-muted)] bg-[var(--surface)]' },
+  pass: { icon: '\u2713', color: 'text-health-green bg-health-green/10' },
+  warn: { icon: '!', color: 'text-health-orange bg-health-orange/10' },
+  fail: { icon: '\u2717', color: 'text-destructive bg-destructive/10' },
+  unknown: { icon: '?', color: 'text-muted-foreground bg-muted' },
 };
 
 export default function ListingContentAudit({
@@ -40,11 +40,11 @@ export default function ListingContentAudit({
 }: ListingContentAuditProps) {
   if (isLoading) {
     return (
-      <div className="bg-[var(--card-bg)] rounded-lg border border-lc-border p-6">
-        <h3 className="text-sm font-semibold text-[var(--text-secondary)] mb-4">Listing Content Audit</h3>
+      <div className="bg-card rounded-lg border border-border p-6">
+        <h3 className="text-sm font-semibold text-muted-foreground mb-4">Listing Content Audit</h3>
         <div className="animate-pulse space-y-3">
           {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="h-8 bg-[var(--surface)] rounded" />
+            <div key={i} className="h-8 bg-muted rounded" />
           ))}
         </div>
       </div>
@@ -108,14 +108,14 @@ export default function ListingContentAudit({
   const totalChecked = auditItems.filter((item) => item.status !== 'unknown').length;
 
   return (
-    <div className="bg-[var(--card-bg)] rounded-lg border border-lc-border p-6">
+    <div className="bg-card rounded-lg border border-border p-6">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-semibold text-[var(--text-secondary)]">Listing Content Audit</h3>
+        <h3 className="text-sm font-semibold text-muted-foreground">Listing Content Audit</h3>
         {totalChecked > 0 && (
           <span className={`text-xs font-medium px-2 py-0.5 rounded ${
-            passCount === totalChecked ? 'bg-green-100 text-green-700' :
-            passCount >= totalChecked / 2 ? 'bg-amber-100 text-amber-700' :
-            'bg-red-100 text-red-700'
+            passCount === totalChecked ? 'bg-health-green/15 text-health-green' :
+            passCount >= totalChecked / 2 ? 'bg-health-orange/15 text-health-orange' :
+            'bg-destructive/15 text-destructive'
           }`}>
             {passCount}/{totalChecked} passing
           </span>
@@ -132,8 +132,8 @@ export default function ListingContentAudit({
                 {style.icon}
               </span>
               <div className="flex-1">
-                <span className="text-sm font-medium text-[var(--text-secondary)]">{item.label}</span>
-                <span className="text-xs text-[var(--text-muted)] ml-2">{item.detail}</span>
+                <span className="text-sm font-medium text-muted-foreground">{item.label}</span>
+                <span className="text-xs text-muted-foreground ml-2">{item.detail}</span>
               </div>
             </div>
           );
@@ -142,11 +142,11 @@ export default function ListingContentAudit({
 
       {/* Amenity gaps detail */}
       {amenityGaps.length > 0 && (
-        <div className="mt-4 pt-3 border-t border-[var(--border)]">
-          <p className="text-xs font-medium text-[var(--text-muted)] mb-2">Missing Amenities (vs. competitors)</p>
+        <div className="mt-4 pt-3 border-t border-border">
+          <p className="text-xs font-medium text-muted-foreground mb-2">Missing Amenities (vs. competitors)</p>
           <div className="flex flex-wrap gap-1.5">
             {amenityGaps.map((gap) => (
-              <span key={gap} className="px-2 py-0.5 bg-red-50 text-red-600 rounded text-xs">
+              <span key={gap} className="px-2 py-0.5 bg-destructive/10 text-destructive rounded text-xs">
                 {gap}
               </span>
             ))}

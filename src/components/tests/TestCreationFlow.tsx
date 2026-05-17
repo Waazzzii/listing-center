@@ -74,20 +74,20 @@ export default function TestCreationFlow({ onClose, onCreated }: Props) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-[var(--card-bg)] rounded-lg shadow-xl w-full max-w-lg p-6">
+      <div className="bg-card rounded-lg shadow-xl w-full max-w-lg p-6">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold text-[var(--text-primary)]">Create A/B Test</h2>
-          <button onClick={onClose} className="text-[var(--text-muted)] hover:text-[var(--text-secondary)] text-2xl leading-none">&times;</button>
+          <h2 className="text-xl font-bold text-foreground">Create A/B Test</h2>
+          <button onClick={onClose} className="text-muted-foreground hover:text-muted-foreground text-2xl leading-none">&times;</button>
         </div>
 
         {/* Step Indicator */}
         <div className="flex items-center mb-6 text-sm">
           {(['type', 'property', 'thesis', 'confirm'] as Step[]).map((s, i) => (
             <React.Fragment key={s}>
-              <span className={`${step === s ? 'text-blue-600 font-semibold' : 'text-[var(--text-muted)]'}`}>
+              <span className={`${step === s ? 'text-chart-2 font-semibold' : 'text-muted-foreground'}`}>
                 {i + 1}. {s.charAt(0).toUpperCase() + s.slice(1)}
               </span>
-              {i < 3 && <span className="mx-2 text-[var(--text-muted)]">&rarr;</span>}
+              {i < 3 && <span className="mx-2 text-muted-foreground">&rarr;</span>}
             </React.Fragment>
           ))}
         </div>
@@ -95,17 +95,17 @@ export default function TestCreationFlow({ onClose, onCreated }: Props) {
         {/* Step: Select Test Type */}
         {step === 'type' && (
           <div className="space-y-3">
-            <p className="text-sm text-[var(--text-secondary)] mb-4">What kind of change are you testing?</p>
+            <p className="text-sm text-muted-foreground mb-4">What kind of change are you testing?</p>
             {TEST_TYPES.map(t => (
               <button
                 key={t.value}
                 onClick={() => { setTestType(t.value); setStep('property'); }}
                 className={`w-full text-left p-3 rounded-lg border ${
-                  testType === t.value ? 'border-blue-500 bg-blue-50' : 'border-[var(--border)] hover:border-[var(--border)]'
+                  testType === t.value ? 'border-chart-2 bg-chart-2/10' : 'border-border hover:border-border'
                 }`}
               >
-                <div className="font-medium text-[var(--text-primary)]">{t.label}</div>
-                <div className="text-xs text-[var(--text-muted)] mt-1">
+                <div className="font-medium text-foreground">{t.label}</div>
+                <div className="text-xs text-muted-foreground mt-1">
                   Target: {t.metric.replace(/_/g, ' ')} | Soak: {getSoakPeriodDays(t.value)} days
                 </div>
               </button>
@@ -116,20 +116,20 @@ export default function TestCreationFlow({ onClose, onCreated }: Props) {
         {/* Step: Select Property */}
         {step === 'property' && (
           <div className="space-y-4">
-            <p className="text-sm text-[var(--text-secondary)]">Enter the property ID for this test.</p>
+            <p className="text-sm text-muted-foreground">Enter the property ID for this test.</p>
             <input
               type="text"
               value={propertyId}
               onChange={e => setPropertyId(e.target.value)}
               placeholder="Property UUID"
-              className="w-full border border-[var(--border)] rounded-md px-3 py-2 text-sm bg-[var(--card-bg)] text-[var(--text-primary)]"
+              className="w-full border border-border rounded-md px-3 py-2 text-sm bg-card text-foreground"
             />
             <div className="flex justify-between">
-              <button onClick={() => setStep('type')} className="text-sm text-[var(--text-muted)] hover:text-[var(--text-secondary)]">Back</button>
+              <button onClick={() => setStep('type')} className="text-sm text-muted-foreground hover:text-muted-foreground">Back</button>
               <button
                 onClick={() => setStep('thesis')}
                 disabled={!propertyId}
-                className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 disabled:opacity-50"
+                className="px-4 py-2 bg-chart-2 text-white rounded-md text-sm font-medium hover:bg-chart-2/90 disabled:opacity-50"
               >
                 Next
               </button>
@@ -141,7 +141,7 @@ export default function TestCreationFlow({ onClose, onCreated }: Props) {
         {step === 'thesis' && (
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+              <label className="block text-sm font-medium text-muted-foreground mb-1">
                 Thesis (required)
               </label>
               <textarea
@@ -149,11 +149,11 @@ export default function TestCreationFlow({ onClose, onCreated }: Props) {
                 onChange={e => setThesis(e.target.value)}
                 placeholder="I believe [change] will improve [metric] because [reasoning]"
                 rows={3}
-                className="w-full border border-[var(--border)] rounded-md px-3 py-2 text-sm bg-[var(--card-bg)] text-[var(--text-primary)]"
+                className="w-full border border-border rounded-md px-3 py-2 text-sm bg-card text-foreground"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+              <label className="block text-sm font-medium text-muted-foreground mb-1">
                 Change Description (required)
               </label>
               <textarea
@@ -161,15 +161,15 @@ export default function TestCreationFlow({ onClose, onCreated }: Props) {
                 onChange={e => setChangeDescription(e.target.value)}
                 placeholder="Swapped hero photo from kitchen interior to pool aerial shot"
                 rows={2}
-                className="w-full border border-[var(--border)] rounded-md px-3 py-2 text-sm bg-[var(--card-bg)] text-[var(--text-primary)]"
+                className="w-full border border-border rounded-md px-3 py-2 text-sm bg-card text-foreground"
               />
             </div>
             <div className="flex justify-between">
-              <button onClick={() => setStep('property')} className="text-sm text-[var(--text-muted)] hover:text-[var(--text-secondary)]">Back</button>
+              <button onClick={() => setStep('property')} className="text-sm text-muted-foreground hover:text-muted-foreground">Back</button>
               <button
                 onClick={() => setStep('confirm')}
                 disabled={!thesis || !changeDescription}
-                className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 disabled:opacity-50"
+                className="px-4 py-2 bg-chart-2 text-white rounded-md text-sm font-medium hover:bg-chart-2/90 disabled:opacity-50"
               >
                 Next
               </button>
@@ -180,20 +180,20 @@ export default function TestCreationFlow({ onClose, onCreated }: Props) {
         {/* Step: Confirm */}
         {step === 'confirm' && (
           <div className="space-y-4">
-            <div className="bg-[var(--surface)] rounded-lg p-4 space-y-2 text-sm">
+            <div className="bg-muted rounded-lg p-4 space-y-2 text-sm">
               <div><span className="font-medium">Test Type:</span> {selectedType?.label}</div>
               <div><span className="font-medium">Target Metric:</span> {selectedType?.metric.replace(/_/g, ' ')}</div>
               <div><span className="font-medium">Soak Period:</span> {soakDays} days</div>
               <div><span className="font-medium">Thesis:</span> {thesis}</div>
               <div><span className="font-medium">Change:</span> {changeDescription}</div>
             </div>
-            {error && <p className="text-sm text-red-600">{error}</p>}
+            {error && <p className="text-sm text-destructive">{error}</p>}
             <div className="flex justify-between">
-              <button onClick={() => setStep('thesis')} className="text-sm text-[var(--text-muted)] hover:text-[var(--text-secondary)]">Back</button>
+              <button onClick={() => setStep('thesis')} className="text-sm text-muted-foreground hover:text-muted-foreground">Back</button>
               <button
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                className="px-4 py-2 bg-green-600 text-white rounded-md text-sm font-medium hover:bg-green-700 disabled:opacity-50"
+                className="px-4 py-2 bg-health-green text-white rounded-md text-sm font-medium hover:bg-health-green/90 disabled:opacity-50"
               >
                 {isSubmitting ? 'Creating...' : 'Create Test'}
               </button>

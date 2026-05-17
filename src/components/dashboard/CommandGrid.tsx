@@ -18,7 +18,7 @@ interface CommandGridProps {
 /** Small circular health score badge with letter grade */
 function HealthScoreBadge({ score, delta }: { score: number | null; delta: number | null }) {
   if (score === null || score === undefined) {
-    return <span className="text-[var(--text-muted)] text-xs">--</span>;
+    return <span className="text-muted-foreground text-xs">--</span>;
   }
 
   const grade = scoreToGrade(score);
@@ -30,9 +30,9 @@ function HealthScoreBadge({ score, delta }: { score: number | null; delta: numbe
     'text-health-yellow': 'border-health-yellow',
     'text-health-orange': 'border-health-orange',
     'text-health-red': 'border-health-red',
-    'text-[var(--text-muted)]': 'border-[var(--text-muted)]',
+    'text-muted-foreground': 'border-muted-foreground',
   };
-  const ringColor = ringColors[color] || 'border-[var(--text-muted)]';
+  const ringColor = ringColors[color] || 'border-muted-foreground';
 
   return (
     <div className="flex items-center gap-1.5">
@@ -72,7 +72,7 @@ function BasePriceCell({ basePrice, recommendedPrice, alignment }: {
   recommendedPrice: number | null;
   alignment: number | null;
 }) {
-  if (basePrice === null) return <span className="text-[var(--text-muted)]">{'\u2014'}</span>;
+  if (basePrice === null) return <span className="text-muted-foreground">{'\u2014'}</span>;
 
   let icon: React.ReactNode = null;
   if (alignment !== null && recommendedPrice !== null) {
@@ -96,7 +96,7 @@ function BasePriceCell({ basePrice, recommendedPrice, alignment }: {
 
 /** Pace status pill badge */
 function PaceBadge({ status }: { status: string | null }) {
-  if (!status) return <span className="text-[var(--text-muted)]">{'\u2014'}</span>;
+  if (!status) return <span className="text-muted-foreground">{'\u2014'}</span>;
 
   const color = paceColor(status);
   const label = paceLabel(status);
@@ -105,9 +105,9 @@ function PaceBadge({ status }: { status: string | null }) {
     'text-health-green': 'bg-health-green',
     'text-health-orange': 'bg-health-orange',
     'text-health-red': 'bg-health-red',
-    'text-[var(--text-muted)]': 'bg-[var(--text-muted)]',
+    'text-muted-foreground': 'bg-muted-foreground',
   };
-  const dot = dotBg[color] || 'bg-[var(--text-muted)]';
+  const dot = dotBg[color] || 'bg-muted-foreground';
 
   return (
     <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-xs font-medium ${color}`}>
@@ -119,13 +119,13 @@ function PaceBadge({ status }: { status: string | null }) {
 
 /** Count badge for actions/tests */
 function CountBadge({ count, variant }: { count: number; variant: 'amber' | 'blue' | 'green' | 'purple' }) {
-  if (count === 0) return <span className="text-[var(--text-muted)] text-xs">0</span>;
+  if (count === 0) return <span className="text-muted-foreground text-xs">0</span>;
 
   const colors = {
-    amber: 'bg-[var(--badge-orange-bg)] text-[var(--badge-orange-text)]',
-    blue: 'bg-[var(--badge-blue-bg)] text-[var(--badge-blue-text)]',
+    amber: 'bg-chart-1/15 text-chart-1',
+    blue: 'bg-secondary text-secondary-foreground',
     green: 'bg-health-green/20 text-health-green',
-    purple: 'bg-purple-500/20 text-purple-400',
+    purple: 'bg-chart-4/20 text-chart-4',
   };
 
   return (
@@ -153,8 +153,8 @@ export default function CommandGrid({ data, isLoading, healthGradeFilter, paceSt
       width: '20%',
       render: (row) => (
         <div>
-          <p className="font-medium text-[var(--text-primary)] truncate max-w-xs">{row.property_name}</p>
-          <p className="text-xs text-[var(--text-muted)]">{MARKET_LABELS[row.market] || row.market}</p>
+          <p className="font-medium text-foreground truncate max-w-xs">{row.property_name}</p>
+          <p className="text-xs text-muted-foreground">{MARKET_LABELS[row.market] || row.market}</p>
         </div>
       ),
       sortValue: (row) => row.property_name,

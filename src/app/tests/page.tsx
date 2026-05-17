@@ -1,11 +1,15 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { RefreshCw, Plus } from 'lucide-react';
 import { useABTests } from '@/hooks/useABTests';
 import ActiveTestsTable from '@/components/tests/ActiveTestsTable';
 import CompletedTestsTable from '@/components/tests/CompletedTestsTable';
 import TestCreationFlow from '@/components/tests/TestCreationFlow';
 import LearningEngine from '@/components/tests/LearningEngine';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 type Tab = 'active' | 'completed' | 'learning';
 
@@ -14,74 +18,76 @@ export default function TestsPage() {
   const [activeTab, setActiveTab] = useState<Tab>('active');
   const [showCreateModal, setShowCreateModal] = useState(false);
 
-  const tabs: { key: Tab; label: string }[] = [
-    { key: 'active', label: `Active (${activeTests.length})` },
-    { key: 'completed', label: `Completed (${completedTests.length})` },
-    { key: 'learning', label: 'Learning Engine' },
+  const tabs: { key: Tab; label: string; count: number | null }[] = [
+    { key: 'active', label: 'Active', count: activeTests.length },
+    { key: 'completed', label: 'Completed', count: completedTests.length },
+    { key: 'learning', label: 'Learning Engine', count: null },
   ];
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+    <div className="p-6 max-w-7xl mx-auto space-y-6">
+      <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-[var(--text-primary)]">A/B Test Tracker</h1>
-          <p className="mt-1 text-sm text-[var(--text-muted)]">
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+            A/B Test Tracker
+          </h1>
+          <p className="mt-1 text-sm text-muted-foreground">
             Track listing changes, measure impact, and build institutional knowledge.
           </p>
         </div>
-        <div className="flex items-center gap-3">
-          <button
-            onClick={refresh}
-            className="px-4 py-2 bg-[var(--card-bg)] border border-[var(--border)] rounded-md text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--table-row-hover)]"
-          >
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={refresh}>
+            <RefreshCw className="h-3.5 w-3.5" />
             Refresh
-          </button>
-          <button
-            onClick={() => setShowCreateModal(true)}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700"
-          >
-            + New Test
-          </button>
+          </Button>
+          <Button size="sm" onClick={() => setShowCreateModal(true)}>
+            <Plus className="h-3.5 w-3.5" />
+            New test
+          </Button>
         </div>
       </div>
 
-      {/* Tab Navigation */}
-      <div className="border-b border-[var(--border)] mb-6">
-        <nav className="flex space-x-8">
-          {tabs.map(({ key, label }) => (
+      <div className="border-b border-border">
+        <nav className="flex gap-6">
+          {tabs.map(({ key, label, count }) => (
             <button
               key={key}
+              type="button"
               onClick={() => setActiveTab(key)}
-              className={`py-3 px-1 border-b-2 text-sm font-medium ${
+              className={cn(
+                'py-2.5 px-1 border-b-2 text-sm font-medium transition-colors',
                 activeTab === key
-                  ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:border-[var(--border)]'
-              }`}
+                  ? 'border-foreground text-foreground'
+                  : 'border-transparent text-muted-foreground hover:text-foreground',
+              )}
             >
               {label}
+              {count !== null && (
+                <span className="ml-1.5 text-xs text-muted-foreground tabular-nums">
+                  ({count})
+                </span>
+              )}
             </button>
           ))}
         </nav>
       </div>
 
-      {/* Loading State */}
       {isLoading && (
-        <div className="space-y-4">
-          {[1, 2, 3].map(i => (
-            <div key={i} className="h-16 bg-[var(--surface)] rounded-lg animate-pulse" />
+        <div className="space-y-3">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="h-16 bg-muted rounded-md animate-pulse" />
           ))}
         </div>
       )}
 
-      {/* Error State */}
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-6">
-          <p className="text-sm text-red-700">Failed to load tests: {error}</p>
-        </div>
+        <Card className="border-destructive/40 bg-destructive/5">
+          <CardContent className="p-4">
+            <p className="text-sm text-destructive">Failed to load tests: {error}</p>
+          </CardContent>
+        </Card>
       )}
 
-      {/* Tab Content */}
       {!isLoading && !error && (
         <>
           {activeTab === 'active' && <ActiveTestsTable tests={activeTests} />}
@@ -90,7 +96,6 @@ export default function TestsPage() {
         </>
       )}
 
-      {/* Create Test Modal */}
       {showCreateModal && (
         <TestCreationFlow
           onClose={() => setShowCreateModal(false)}
