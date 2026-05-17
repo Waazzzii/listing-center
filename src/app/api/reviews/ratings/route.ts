@@ -1,8 +1,13 @@
 export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
+import { isMockMode, mockPendingRatings } from '@/lib/mock-data';
 
 export async function GET() {
+  if (isMockMode()) {
+    const data = mockPendingRatings();
+    return NextResponse.json({ data, urgent_count: data.filter((r) => r.is_urgent).length });
+  }
   const supabase = getSupabase();
 
   const { data, error } = await supabase

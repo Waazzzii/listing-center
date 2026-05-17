@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
+import { isMockMode, mockCommandGridResponse } from '@/lib/mock-data';
 
 // Split into two queries to work around Supabase JS client bug
 // where wide views silently drop columns. Core data + rev projections merged server-side.
@@ -39,6 +40,9 @@ const SUMMARY_REV_COLUMNS = [
 ].join(',');
 
 export async function GET(req: NextRequest) {
+  if (isMockMode()) {
+    return NextResponse.json(mockCommandGridResponse());
+  }
   const supabase = getSupabase();
   const { searchParams } = new URL(req.url);
 

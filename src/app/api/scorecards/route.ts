@@ -1,8 +1,12 @@
 export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
+import { isMockMode, mockScorecards } from '@/lib/mock-data';
 
 export async function GET(req: NextRequest) {
+  if (isMockMode()) {
+    return NextResponse.json({ data: mockScorecards() });
+  }
   const supabase = getSupabase();
   const { searchParams } = new URL(req.url);
 

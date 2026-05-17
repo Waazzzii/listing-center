@@ -1,8 +1,18 @@
 export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
+import { isMockMode, mockABTests } from '@/lib/mock-data';
 
 export async function GET(req: NextRequest) {
+  if (isMockMode()) {
+    const data = mockABTests();
+    return NextResponse.json({
+      data,
+      active_count: data.filter((t) =>
+        ['pending', 'active', 'snapshot_due'].includes(t.status as string),
+      ).length,
+    });
+  }
   const supabase = getSupabase();
   const { searchParams } = new URL(req.url);
 
