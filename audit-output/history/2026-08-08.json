@@ -1,0 +1,795 @@
+{
+  "run_date": "2026-08-08",
+  "generated_at": "2026-08-08T19:20:38+00:00",
+  "census": {
+    "active_renting": 1344,
+    "non_renting": 237,
+    "total": 1581,
+    "by_area": {
+      "PalmSprings": {
+        "renting": 401,
+        "non_renting": 66
+      },
+      "Phoenix": {
+        "renting": 305,
+        "non_renting": 60
+      },
+      "Tucson": {
+        "renting": 152,
+        "non_renting": 25
+      },
+      "Central Coast": {
+        "renting": 110,
+        "non_renting": 8
+      },
+      "Coachella": {
+        "renting": 88,
+        "non_renting": 16
+      },
+      "Lake Arrowhead": {
+        "renting": 75,
+        "non_renting": 8
+      },
+      "Orange County": {
+        "renting": 62,
+        "non_renting": 12
+      },
+      "Flagstaff": {
+        "renting": 48,
+        "non_renting": 11
+      },
+      "Sedona": {
+        "renting": 41,
+        "non_renting": 13
+      },
+      "PineTop": {
+        "renting": 27,
+        "non_renting": 7
+      },
+      "IdyllwildTemecula": {
+        "renting": 24,
+        "non_renting": 2
+      },
+      "HighDesert": {
+        "renting": 9,
+        "non_renting": 2
+      },
+      "(unassigned)": {
+        "renting": 2,
+        "non_renting": 7
+      }
+    }
+  },
+  "coverage": [
+    {
+      "code": "airbnb",
+      "name": "Airbnb",
+      "kind": "ota",
+      "observable": true,
+      "expected": 1344,
+      "live": 1321,
+      "missing": 23,
+      "unknown": 0,
+      "coverage_pct": 98.3
+    },
+    {
+      "code": "vrbo",
+      "name": "VRBO",
+      "kind": "ota",
+      "observable": true,
+      "expected": 1344,
+      "live": 1317,
+      "missing": 27,
+      "unknown": 0,
+      "coverage_pct": 98.0
+    },
+    {
+      "code": "booking",
+      "name": "Booking.com",
+      "kind": "ota",
+      "observable": false,
+      "expected": 1344,
+      "live": 0,
+      "missing": 0,
+      "unknown": 1344,
+      "coverage_pct": 0.0
+    },
+    {
+      "code": "acmehouseco",
+      "name": "AcmeHouseCo.com",
+      "kind": "branded_site",
+      "observable": false,
+      "expected": 1344,
+      "live": 0,
+      "missing": 0,
+      "unknown": 1344,
+      "coverage_pct": 0.0
+    },
+    {
+      "code": "casago",
+      "name": "Casago.com",
+      "kind": "branded_site",
+      "observable": false,
+      "expected": 1344,
+      "live": 0,
+      "missing": 0,
+      "unknown": 1344,
+      "coverage_pct": 0.0
+    },
+    {
+      "code": "casago_az",
+      "name": "CasagoArizona.com",
+      "kind": "branded_site",
+      "observable": false,
+      "expected": 582,
+      "live": 0,
+      "missing": 0,
+      "unknown": 582,
+      "coverage_pct": 0.0
+    },
+    {
+      "code": "casago_socal",
+      "name": "CasagoSoCal.com",
+      "kind": "branded_site",
+      "observable": false,
+      "expected": 760,
+      "live": 0,
+      "missing": 0,
+      "unknown": 760,
+      "coverage_pct": 0.0
+    },
+    {
+      "code": "vacation_palm_springs",
+      "name": "VacationPalmSprings.com",
+      "kind": "branded_site",
+      "observable": false,
+      "expected": 489,
+      "live": 0,
+      "missing": 0,
+      "unknown": 489,
+      "coverage_pct": 0.0
+    },
+    {
+      "code": "midstays",
+      "name": "Midstays.com",
+      "kind": "branded_site",
+      "observable": false,
+      "expected": 0,
+      "live": 0,
+      "missing": 0,
+      "unknown": 0,
+      "coverage_pct": null
+    },
+    {
+      "code": "vacasa",
+      "name": "Vacasa.com",
+      "kind": "niche_ota",
+      "observable": false,
+      "expected": 0,
+      "live": 0,
+      "missing": 0,
+      "unknown": 0,
+      "coverage_pct": null
+    },
+    {
+      "code": "hopper",
+      "name": "Hopper.com",
+      "kind": "niche_ota",
+      "observable": false,
+      "expected": 0,
+      "live": 0,
+      "missing": 0,
+      "unknown": 0,
+      "coverage_pct": null
+    },
+    {
+      "code": "crewdogs",
+      "name": "Crewdogs.com",
+      "kind": "niche_ota",
+      "observable": false,
+      "expected": 0,
+      "live": 0,
+      "missing": 0,
+      "unknown": 0,
+      "coverage_pct": null
+    },
+    {
+      "code": "wander",
+      "name": "Wander.com",
+      "kind": "niche_ota",
+      "observable": false,
+      "expected": 0,
+      "live": 0,
+      "missing": 0,
+      "unknown": 0,
+      "coverage_pct": null
+    },
+    {
+      "code": "whimstay",
+      "name": "Whimstay.com",
+      "kind": "niche_ota",
+      "observable": false,
+      "expected": 0,
+      "live": 0,
+      "missing": 0,
+      "unknown": 0,
+      "coverage_pct": null
+    }
+  ],
+  "gaps": [
+    {
+      "unit_id": "1101745",
+      "name": "Hilltop Heaven",
+      "area": "(unassigned)",
+      "channel": "airbnb",
+      "channel_name": "Airbnb",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1126707",
+      "name": "167 San Luis St Unit A",
+      "area": "Central Coast",
+      "channel": "airbnb",
+      "channel_name": "Airbnb",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1126708",
+      "name": "167 San Luis St Unit C",
+      "area": "Central Coast",
+      "channel": "airbnb",
+      "channel_name": "Airbnb",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1101751",
+      "name": "Gallaher",
+      "area": "Central Coast",
+      "channel": "airbnb",
+      "channel_name": "Airbnb",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1126676",
+      "name": "Lillie by the Sea - Guest House",
+      "area": "Central Coast",
+      "channel": "airbnb",
+      "channel_name": "Airbnb",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1130036",
+      "name": "Hollywood Oasis",
+      "area": "Coachella",
+      "channel": "airbnb",
+      "channel_name": "Airbnb",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1121874",
+      "name": "The Cove Villa",
+      "area": "Coachella",
+      "channel": "airbnb",
+      "channel_name": "Airbnb",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1051208",
+      "name": "Bear's Den",
+      "area": "IdyllwildTemecula",
+      "channel": "airbnb",
+      "channel_name": "Airbnb",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1101630",
+      "name": "The Valley's Cabin",
+      "area": "Lake Arrowhead",
+      "channel": "airbnb",
+      "channel_name": "Airbnb",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1101695",
+      "name": "Balboa Duplex II",
+      "area": "Orange County",
+      "channel": "airbnb",
+      "channel_name": "Airbnb",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1101681",
+      "name": "Mickey's Hideaway",
+      "area": "Orange County",
+      "channel": "airbnb",
+      "channel_name": "Airbnb",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1101794",
+      "name": "Newport Coastal Comfort",
+      "area": "Orange County",
+      "channel": "airbnb",
+      "channel_name": "Airbnb",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1101684",
+      "name": "Pier View Paradise",
+      "area": "Orange County",
+      "channel": "airbnb",
+      "channel_name": "Airbnb",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1101663",
+      "name": "Tommy Bahama Beach Rd I",
+      "area": "Orange County",
+      "channel": "airbnb",
+      "channel_name": "Airbnb",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1101676",
+      "name": "Tommy Bahama Beach Rd II",
+      "area": "Orange County",
+      "channel": "airbnb",
+      "channel_name": "Airbnb",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1124227",
+      "name": "ONBOARDING - Sunrise on Park",
+      "area": "PalmSprings",
+      "channel": "airbnb",
+      "channel_name": "Airbnb",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1127261",
+      "name": "ONBOARDING - The Modern Fairway",
+      "area": "PalmSprings",
+      "channel": "airbnb",
+      "channel_name": "Airbnb",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1051176",
+      "name": "Poolside Modern Wexler - 1261",
+      "area": "PalmSprings",
+      "channel": "airbnb",
+      "channel_name": "Airbnb",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1050737",
+      "name": "Glorious Glendale Getaway",
+      "area": "Phoenix",
+      "channel": "airbnb",
+      "channel_name": "Airbnb",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1051077",
+      "name": "Paradise Valley Vacation Home",
+      "area": "Phoenix",
+      "channel": "airbnb",
+      "channel_name": "Airbnb",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1128196",
+      "name": "Rolling Hills Haven",
+      "area": "Phoenix",
+      "channel": "airbnb",
+      "channel_name": "Airbnb",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1128195",
+      "name": "The Urban Vale",
+      "area": "Phoenix",
+      "channel": "airbnb",
+      "channel_name": "Airbnb",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1039399",
+      "name": "Troon North Golf Casitas - TC102",
+      "area": "Phoenix",
+      "channel": "airbnb",
+      "channel_name": "Airbnb",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1101745",
+      "name": "Hilltop Heaven",
+      "area": "(unassigned)",
+      "channel": "vrbo",
+      "channel_name": "VRBO",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1126707",
+      "name": "167 San Luis St Unit A",
+      "area": "Central Coast",
+      "channel": "vrbo",
+      "channel_name": "VRBO",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1126708",
+      "name": "167 San Luis St Unit C",
+      "area": "Central Coast",
+      "channel": "vrbo",
+      "channel_name": "VRBO",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1101724",
+      "name": "Gateshead Haven",
+      "area": "Central Coast",
+      "channel": "vrbo",
+      "channel_name": "VRBO",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1126676",
+      "name": "Lillie by the Sea - Guest House",
+      "area": "Central Coast",
+      "channel": "vrbo",
+      "channel_name": "VRBO",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1101639",
+      "name": "Pismo Paradise",
+      "area": "Central Coast",
+      "channel": "vrbo",
+      "channel_name": "VRBO",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1101744",
+      "name": "Sailaway Cabin",
+      "area": "Central Coast",
+      "channel": "vrbo",
+      "channel_name": "VRBO",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1129491",
+      "name": "Desert Shores",
+      "area": "Coachella",
+      "channel": "vrbo",
+      "channel_name": "VRBO",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1130036",
+      "name": "Hollywood Oasis",
+      "area": "Coachella",
+      "channel": "vrbo",
+      "channel_name": "VRBO",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1121874",
+      "name": "The Cove Villa",
+      "area": "Coachella",
+      "channel": "vrbo",
+      "channel_name": "VRBO",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1050897",
+      "name": "Desert Flower",
+      "area": "Flagstaff",
+      "channel": "vrbo",
+      "channel_name": "VRBO",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1050932",
+      "name": "Getaway in the Sun",
+      "area": "Flagstaff",
+      "channel": "vrbo",
+      "channel_name": "VRBO",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1050933",
+      "name": "Hideaway in the Sun",
+      "area": "Flagstaff",
+      "channel": "vrbo",
+      "channel_name": "VRBO",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1121125",
+      "name": "Peaceful Cabin",
+      "area": "IdyllwildTemecula",
+      "channel": "vrbo",
+      "channel_name": "VRBO",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1101664",
+      "name": "Gull Cottage",
+      "area": "Orange County",
+      "channel": "vrbo",
+      "channel_name": "VRBO",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1101697",
+      "name": "Newport Coastal Compound",
+      "area": "Orange County",
+      "channel": "vrbo",
+      "channel_name": "VRBO",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1101645",
+      "name": "Newport Vacation Memories",
+      "area": "Orange County",
+      "channel": "vrbo",
+      "channel_name": "VRBO",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1092905",
+      "name": "Eclectic Vibe",
+      "area": "PalmSprings",
+      "channel": "vrbo",
+      "channel_name": "VRBO",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1092806",
+      "name": "Mid Mod Sunsation",
+      "area": "PalmSprings",
+      "channel": "vrbo",
+      "channel_name": "VRBO",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1092709",
+      "name": "Modern Luxe",
+      "area": "PalmSprings",
+      "channel": "vrbo",
+      "channel_name": "VRBO",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1124227",
+      "name": "ONBOARDING - Sunrise on Park",
+      "area": "PalmSprings",
+      "channel": "vrbo",
+      "channel_name": "VRBO",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1127261",
+      "name": "ONBOARDING - The Modern Fairway",
+      "area": "PalmSprings",
+      "channel": "vrbo",
+      "channel_name": "VRBO",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1051000",
+      "name": "Palm Desert Oasis on the Green",
+      "area": "PalmSprings",
+      "channel": "vrbo",
+      "channel_name": "VRBO",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1121121",
+      "name": "The Fairway Palm Springs",
+      "area": "PalmSprings",
+      "channel": "vrbo",
+      "channel_name": "VRBO",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1051077",
+      "name": "Paradise Valley Vacation Home",
+      "area": "Phoenix",
+      "channel": "vrbo",
+      "channel_name": "VRBO",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1128196",
+      "name": "Rolling Hills Haven",
+      "area": "Phoenix",
+      "channel": "vrbo",
+      "channel_name": "VRBO",
+      "gap_type": "missing",
+      "severity": "high"
+    },
+    {
+      "unit_id": "1128195",
+      "name": "The Urban Vale",
+      "area": "Phoenix",
+      "channel": "vrbo",
+      "channel_name": "VRBO",
+      "gap_type": "missing",
+      "severity": "high"
+    }
+  ],
+  "dark_units": [
+    {
+      "unit_id": "1101745",
+      "name": "Hilltop Heaven",
+      "area": "(unassigned)",
+      "address": "14100 Morro Rd",
+      "city": "Atascadero"
+    },
+    {
+      "unit_id": "1126707",
+      "name": "167 San Luis St Unit A",
+      "area": "Central Coast",
+      "address": "167 San Luis St",
+      "city": "Avila Beach"
+    },
+    {
+      "unit_id": "1126708",
+      "name": "167 San Luis St Unit C",
+      "area": "Central Coast",
+      "address": "167 San Luis St",
+      "city": "Avila Beach"
+    },
+    {
+      "unit_id": "1126676",
+      "name": "Lillie by the Sea - Guest House",
+      "area": "Central Coast",
+      "address": "2480 B Lillie Ave",
+      "city": "Summerland"
+    },
+    {
+      "unit_id": "1130036",
+      "name": "Hollywood Oasis",
+      "area": "Coachella",
+      "address": "73467 Desert Trail Dr, Twentynine Palms, CA",
+      "city": "Twentynine Palms"
+    },
+    {
+      "unit_id": "1121874",
+      "name": "The Cove Villa",
+      "area": "Coachella",
+      "address": "51980 Avenida Villa",
+      "city": "La Quinta"
+    },
+    {
+      "unit_id": "1124227",
+      "name": "ONBOARDING - Sunrise on Park",
+      "area": "PalmSprings",
+      "address": "1820 E. Park Drive",
+      "city": "Palm Springs"
+    },
+    {
+      "unit_id": "1127261",
+      "name": "ONBOARDING - The Modern Fairway",
+      "area": "PalmSprings",
+      "address": "5330 E. Lakeside Dr.",
+      "city": "Palm Springs"
+    },
+    {
+      "unit_id": "1051077",
+      "name": "Paradise Valley Vacation Home",
+      "area": "Phoenix",
+      "address": "4465 E Paradise Village Pkwy S",
+      "city": "Phoenix"
+    },
+    {
+      "unit_id": "1128196",
+      "name": "Rolling Hills Haven",
+      "area": "Phoenix",
+      "address": "9608 W Rolling Hills",
+      "city": "Sun City"
+    },
+    {
+      "unit_id": "1128195",
+      "name": "The Urban Vale",
+      "area": "Phoenix",
+      "address": "1111 W. University Dr., Unit 2008",
+      "city": "Tempe"
+    }
+  ],
+  "data_quality": {
+    "unassigned_area": [
+      {
+        "unit_id": "1101745",
+        "name": "Hilltop Heaven"
+      },
+      {
+        "unit_id": "1126958",
+        "name": "San Moritz Lake House"
+      }
+    ]
+  },
+  "channels_observable": [
+    "airbnb",
+    "vrbo"
+  ],
+  "channels_unverified": [
+    "booking",
+    "acmehouseco",
+    "casago",
+    "casago_az",
+    "casago_socal",
+    "vacation_palm_springs",
+    "midstays",
+    "vacasa",
+    "hopper",
+    "crewdogs",
+    "wander",
+    "whimstay"
+  ],
+  "niche_default_off": [
+    "crewdogs",
+    "hopper",
+    "midstays",
+    "vacasa",
+    "wander",
+    "whimstay"
+  ],
+  "deltas": {
+    "prior_date": null,
+    "census": {},
+    "gaps_opened": [],
+    "gaps_closed": [],
+    "coverage": {}
+  }
+}
