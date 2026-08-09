@@ -1,6 +1,6 @@
 {
   "run_date": "2026-08-08",
-  "generated_at": "2026-08-09T03:20:44+00:00",
+  "generated_at": "2026-08-09T03:54:11+00:00",
   "sources": {
     "streamline": true,
     "wazzi": true,
@@ -2522,7 +2522,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Palm Springs"
+      "detail": "admin/test unit \u2014 deactivate in KeyData"
     },
     {
       "unit_id": "1131396",
@@ -2533,7 +2533,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=?"
+      "detail": "admin/test unit \u2014 deactivate in KeyData"
     },
     {
       "unit_id": "1039359",
@@ -2544,7 +2544,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Scottsdale"
+      "detail": "admin/test unit \u2014 deactivate in KeyData"
     },
     {
       "unit_id": "1039365",
@@ -2555,7 +2555,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Sedona"
+      "detail": "admin/test unit \u2014 deactivate in KeyData"
     },
     {
       "unit_id": "1039367",
@@ -2566,7 +2566,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Scottsdale"
+      "detail": "admin/test unit \u2014 deactivate in KeyData"
     },
     {
       "unit_id": "1039363",
@@ -2577,7 +2577,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Tucson"
+      "detail": "admin/test unit \u2014 deactivate in KeyData"
     },
     {
       "unit_id": "1101622",
@@ -2588,7 +2588,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Montecito"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1050892",
@@ -2599,7 +2599,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Indian Wells"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1050804",
@@ -2610,7 +2610,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=La Quinta"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1050750",
@@ -2621,7 +2621,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=La Quinta"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1056219",
@@ -2632,7 +2632,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=La Quinta"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1050970",
@@ -2643,7 +2643,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Indio"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1132911",
@@ -2654,7 +2654,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Flagstaff"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1051386",
@@ -2665,7 +2665,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Flagstaff"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1050936",
@@ -2676,7 +2676,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Twentynine Palms"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1101667",
@@ -2687,7 +2687,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Newport Beach"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1101789",
@@ -2698,7 +2698,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Newport Beach"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1101790",
@@ -2709,7 +2709,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Newport Beach"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1101805",
@@ -2720,7 +2720,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Los Angeles"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1101679",
@@ -2731,7 +2731,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Laguna Beach"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1093036",
@@ -2742,7 +2742,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Palm Springs"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1093005",
@@ -2753,7 +2753,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Palm Springs"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1051035",
@@ -2764,7 +2764,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Palm Springs"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1093027",
@@ -2775,7 +2775,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Palm Springs"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1050761",
@@ -2786,7 +2786,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Palm Springs"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1133016",
@@ -2797,7 +2797,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Palm Springs"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1051231",
@@ -2808,7 +2808,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Palm Springs"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1093012",
@@ -2819,7 +2819,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Palm Springs"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1051251",
@@ -2830,7 +2830,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Palm Springs"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1050613",
@@ -2841,7 +2841,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Palm Springs"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1051324",
@@ -2852,7 +2852,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Palm Springs"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1051159",
@@ -2863,7 +2863,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Rancho Mirage"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1050895",
@@ -2874,7 +2874,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Palm Springs"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1050869",
@@ -2885,7 +2885,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Palm Springs"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1051218",
@@ -2896,7 +2896,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Desert Hot Springs"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1132903",
@@ -2907,7 +2907,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Palm Desert"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1092798",
@@ -2918,7 +2918,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Palm Springs"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1050645",
@@ -2929,7 +2929,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Palm Springs"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1092786",
@@ -2940,7 +2940,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Palm Springs"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1102280",
@@ -2951,7 +2951,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Palm Springs"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1050544",
@@ -2962,7 +2962,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Palm Springs"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1092751",
@@ -2973,7 +2973,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Palm Springs"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1093006",
@@ -2984,7 +2984,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Palm Springs"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1051341",
@@ -2995,7 +2995,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Palm Springs"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1050639",
@@ -3006,7 +3006,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Rancho Mirage"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1050911",
@@ -3017,7 +3017,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Palm Springs"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1135291",
@@ -3028,7 +3028,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Palm Springs"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1050929",
@@ -3039,7 +3039,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Palm Springs"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1050910",
@@ -3050,7 +3050,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Palm Springs"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1135422",
@@ -3061,7 +3061,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Palm Desert"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1050972",
@@ -3072,7 +3072,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Scottsdale"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1051041",
@@ -3083,7 +3083,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Litchfield Park"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1039461",
@@ -3094,7 +3094,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Scottsdale"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1050490",
@@ -3105,7 +3105,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Scottsdale"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1051290",
@@ -3116,7 +3116,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Gilbert"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1051418",
@@ -3127,7 +3127,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Scottsdale"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1051116",
@@ -3138,7 +3138,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Sun City West"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1050730",
@@ -3149,7 +3149,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Peoria"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1050532",
@@ -3160,7 +3160,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Tucson"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1050674",
@@ -3171,7 +3171,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Tucson"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1050700",
@@ -3182,7 +3182,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Tucson"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1050511",
@@ -3193,7 +3193,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Tucson"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1133046",
@@ -3204,7 +3204,7 @@
       "category": "systems",
       "label": "Active in KeyData, not renting in Streamline",
       "severity": "medium",
-      "detail": "city=Tucson"
+      "detail": "non-renting in Streamline"
     },
     {
       "unit_id": "1126708",

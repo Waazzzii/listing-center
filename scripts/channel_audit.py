@@ -47,6 +47,7 @@ import datetime as dt
 import html
 import json
 import os
+import re
 import sys
 from typing import Any
 
@@ -87,6 +88,13 @@ NICHE_DEFAULT_OFF = {"vacasa", "hopper", "crewdogs", "wander", "whimstay", "mids
 # unit filed under the wrong regional group, which misroutes both distribution
 # and accounting.
 GROUP_STATE_PREFIX = {"AZ-": "AZ", "CA-": "CA"}
+
+# Units that are not rentals at all. They should never be active in a system
+# that meters or reports on rental performance.
+ADMIN_UNIT_PATTERN = re.compile(
+    r"office|test|reservation group|warehouse|storage|admin|do not|dnu|training",
+    re.IGNORECASE,
+)
 
 # Issue catalogue: code → (category, label, severity, why it matters)
 ISSUES: dict[str, tuple[str, str, str, str]] = {
@@ -449,9 +457,17 @@ def build_audit(
     # Units KeyData lists as active that Streamline does not have as active+renting.
     if keydata_usable:
         renting_ids = {str(u.get("id")) for u in renting}
+        nonrenting_ids = {str(u.get("id")) for u in nonrenting}
         for unit_id, row in keydata.items():
             if unit_id not in renting_ids:
                 category, label, severity, _ = ISSUES["keydata_active_orphan"]
+                kd_name = row.get("property_alias") or row.get("name") or ""
+                if ADMIN_UNIT_PATTERN.search(kd_name):
+                    reason = "admin/test unit — deactivate in KeyData"
+                elif unit_id in nonrenting_ids:
+                    reason = "non-renting in Streamline"
+                else:
+                    reason = "absent from Streamline entirely"
                 issues.append({
                     "unit_id": unit_id,
                     "name": row.get("property_alias") or row.get("name") or "(unnamed)",
@@ -459,7 +475,7 @@ def build_audit(
                     "property_group": None,
                     "issue": "keydata_active_orphan",
                     "category": category, "label": label, "severity": severity,
-                    "detail": f"city={row.get('city') or '?'}",
+                    "detail": reason,
                 })
 
     # Units Wazzi knows about that Streamline no longer returns.
@@ -740,6 +756,10 @@ def render_html(audit: dict[str, Any], deltas: dict[str, Any]) -> str:
         ["missing_accounting_ids", "not_in_wheelhouse", "wheelhouse_inactive",
          "wheelhouse_posting_off"]
     )
+    systems_rows = issue_table(
+        ["not_active_in_keydata", "keydata_active_orphan", "not_in_wazzi", "orphan_in_wazzi",
+         "not_in_wheelhouse", "wheelhouse_inactive", "wheelhouse_posting_off"], limit=120
+    )
     class_rows = issue_table(
         ["missing_area", "missing_property_group", "group_state_mismatch",
          "missing_neighborhood", "missing_resort"]
@@ -866,9 +886,9 @@ def render_html(audit: dict[str, Any], deltas: dict[str, Any]) -> str:
   .dot-branded_site {{ background: var(--muted); }}
   .dot-niche_ota {{ background: var(--line); box-shadow: inset 0 0 0 1px var(--muted); }}
   #dark tbody tr td:first-child, #money tbody tr td:first-child,
-  #classify tbody tr td:first-child {{ box-shadow: inset 3px 0 0 var(--rail); }}
+  #systems tbody tr td:first-child, #classify tbody tr td:first-child {{ box-shadow: inset 3px 0 0 var(--rail); }}
   #dark tbody tr td.empty, #money tbody tr td.empty,
-  #classify tbody tr td.empty {{ box-shadow: none; }}
+  #systems tbody tr td.empty, #classify tbody tr td.empty {{ box-shadow: none; }}
   .bar {{ display: inline-block; width: 96px; height: 5px; background: var(--line);
           overflow: hidden; vertical-align: middle; margin-right: 10px; }}
   .bar span {{ display: block; height: 100%; }}
@@ -987,7 +1007,7 @@ def render_html(audit: dict[str, Any], deltas: dict[str, Any]) -> str:
   <h2>Dark on every verified OTA</h2>
   <div class="scroll">
     <table id="dark">
-      <thead><tr><th>Unit</th><th>Area</th><th>Property group</th><th>Issue</th>
+      <thead><tr><th>Unit</th><th>Area</th><th>Issue</th><th>Detail</th>
         <th>Streamline ID</th></tr></thead>
       <tbody>
 {dark_rows}
@@ -995,10 +1015,21 @@ def render_html(audit: dict[str, Any], deltas: dict[str, Any]) -> str:
     </table>
   </div>
 
+  <h2>Systems reconciliation</h2>
+  <div class="scroll">
+    <table id="systems">
+      <thead><tr><th>Unit</th><th>Area</th><th>Issue</th><th>Detail</th>
+        <th>Streamline ID</th></tr></thead>
+      <tbody>
+{systems_rows}
+      </tbody>
+    </table>
+  </div>
+
   <h2>Revenue &amp; accounting exposure</h2>
   <div class="scroll">
     <table id="money">
-      <thead><tr><th>Unit</th><th>Area</th><th>Property group</th><th>Issue</th>
+      <thead><tr><th>Unit</th><th>Area</th><th>Issue</th><th>Detail</th>
         <th>Streamline ID</th></tr></thead>
       <tbody>
 {money_rows}
@@ -1009,7 +1040,7 @@ def render_html(audit: dict[str, Any], deltas: dict[str, Any]) -> str:
   <h2>Classification problems</h2>
   <div class="scroll">
     <table id="classify">
-      <thead><tr><th>Unit</th><th>Area</th><th>Property group</th><th>Issue</th>
+      <thead><tr><th>Unit</th><th>Area</th><th>Issue</th><th>Detail</th>
         <th>Streamline ID</th></tr></thead>
       <tbody>
 {class_rows}
