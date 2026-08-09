@@ -1,6 +1,5 @@
-<title>Channel Distribution Audit — 2026-08-08</title>
+<title>Listing Health Check — 2026-08-08</title>
 <style>
-  /* Slate-biased neutrals; teal accent kept distinct from semantic status color. */
   :root {
     --paper: #f6f7f8; --panel: #ffffff; --ink: #14181b; --muted: #616a72;
     --line: #dfe3e6; --line-soft: #eaedef;
@@ -27,7 +26,6 @@
     --accent: #0f766e; --good: #15803d; --warn: #a16207; --bad: #b42318;
     --rail: #b42318;
   }
-
   * { box-sizing: border-box; }
   body {
     margin: 0; background: var(--paper); color: var(--ink);
@@ -35,65 +33,58 @@
           ui-sans-serif, sans-serif;
     -webkit-font-smoothing: antialiased;
   }
-  .wrap { max-width: 1100px; margin: 0 auto; padding: 44px 24px 84px;
-           display: flex; flex-direction: column; gap: 8px; }
-
-  /* ---- masthead ---- */
+  .wrap { max-width: 1140px; margin: 0 auto; padding: 44px 24px 84px; }
   .mast { display: flex; align-items: baseline; justify-content: space-between;
-           flex-wrap: wrap; gap: 8px; padding-bottom: 18px;
+           flex-wrap: wrap; gap: 8px; padding-bottom: 16px;
            border-bottom: 2px solid var(--ink); }
   h1 { font-size: 25px; font-weight: 680; letter-spacing: -0.025em; margin: 0;
         text-wrap: balance; }
   .stamp { font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
             font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
-
-  /* ---- summary strip: one divided band, not floating cards ---- */
-  .strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(148px, 1fr));
-            background: var(--panel); border: 1px solid var(--line);
-            margin: 22px 0 10px; }
+  .sources { font-size: 12px; color: var(--muted); padding: 10px 0 0; }
+  .sources .ok { color: var(--good); }
+  .sources .off { color: var(--muted); }
+  .strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(146px, 1fr));
+            background: var(--panel); border: 1px solid var(--line); margin: 20px 0 10px; }
   .cell { padding: 16px 18px; border-right: 1px solid var(--line-soft); }
   .cell:last-child { border-right: none; }
   .cell .n { font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
               font-size: 27px; font-weight: 600; letter-spacing: -0.03em;
-              font-variant-numeric: tabular-nums; display: flex;
-              align-items: baseline; gap: 7px; }
+              font-variant-numeric: tabular-nums; display: flex; align-items: baseline; gap: 7px; }
   .cell .l { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.09em;
               color: var(--muted); margin-top: 5px; font-weight: 600; }
   .cell.alert { box-shadow: inset 3px 0 0 var(--rail); }
   .cell.alert .n { color: var(--bad); }
-
-  /* ---- sections ---- */
+  .recon { font-size: 13px; color: var(--muted); margin: 0 0 4px; }
   h2 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.11em;
         color: var(--muted); margin: 38px 0 12px; font-weight: 700; }
   h2 .count { font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
                color: var(--ink); letter-spacing: 0; margin-left: 6px; }
-
-  /* ---- tables ---- */
   table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
   .scroll { overflow-x: auto; background: var(--panel); border: 1px solid var(--line); }
   th { text-align: left; font-size: 10.5px; text-transform: uppercase;
         letter-spacing: 0.07em; color: var(--muted); font-weight: 700;
-        padding: 10px 14px; border-bottom: 1px solid var(--line);
-        white-space: nowrap; }
-  td { padding: 9px 14px; border-bottom: 1px solid var(--line-soft);
-        vertical-align: middle; }
+        padding: 10px 14px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  td { padding: 9px 14px; border-bottom: 1px solid var(--line-soft); vertical-align: middle; }
   tbody tr:last-child td { border-bottom: none; }
+  .grouprow td { background: var(--paper); font-size: 10.5px; font-weight: 700;
+                  text-transform: uppercase; letter-spacing: 0.09em; color: var(--muted);
+                  padding: 8px 14px; }
   .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap;
           font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
   .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
            font-size: 12px; color: var(--muted); }
   .ch { font-weight: 560; white-space: nowrap; }
+  .why { color: var(--muted); font-size: 12.5px; }
   .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%;
           margin-right: 10px; vertical-align: middle; }
   .dot-ota { background: var(--accent); }
   .dot-branded_site { background: var(--muted); }
   .dot-niche_ota { background: var(--line); box-shadow: inset 0 0 0 1px var(--muted); }
-
-  /* severity rail on rows that need action */
-  #gaps tbody tr td:first-child { box-shadow: inset 3px 0 0 var(--rail); }
-  #dark tbody tr td:first-child { box-shadow: inset 3px 0 0 var(--rail); }
-  #gaps tbody tr td.empty, #dark tbody tr td.empty { box-shadow: none; }
-
+  #dark tbody tr td:first-child, #money tbody tr td:first-child,
+  #classify tbody tr td:first-child { box-shadow: inset 3px 0 0 var(--rail); }
+  #dark tbody tr td.empty, #money tbody tr td.empty,
+  #classify tbody tr td.empty { box-shadow: none; }
   .bar { display: inline-block; width: 96px; height: 5px; background: var(--line);
           overflow: hidden; vertical-align: middle; margin-right: 10px; }
   .bar span { display: block; height: 100%; }
@@ -105,6 +96,11 @@
   .unverified { font-size: 12px; color: var(--muted); }
   .num-bad { color: var(--bad); }
   .num-ok { color: var(--muted); font-weight: 400; }
+  .sev { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em;
+          font-weight: 700; padding: 1px 7px; border: 1px solid; }
+  .sev-high { color: var(--bad); border-color: var(--bad); }
+  .sev-medium { color: var(--warn); border-color: var(--warn); }
+  .sev-low { color: var(--muted); border-color: var(--line); }
   .d-good { color: var(--good); font-size: 12px; font-variant-numeric: tabular-nums;
              font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
   .d-bad { color: var(--bad); font-size: 12px; font-variant-numeric: tabular-nums;
@@ -115,7 +111,7 @@
   .muted { color: var(--muted); }
   .empty { color: var(--muted); text-align: center; padding: 22px; }
   .note { border-left: 2px solid var(--accent); padding: 2px 0 2px 14px;
-           font-size: 13px; color: var(--muted); margin-top: 14px; max-width: 74ch; }
+           font-size: 13px; color: var(--muted); margin-top: 14px; max-width: 78ch; }
   .note strong, .note em { color: var(--ink); font-style: normal; }
   .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
   @media (max-width: 700px) { .cols { grid-template-columns: 1fr; } }
@@ -124,491 +120,143 @@
   ul.changes { margin: 0; padding-left: 17px; font-size: 13px; }
   ul.changes li { margin-bottom: 5px; }
   footer { margin-top: 46px; padding-top: 16px; border-top: 1px solid var(--line);
-            font-size: 11.5px; color: var(--muted); max-width: 74ch; }
+            font-size: 11.5px; color: var(--muted); max-width: 78ch; }
   a { color: var(--accent); }
-  a:focus-visible, [tabindex]:focus-visible { outline: 2px solid var(--accent);
-                                               outline-offset: 2px; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 </style>
 
 <div class="wrap">
   <div class="mast">
-    <h1>Channel Distribution Audit</h1>
-    <div class="stamp">2026-08-08 &middot; first run — no prior day to compare &middot; source: Streamline</div>
+    <h1>Listing Health Check</h1>
+    <div class="stamp">2026-08-08 &middot; first run &mdash; no prior day to compare</div>
   </div>
+  <div class="sources">Sources: Streamline <span class="ok">connected</span>, Wazzi Data <span class="ok">connected</span>, Wheelhouse <span class="ok">connected</span>, Merchant / gateway <span class="off">not connected</span></div>
 
   <div class="strip">
     <div class="cell">
-      <div class="n">1,344 <span class="d-flat">—</span></div>
+      <div class="n">1,344 <span class="d-flat">&mdash;</span></div>
       <div class="l">Active &amp; Renting</div>
     </div>
     <div class="cell">
-      <div class="n">237 <span class="d-flat">—</span></div>
+      <div class="n">237 <span class="d-flat">&mdash;</span></div>
       <div class="l">Non-Renting</div>
     </div>
     <div class="cell alert">
-      <div class="n">50</div>
-      <div class="l">Open Gaps</div>
+      <div class="n">63</div>
+      <div class="l">High-Severity Flags</div>
     </div>
     <div class="cell alert">
-      <div class="n">11</div>
-      <div class="l">Dark on All OTAs</div>
+      <div class="n">196</div>
+      <div class="l">Total Flags</div>
     </div>
     <div class="cell">
       <div class="n">0&thinsp;/&thinsp;0</div>
       <div class="l">Opened / Closed</div>
     </div>
   </div>
+  <p class="recon">Streamline <strong>1,581</strong> units &middot; Wazzi Data <strong>1,587</strong> &middot; <strong class="num-bad">+6 discrepancy</strong> &middot; Wheelhouse <strong>525</strong></p>
+
+  <h2>All checks</h2>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Check</th><th>Severity</th><th class="num">Units flagged</th>
+        <th class="num">Units checked</th><th>Why it matters</th></tr></thead>
+      <tbody>
+      <tr class="grouprow"><td colspan="5">Distribution</td></tr>
+      <tr><td class="ch">No Airbnb listing ID</td><td><span class="sev sev-high">high</span></td><td class="num"><strong class="num-bad">23</strong> <span class="d-flat">&mdash;</span></td><td class="num"><span class="pct">1,344 of 1,344</span></td><td class="why">Unit is renting but carries no Airbnb ID in Streamline.</td></tr>
+      <tr><td class="ch">No VRBO listing ID</td><td><span class="sev sev-high">high</span></td><td class="num"><strong class="num-bad">27</strong> <span class="d-flat">&mdash;</span></td><td class="num"><span class="pct">1,344 of 1,344</span></td><td class="why">Unit is renting but carries no VRBO ID in Streamline.</td></tr>
+      <tr><td class="ch">Dark on every verified OTA</td><td><span class="sev sev-high">high</span></td><td class="num"><strong class="num-bad">11</strong> <span class="d-flat">&mdash;</span></td><td class="num"><span class="pct">1,344 of 1,344</span></td><td class="why">Neither Airbnb nor VRBO — the unit is invisible on both majors.</td></tr>
+      <tr><td class="ch">Online bookings disabled</td><td><span class="sev sev-high">high</span></td><td class="num"><span class="num-ok">0</span> <span class="d-flat">&mdash;</span></td><td class="num"><span class="pct">1,344 of 1,344</span></td><td class="why">Streamline will not accept an online booking for this unit.</td></tr>
+      <tr class="grouprow"><td colspan="5">Systems</td></tr>
+      <tr><td class="ch">Not in Wheelhouse</td><td><span class="sev sev-high">high</span></td><td class="num"><span class="unverified">not yet checked</span></td><td class="num"><span class="unverified">needs API credentials</span></td><td class="why">No Wheelhouse listing — the unit is not being revenue-managed.</td></tr>
+      <tr><td class="ch">Wheelhouse listing inactive</td><td><span class="sev sev-high">high</span></td><td class="num"><span class="unverified">not yet checked</span></td><td class="num"><span class="unverified">needs API credentials</span></td><td class="why">Present in Wheelhouse but flagged inactive.</td></tr>
+      <tr><td class="ch">Wheelhouse rate posting off</td><td><span class="sev sev-medium">medium</span></td><td class="num"><span class="unverified">not yet checked</span></td><td class="num"><span class="unverified">needs API credentials</span></td><td class="why">In Wheelhouse, but automatic rate posting is disabled, so recommended prices never reach the unit.</td></tr>
+      <tr><td class="ch">Missing from Wazzi Data</td><td><span class="sev sev-medium">medium</span></td><td class="num"><span class="num-ok">0</span> <span class="d-flat">&mdash;</span></td><td class="num"><span class="pct">1,344 of 1,344</span></td><td class="why">In Streamline but absent from Wazzi Data.</td></tr>
+      <tr><td class="ch">In Wazzi Data, not in Streamline</td><td><span class="sev sev-medium">medium</span></td><td class="num"><strong class="num-bad">6</strong> <span class="d-flat">&mdash;</span></td><td class="num"><span class="pct">1,344 of 1,344</span></td><td class="why">Wazzi Data carries a unit Streamline no longer returns.</td></tr>
+      <tr class="grouprow"><td colspan="5">Accounting</td></tr>
+      <tr><td class="ch">No COPS account/bank ID</td><td><span class="sev sev-medium">medium</span></td><td class="num"><strong class="num-bad">126</strong> <span class="d-flat">&mdash;</span></td><td class="num"><span class="pct">401 of 1,344</span></td><td class="why">Unit sits in a market that uses COPS account/bank IDs but has none. Only applied where the field is in use — it is currently a Palm Springs convention, not portfolio-wide.</td></tr>
+      <tr><td class="ch">No merchant / payment gateway</td><td><span class="sev sev-high">high</span></td><td class="num"><span class="unverified">not yet checked</span></td><td class="num"><span class="unverified">needs API credentials</span></td><td class="why">No credit-card gateway on the unit — revenue has no confirmed destination account.</td></tr>
+      <tr class="grouprow"><td colspan="5">Classification</td></tr>
+      <tr><td class="ch">No area assigned</td><td><span class="sev sev-high">high</span></td><td class="num"><strong class="num-bad">2</strong> <span class="d-flat">&mdash;</span></td><td class="num"><span class="pct">1,344 of 1,344</span></td><td class="why">Without an area the unit cannot be routed to a brand site or region.</td></tr>
+      <tr><td class="ch">No neighborhood assigned</td><td><span class="sev sev-low">low</span></td><td class="num"><strong class="num-bad">1</strong> <span class="d-flat">&mdash;</span></td><td class="num"><span class="pct">76 of 1,344</span></td><td class="why">Neighborhood drives site placement and search.</td></tr>
+      <tr><td class="ch">No location resort assigned</td><td><span class="sev sev-low">low</span></td><td class="num"><span class="num-ok">0</span> <span class="d-flat">&mdash;</span></td><td class="num"><span class="pct">76 of 1,344</span></td><td class="why">Location resort drives grouping on the branded sites.</td></tr>
+      <tr><td class="ch">No property group assigned</td><td><span class="sev sev-medium">medium</span></td><td class="num"><span class="num-ok">0</span> <span class="d-flat">&mdash;</span></td><td class="num"><span class="pct">76 of 1,344</span></td><td class="why">Property group drives reporting and accounting rollups.</td></tr>
+      <tr><td class="ch">Property group / state mismatch</td><td><span class="sev sev-high">high</span></td><td class="num"><span class="num-ok">0</span> <span class="d-flat">&mdash;</span></td><td class="num"><span class="pct">76 of 1,344</span></td><td class="why">Unit sits in a regional group belonging to another state — misroutes reporting and accounting.</td></tr>
+      </tbody>
+    </table>
+  </div>
 
   <h2>Channel coverage</h2>
   <div class="scroll">
     <table>
-      <thead><tr>
-        <th>Channel</th><th class="num">Expected</th><th class="num">Live</th>
-        <th class="num">Missing</th><th>Coverage</th>
-      </tr></thead>
+      <thead><tr><th>Channel</th><th class="num">Expected</th><th class="num">Live</th>
+        <th class="num">Missing</th><th>Coverage</th></tr></thead>
       <tbody>
-      <tr>
-        <td class="ch"><span class="dot dot-ota"></span>Airbnb</td>
-        <td class="num">1344</td>
-        <td class="num">1321 <span class="d-flat">—</span></td>
-        <td class="num"><strong class="num-bad">23</strong> <span class="d-flat">—</span></td>
-        <td class="cov"><div class="bar"><span class="bar-warn" style="width:98.3%"></span></div><span class="pct">98.3%</span></td>
-      </tr>
-      <tr>
-        <td class="ch"><span class="dot dot-ota"></span>VRBO</td>
-        <td class="num">1344</td>
-        <td class="num">1317 <span class="d-flat">—</span></td>
-        <td class="num"><strong class="num-bad">27</strong> <span class="d-flat">—</span></td>
-        <td class="cov"><div class="bar"><span class="bar-warn" style="width:98.0%"></span></div><span class="pct">98.0%</span></td>
-      </tr>
-      <tr>
-        <td class="ch"><span class="dot dot-ota"></span>Booking.com</td>
-        <td class="num">1344</td>
-        <td class="num"><span class="d-flat">—</span></td>
-        <td class="num"><span class="d-flat">—</span></td>
-        <td class="cov"><span class="unverified">not verified in V0</span></td>
-      </tr>
-      <tr>
-        <td class="ch"><span class="dot dot-branded_site"></span>AcmeHouseCo.com</td>
-        <td class="num">1344</td>
-        <td class="num"><span class="d-flat">—</span></td>
-        <td class="num"><span class="d-flat">—</span></td>
-        <td class="cov"><span class="unverified">not verified in V0</span></td>
-      </tr>
-      <tr>
-        <td class="ch"><span class="dot dot-branded_site"></span>Casago.com</td>
-        <td class="num">1344</td>
-        <td class="num"><span class="d-flat">—</span></td>
-        <td class="num"><span class="d-flat">—</span></td>
-        <td class="cov"><span class="unverified">not verified in V0</span></td>
-      </tr>
-      <tr>
-        <td class="ch"><span class="dot dot-branded_site"></span>CasagoArizona.com</td>
-        <td class="num">582</td>
-        <td class="num"><span class="d-flat">—</span></td>
-        <td class="num"><span class="d-flat">—</span></td>
-        <td class="cov"><span class="unverified">not verified in V0</span></td>
-      </tr>
-      <tr>
-        <td class="ch"><span class="dot dot-branded_site"></span>CasagoSoCal.com</td>
-        <td class="num">760</td>
-        <td class="num"><span class="d-flat">—</span></td>
-        <td class="num"><span class="d-flat">—</span></td>
-        <td class="cov"><span class="unverified">not verified in V0</span></td>
-      </tr>
-      <tr>
-        <td class="ch"><span class="dot dot-branded_site"></span>VacationPalmSprings.com</td>
-        <td class="num">489</td>
-        <td class="num"><span class="d-flat">—</span></td>
-        <td class="num"><span class="d-flat">—</span></td>
-        <td class="cov"><span class="unverified">not verified in V0</span></td>
-      </tr>
-      <tr>
-        <td class="ch"><span class="dot dot-branded_site"></span>Midstays.com</td>
-        <td class="num"><span class="d-flat">off</span></td>
-        <td class="num"><span class="d-flat">—</span></td>
-        <td class="num"><span class="d-flat">—</span></td>
-        <td class="cov"><span class="unverified">not verified in V0</span></td>
-      </tr>
-      <tr>
-        <td class="ch"><span class="dot dot-niche_ota"></span>Vacasa.com</td>
-        <td class="num"><span class="d-flat">off</span></td>
-        <td class="num"><span class="d-flat">—</span></td>
-        <td class="num"><span class="d-flat">—</span></td>
-        <td class="cov"><span class="unverified">not verified in V0</span></td>
-      </tr>
-      <tr>
-        <td class="ch"><span class="dot dot-niche_ota"></span>Hopper.com</td>
-        <td class="num"><span class="d-flat">off</span></td>
-        <td class="num"><span class="d-flat">—</span></td>
-        <td class="num"><span class="d-flat">—</span></td>
-        <td class="cov"><span class="unverified">not verified in V0</span></td>
-      </tr>
-      <tr>
-        <td class="ch"><span class="dot dot-niche_ota"></span>Crewdogs.com</td>
-        <td class="num"><span class="d-flat">off</span></td>
-        <td class="num"><span class="d-flat">—</span></td>
-        <td class="num"><span class="d-flat">—</span></td>
-        <td class="cov"><span class="unverified">not verified in V0</span></td>
-      </tr>
-      <tr>
-        <td class="ch"><span class="dot dot-niche_ota"></span>Wander.com</td>
-        <td class="num"><span class="d-flat">off</span></td>
-        <td class="num"><span class="d-flat">—</span></td>
-        <td class="num"><span class="d-flat">—</span></td>
-        <td class="cov"><span class="unverified">not verified in V0</span></td>
-      </tr>
-      <tr>
-        <td class="ch"><span class="dot dot-niche_ota"></span>Whimstay.com</td>
-        <td class="num"><span class="d-flat">off</span></td>
-        <td class="num"><span class="d-flat">—</span></td>
-        <td class="num"><span class="d-flat">—</span></td>
-        <td class="cov"><span class="unverified">not verified in V0</span></td>
-      </tr>
+      <tr><td class="ch"><span class="dot dot-ota"></span>Airbnb</td><td class="num">1344</td><td class="num">1321</td><td class="num"><strong class="num-bad">23</strong></td><td class="cov"><div class="bar"><span class="bar-warn" style="width:98.3%"></span></div><span class="pct">98.3%</span></td></tr>
+      <tr><td class="ch"><span class="dot dot-ota"></span>VRBO</td><td class="num">1344</td><td class="num">1317</td><td class="num"><strong class="num-bad">27</strong></td><td class="cov"><div class="bar"><span class="bar-warn" style="width:98.0%"></span></div><span class="pct">98.0%</span></td></tr>
+      <tr><td class="ch"><span class="dot dot-ota"></span>Booking.com</td><td class="num">1344</td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="cov"><span class="unverified">not verified yet</span></td></tr>
+      <tr><td class="ch"><span class="dot dot-branded_site"></span>AcmeHouseCo.com</td><td class="num">1344</td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="cov"><span class="unverified">not verified yet</span></td></tr>
+      <tr><td class="ch"><span class="dot dot-branded_site"></span>Casago.com</td><td class="num">1344</td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="cov"><span class="unverified">not verified yet</span></td></tr>
+      <tr><td class="ch"><span class="dot dot-branded_site"></span>CasagoArizona.com</td><td class="num">582</td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="cov"><span class="unverified">not verified yet</span></td></tr>
+      <tr><td class="ch"><span class="dot dot-branded_site"></span>CasagoSoCal.com</td><td class="num">760</td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="cov"><span class="unverified">not verified yet</span></td></tr>
+      <tr><td class="ch"><span class="dot dot-branded_site"></span>VacationPalmSprings.com</td><td class="num">489</td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="cov"><span class="unverified">not verified yet</span></td></tr>
+      <tr><td class="ch"><span class="dot dot-branded_site"></span>Midstays.com</td><td class="num"><span class="d-flat">off</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="cov"><span class="unverified">not verified yet</span></td></tr>
+      <tr><td class="ch"><span class="dot dot-niche_ota"></span>Vacasa.com</td><td class="num"><span class="d-flat">off</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="cov"><span class="unverified">not verified yet</span></td></tr>
+      <tr><td class="ch"><span class="dot dot-niche_ota"></span>Hopper.com</td><td class="num"><span class="d-flat">off</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="cov"><span class="unverified">not verified yet</span></td></tr>
+      <tr><td class="ch"><span class="dot dot-niche_ota"></span>Crewdogs.com</td><td class="num"><span class="d-flat">off</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="cov"><span class="unverified">not verified yet</span></td></tr>
+      <tr><td class="ch"><span class="dot dot-niche_ota"></span>Wander.com</td><td class="num"><span class="d-flat">off</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="cov"><span class="unverified">not verified yet</span></td></tr>
+      <tr><td class="ch"><span class="dot dot-niche_ota"></span>Whimstay.com</td><td class="num"><span class="d-flat">off</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="cov"><span class="unverified">not verified yet</span></td></tr>
       </tbody>
     </table>
   </div>
   <div class="note">
-    Only <strong>Airbnb</strong> and <strong>VRBO</strong> are verified in V0 — both read
-    directly from Streamline's OTA listing IDs. The remaining channels are tracked but show
-    <em>not verified</em> rather than a misleading green. Niche channels
-    (crewdogs, hopper, midstays, vacasa, wander, whimstay) default to expected-off until ops confirms
-    intended distribution per unit.
+    Only <strong>Airbnb</strong> and <strong>VRBO</strong> are verified today, read from
+    Streamline's OTA listing IDs. The rest are tracked but show <em>not verified</em> rather
+    than a misleading green. Niche channels (crewdogs, hopper, midstays, vacasa, wander, whimstay)
+    default to expected-off until we confirm intended distribution per unit.
   </div>
 
   <h2>Changed since last run</h2>
   <div class="cols">
     <div>
-      <div class="colhead">Gaps opened <span class="mono">(0)</span></div>
+      <div class="colhead">Newly flagged <span class="mono">(0)</span></div>
       <ul class="changes"><li class="muted">None</li></ul>
     </div>
     <div>
-      <div class="colhead">Gaps closed <span class="mono">(0)</span></div>
+      <div class="colhead">Resolved <span class="mono">(0)</span></div>
       <ul class="changes"><li class="muted">None</li></ul>
     </div>
   </div>
 
-  <h2>Units dark on every verified OTA <span class="count">11</span></h2>
+  <h2>Dark on every verified OTA</h2>
   <div class="scroll">
     <table id="dark">
-      <thead><tr><th>Unit</th><th>Area</th><th>Address</th><th>Streamline ID</th></tr></thead>
+      <thead><tr><th>Unit</th><th>Area</th><th>Property group</th><th>Issue</th>
+        <th>Streamline ID</th></tr></thead>
       <tbody>
-      <tr>
-        <td>Hilltop Heaven</td>
-        <td>(unassigned)</td>
-        <td>14100 Morro Rd, Atascadero</td>
-        <td class="mono">1101745</td>
-      </tr>      <tr>
-        <td>167 San Luis St Unit A</td>
-        <td>Central Coast</td>
-        <td>167 San Luis St, Avila Beach</td>
-        <td class="mono">1126707</td>
-      </tr>      <tr>
-        <td>167 San Luis St Unit C</td>
-        <td>Central Coast</td>
-        <td>167 San Luis St, Avila Beach</td>
-        <td class="mono">1126708</td>
-      </tr>      <tr>
-        <td>Lillie by the Sea - Guest House</td>
-        <td>Central Coast</td>
-        <td>2480 B Lillie Ave, Summerland</td>
-        <td class="mono">1126676</td>
-      </tr>      <tr>
-        <td>Hollywood Oasis</td>
-        <td>Coachella</td>
-        <td>73467 Desert Trail Dr, Twentynine Palms, CA, Twentynine Palms</td>
-        <td class="mono">1130036</td>
-      </tr>      <tr>
-        <td>The Cove Villa</td>
-        <td>Coachella</td>
-        <td>51980 Avenida Villa, La Quinta</td>
-        <td class="mono">1121874</td>
-      </tr>      <tr>
-        <td>ONBOARDING - Sunrise on Park</td>
-        <td>PalmSprings</td>
-        <td>1820 E. Park Drive, Palm Springs</td>
-        <td class="mono">1124227</td>
-      </tr>      <tr>
-        <td>ONBOARDING - The Modern Fairway</td>
-        <td>PalmSprings</td>
-        <td>5330 E. Lakeside Dr., Palm Springs</td>
-        <td class="mono">1127261</td>
-      </tr>      <tr>
-        <td>Paradise Valley Vacation Home</td>
-        <td>Phoenix</td>
-        <td>4465 E Paradise Village Pkwy S, Phoenix</td>
-        <td class="mono">1051077</td>
-      </tr>      <tr>
-        <td>Rolling Hills Haven</td>
-        <td>Phoenix</td>
-        <td>9608 W Rolling Hills, Sun City</td>
-        <td class="mono">1128196</td>
-      </tr>      <tr>
-        <td>The Urban Vale</td>
-        <td>Phoenix</td>
-        <td>1111 W. University Dr., Unit 2008, Tempe</td>
-        <td class="mono">1128195</td>
-      </tr>
+      <tr><td>Hilltop Heaven</td><td>(unassigned)</td><td>&amp;mdash;</td><td><span class="tag">Dark on every verified OTA</span></td><td class="mono">1101745</td></tr>      <tr><td>167 San Luis St Unit A</td><td>Central Coast</td><td>&amp;mdash;</td><td><span class="tag">Dark on every verified OTA</span></td><td class="mono">1126707</td></tr>      <tr><td>167 San Luis St Unit C</td><td>Central Coast</td><td>&amp;mdash;</td><td><span class="tag">Dark on every verified OTA</span></td><td class="mono">1126708</td></tr>      <tr><td>Lillie by the Sea - Guest House</td><td>Central Coast</td><td>&amp;mdash;</td><td><span class="tag">Dark on every verified OTA</span></td><td class="mono">1126676</td></tr>      <tr><td>Hollywood Oasis</td><td>Coachella</td><td>&amp;mdash;</td><td><span class="tag">Dark on every verified OTA</span></td><td class="mono">1130036</td></tr>      <tr><td>The Cove Villa</td><td>Coachella</td><td>&amp;mdash;</td><td><span class="tag">Dark on every verified OTA</span></td><td class="mono">1121874</td></tr>      <tr><td>ONBOARDING - Sunrise on Park</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">Dark on every verified OTA</span></td><td class="mono">1124227</td></tr>      <tr><td>ONBOARDING - The Modern Fairway</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">Dark on every verified OTA</span></td><td class="mono">1127261</td></tr>      <tr><td>Paradise Valley Vacation Home</td><td>Phoenix</td><td>&amp;mdash;</td><td><span class="tag">Dark on every verified OTA</span></td><td class="mono">1051077</td></tr>      <tr><td>Rolling Hills Haven</td><td>Phoenix</td><td>&amp;mdash;</td><td><span class="tag">Dark on every verified OTA</span></td><td class="mono">1128196</td></tr>      <tr><td>The Urban Vale</td><td>Phoenix</td><td>&amp;mdash;</td><td><span class="tag">Dark on every verified OTA</span></td><td class="mono">1128195</td></tr>
       </tbody>
     </table>
   </div>
 
-  <h2>All open gaps <span class="count">50</span></h2>
+  <h2>Revenue &amp; accounting exposure</h2>
   <div class="scroll">
-    <table id="gaps">
-      <thead><tr><th>Unit</th><th>Area</th><th>Channel</th><th>Streamline ID</th></tr></thead>
+    <table id="money">
+      <thead><tr><th>Unit</th><th>Area</th><th>Property group</th><th>Issue</th>
+        <th>Streamline ID</th></tr></thead>
       <tbody>
-      <tr>
-        <td>Hilltop Heaven</td>
-        <td>(unassigned)</td>
-        <td><span class="tag">Airbnb</span></td>
-        <td class="mono">1101745</td>
-      </tr>      <tr>
-        <td>167 San Luis St Unit A</td>
-        <td>Central Coast</td>
-        <td><span class="tag">Airbnb</span></td>
-        <td class="mono">1126707</td>
-      </tr>      <tr>
-        <td>167 San Luis St Unit C</td>
-        <td>Central Coast</td>
-        <td><span class="tag">Airbnb</span></td>
-        <td class="mono">1126708</td>
-      </tr>      <tr>
-        <td>Gallaher</td>
-        <td>Central Coast</td>
-        <td><span class="tag">Airbnb</span></td>
-        <td class="mono">1101751</td>
-      </tr>      <tr>
-        <td>Lillie by the Sea - Guest House</td>
-        <td>Central Coast</td>
-        <td><span class="tag">Airbnb</span></td>
-        <td class="mono">1126676</td>
-      </tr>      <tr>
-        <td>Hollywood Oasis</td>
-        <td>Coachella</td>
-        <td><span class="tag">Airbnb</span></td>
-        <td class="mono">1130036</td>
-      </tr>      <tr>
-        <td>The Cove Villa</td>
-        <td>Coachella</td>
-        <td><span class="tag">Airbnb</span></td>
-        <td class="mono">1121874</td>
-      </tr>      <tr>
-        <td>Bear&#x27;s Den</td>
-        <td>IdyllwildTemecula</td>
-        <td><span class="tag">Airbnb</span></td>
-        <td class="mono">1051208</td>
-      </tr>      <tr>
-        <td>The Valley&#x27;s Cabin</td>
-        <td>Lake Arrowhead</td>
-        <td><span class="tag">Airbnb</span></td>
-        <td class="mono">1101630</td>
-      </tr>      <tr>
-        <td>Balboa Duplex II</td>
-        <td>Orange County</td>
-        <td><span class="tag">Airbnb</span></td>
-        <td class="mono">1101695</td>
-      </tr>      <tr>
-        <td>Mickey&#x27;s Hideaway</td>
-        <td>Orange County</td>
-        <td><span class="tag">Airbnb</span></td>
-        <td class="mono">1101681</td>
-      </tr>      <tr>
-        <td>Newport Coastal Comfort</td>
-        <td>Orange County</td>
-        <td><span class="tag">Airbnb</span></td>
-        <td class="mono">1101794</td>
-      </tr>      <tr>
-        <td>Pier View Paradise</td>
-        <td>Orange County</td>
-        <td><span class="tag">Airbnb</span></td>
-        <td class="mono">1101684</td>
-      </tr>      <tr>
-        <td>Tommy Bahama Beach Rd I</td>
-        <td>Orange County</td>
-        <td><span class="tag">Airbnb</span></td>
-        <td class="mono">1101663</td>
-      </tr>      <tr>
-        <td>Tommy Bahama Beach Rd II</td>
-        <td>Orange County</td>
-        <td><span class="tag">Airbnb</span></td>
-        <td class="mono">1101676</td>
-      </tr>      <tr>
-        <td>ONBOARDING - Sunrise on Park</td>
-        <td>PalmSprings</td>
-        <td><span class="tag">Airbnb</span></td>
-        <td class="mono">1124227</td>
-      </tr>      <tr>
-        <td>ONBOARDING - The Modern Fairway</td>
-        <td>PalmSprings</td>
-        <td><span class="tag">Airbnb</span></td>
-        <td class="mono">1127261</td>
-      </tr>      <tr>
-        <td>Poolside Modern Wexler - 1261</td>
-        <td>PalmSprings</td>
-        <td><span class="tag">Airbnb</span></td>
-        <td class="mono">1051176</td>
-      </tr>      <tr>
-        <td>Glorious Glendale Getaway</td>
-        <td>Phoenix</td>
-        <td><span class="tag">Airbnb</span></td>
-        <td class="mono">1050737</td>
-      </tr>      <tr>
-        <td>Paradise Valley Vacation Home</td>
-        <td>Phoenix</td>
-        <td><span class="tag">Airbnb</span></td>
-        <td class="mono">1051077</td>
-      </tr>      <tr>
-        <td>Rolling Hills Haven</td>
-        <td>Phoenix</td>
-        <td><span class="tag">Airbnb</span></td>
-        <td class="mono">1128196</td>
-      </tr>      <tr>
-        <td>The Urban Vale</td>
-        <td>Phoenix</td>
-        <td><span class="tag">Airbnb</span></td>
-        <td class="mono">1128195</td>
-      </tr>      <tr>
-        <td>Troon North Golf Casitas - TC102</td>
-        <td>Phoenix</td>
-        <td><span class="tag">Airbnb</span></td>
-        <td class="mono">1039399</td>
-      </tr>      <tr>
-        <td>Hilltop Heaven</td>
-        <td>(unassigned)</td>
-        <td><span class="tag">VRBO</span></td>
-        <td class="mono">1101745</td>
-      </tr>      <tr>
-        <td>167 San Luis St Unit A</td>
-        <td>Central Coast</td>
-        <td><span class="tag">VRBO</span></td>
-        <td class="mono">1126707</td>
-      </tr>      <tr>
-        <td>167 San Luis St Unit C</td>
-        <td>Central Coast</td>
-        <td><span class="tag">VRBO</span></td>
-        <td class="mono">1126708</td>
-      </tr>      <tr>
-        <td>Gateshead Haven</td>
-        <td>Central Coast</td>
-        <td><span class="tag">VRBO</span></td>
-        <td class="mono">1101724</td>
-      </tr>      <tr>
-        <td>Lillie by the Sea - Guest House</td>
-        <td>Central Coast</td>
-        <td><span class="tag">VRBO</span></td>
-        <td class="mono">1126676</td>
-      </tr>      <tr>
-        <td>Pismo Paradise</td>
-        <td>Central Coast</td>
-        <td><span class="tag">VRBO</span></td>
-        <td class="mono">1101639</td>
-      </tr>      <tr>
-        <td>Sailaway Cabin</td>
-        <td>Central Coast</td>
-        <td><span class="tag">VRBO</span></td>
-        <td class="mono">1101744</td>
-      </tr>      <tr>
-        <td>Desert Shores</td>
-        <td>Coachella</td>
-        <td><span class="tag">VRBO</span></td>
-        <td class="mono">1129491</td>
-      </tr>      <tr>
-        <td>Hollywood Oasis</td>
-        <td>Coachella</td>
-        <td><span class="tag">VRBO</span></td>
-        <td class="mono">1130036</td>
-      </tr>      <tr>
-        <td>The Cove Villa</td>
-        <td>Coachella</td>
-        <td><span class="tag">VRBO</span></td>
-        <td class="mono">1121874</td>
-      </tr>      <tr>
-        <td>Desert Flower</td>
-        <td>Flagstaff</td>
-        <td><span class="tag">VRBO</span></td>
-        <td class="mono">1050897</td>
-      </tr>      <tr>
-        <td>Getaway in the Sun</td>
-        <td>Flagstaff</td>
-        <td><span class="tag">VRBO</span></td>
-        <td class="mono">1050932</td>
-      </tr>      <tr>
-        <td>Hideaway in the Sun</td>
-        <td>Flagstaff</td>
-        <td><span class="tag">VRBO</span></td>
-        <td class="mono">1050933</td>
-      </tr>      <tr>
-        <td>Peaceful Cabin</td>
-        <td>IdyllwildTemecula</td>
-        <td><span class="tag">VRBO</span></td>
-        <td class="mono">1121125</td>
-      </tr>      <tr>
-        <td>Gull Cottage</td>
-        <td>Orange County</td>
-        <td><span class="tag">VRBO</span></td>
-        <td class="mono">1101664</td>
-      </tr>      <tr>
-        <td>Newport Coastal Compound</td>
-        <td>Orange County</td>
-        <td><span class="tag">VRBO</span></td>
-        <td class="mono">1101697</td>
-      </tr>      <tr>
-        <td>Newport Vacation Memories</td>
-        <td>Orange County</td>
-        <td><span class="tag">VRBO</span></td>
-        <td class="mono">1101645</td>
-      </tr>      <tr>
-        <td>Eclectic Vibe</td>
-        <td>PalmSprings</td>
-        <td><span class="tag">VRBO</span></td>
-        <td class="mono">1092905</td>
-      </tr>      <tr>
-        <td>Mid Mod Sunsation</td>
-        <td>PalmSprings</td>
-        <td><span class="tag">VRBO</span></td>
-        <td class="mono">1092806</td>
-      </tr>      <tr>
-        <td>Modern Luxe</td>
-        <td>PalmSprings</td>
-        <td><span class="tag">VRBO</span></td>
-        <td class="mono">1092709</td>
-      </tr>      <tr>
-        <td>ONBOARDING - Sunrise on Park</td>
-        <td>PalmSprings</td>
-        <td><span class="tag">VRBO</span></td>
-        <td class="mono">1124227</td>
-      </tr>      <tr>
-        <td>ONBOARDING - The Modern Fairway</td>
-        <td>PalmSprings</td>
-        <td><span class="tag">VRBO</span></td>
-        <td class="mono">1127261</td>
-      </tr>      <tr>
-        <td>Palm Desert Oasis on the Green</td>
-        <td>PalmSprings</td>
-        <td><span class="tag">VRBO</span></td>
-        <td class="mono">1051000</td>
-      </tr>      <tr>
-        <td>The Fairway Palm Springs</td>
-        <td>PalmSprings</td>
-        <td><span class="tag">VRBO</span></td>
-        <td class="mono">1121121</td>
-      </tr>      <tr>
-        <td>Paradise Valley Vacation Home</td>
-        <td>Phoenix</td>
-        <td><span class="tag">VRBO</span></td>
-        <td class="mono">1051077</td>
-      </tr>      <tr>
-        <td>Rolling Hills Haven</td>
-        <td>Phoenix</td>
-        <td><span class="tag">VRBO</span></td>
-        <td class="mono">1128196</td>
-      </tr>      <tr>
-        <td>The Urban Vale</td>
-        <td>Phoenix</td>
-        <td><span class="tag">VRBO</span></td>
-        <td class="mono">1128195</td>
-      </tr>
+      <tr><td>Baristo Modern Retreat</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1093026</td></tr>      <tr><td>Biltmore Bliss</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1051038</td></tr>      <tr><td>Caballeros</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1092791</td></tr>      <tr><td>Caballeros Condo</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1050706</td></tr>      <tr><td>California Cottage</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1050527</td></tr>      <tr><td>Calm Waters Palm Springs</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1121978</td></tr>      <tr><td>Canyon Country Club Unit 58</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1050866</td></tr>      <tr><td>Canyon Sands Hideaway</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1051192</td></tr>      <tr><td>Carlotta Haven w/ EV Charger</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1050912</td></tr>      <tr><td>Casa Sereno</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1051392</td></tr>      <tr><td>Casa del Lago Mirage</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1050732</td></tr>      <tr><td>Cathedral City Oasis</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1051352</td></tr>      <tr><td>Center Court Escape</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1051356</td></tr>      <tr><td>Cliff House - El Paseo Retreat</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1051160</td></tr>      <tr><td>Cody Place Luxe</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1093037</td></tr>      <tr><td>Desert Blue</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1051236</td></tr>      <tr><td>Desert Breeze Oasis</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1050659</td></tr>      <tr><td>Desert Daydream</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1056221</td></tr>      <tr><td>Desert Delight</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1056226</td></tr>      <tr><td>Desert Dream House</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1050842</td></tr>      <tr><td>Desert Dunes</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1124232</td></tr>      <tr><td>Desert Falls Retreat</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1050967</td></tr>      <tr><td>Desert Falls in Love</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1051100</td></tr>      <tr><td>Desert Living Refuge</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1051210</td></tr>      <tr><td>Desert Luxe Retreat</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1051099</td></tr>      <tr><td>Desert Luxury Getaway - 30 night minimum</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1050956</td></tr>      <tr><td>Desert Sky Estate</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1050973</td></tr>      <tr><td>Desert Vista Oasis</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1051284</td></tr>      <tr><td>Diamond Palms at Desert Princess Resort</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1092712</td></tr>      <tr><td>Downtown Desert Retreat</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1092542</td></tr>      <tr><td>East Park Classic - 1085</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1050832</td></tr>      <tr><td>Easy Living Palm Desert</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1051223</td></tr>      <tr><td>El Paseo Modern</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1050952</td></tr>      <tr><td>Endless Blooms #22</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1050988</td></tr>      <tr><td>Escape To Palm Desert - 27 night minimum rental</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1050644</td></tr>      <tr><td>Escape to Escena</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1051183</td></tr>      <tr><td>Esprit Escape</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1050505</td></tr>      <tr><td>Folded-Plate Roof</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1050818</td></tr>      <tr><td>Fred Waring Dreams</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1051158</td></tr>      <tr><td>Golden Fairway</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1051336</td></tr>      <tr><td>Hermosa Villas Hideaway</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1050616</td></tr>      <tr><td>Iconic Oasis</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1050904</td></tr>      <tr><td>Indulgent Escape In Rancho Mirage</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1050521</td></tr>      <tr><td>La Joya Granate</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1050751</td></tr>      <tr><td>Loufie&#x27;s Desert Retreat</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1050985</td></tr>      <tr><td>Luxury on the Lake Rancho Mirage</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1050836</td></tr>      <tr><td>Mesquite Condo in the Sun</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1050784</td></tr>      <tr><td>Mi Hermosa</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1051242</td></tr>      <tr><td>Mirage Cove</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1050800</td></tr>      <tr><td>Mod Reflections at Tamarisk</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1050830</td></tr>      <tr><td>Modern &amp; Breezy</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1050725</td></tr>      <tr><td>Modern Desert Retreat</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1050826</td></tr>      <tr><td>Modern Luxe</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1092709</td></tr>      <tr><td>Modern Mirage</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1050522</td></tr>      <tr><td>Morning Springs Mirage</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1051070</td></tr>      <tr><td>Mountain Shadows Condo</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1050603</td></tr>      <tr><td>Mountain View Oasis at PGA West</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1092750</td></tr>      <tr><td>ONBOARDING - Sunrise on Park</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1124227</td></tr>      <tr><td>ONBOARDING - The Modern Fairway</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1127261</td></tr>      <tr><td>Oasis in Palm Desert Resorter</td><td>PalmSprings</td><td>&amp;mdash;</td><td><span class="tag">No COPS account/bank ID</span></td><td class="mono">1051300</td></tr>      <tr><td colspan="5" class="empty">&hellip; and 66 more in latest.json</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Classification problems</h2>
+  <div class="scroll">
+    <table id="classify">
+      <thead><tr><th>Unit</th><th>Area</th><th>Property group</th><th>Issue</th>
+        <th>Streamline ID</th></tr></thead>
+      <tbody>
+      <tr><td>Hilltop Heaven</td><td>(unassigned)</td><td>&amp;mdash;</td><td><span class="tag">No area assigned</span></td><td class="mono">1101745</td></tr>      <tr><td>San Moritz Lake House</td><td>(unassigned)</td><td>CA-LakeArrowhead</td><td><span class="tag">No area assigned</span></td><td class="mono">1126958</td></tr>      <tr><td>The Fairway Chalet</td><td>Lake Arrowhead</td><td>CA-LakeArrowhead</td><td><span class="tag">No neighborhood assigned</span></td><td class="mono">1124366</td></tr>
       </tbody>
     </table>
   </div>
@@ -619,79 +267,15 @@
       <thead><tr><th>Area</th><th class="num">Renting</th><th class="num">Non-Renting</th>
         <th class="num">Total</th></tr></thead>
       <tbody>
-      <tr>
-        <td>PalmSprings</td>
-        <td class="num">401</td>
-        <td class="num">66</td>
-        <td class="num">467</td>
-      </tr>      <tr>
-        <td>Phoenix</td>
-        <td class="num">305</td>
-        <td class="num">60</td>
-        <td class="num">365</td>
-      </tr>      <tr>
-        <td>Tucson</td>
-        <td class="num">152</td>
-        <td class="num">25</td>
-        <td class="num">177</td>
-      </tr>      <tr>
-        <td>Central Coast</td>
-        <td class="num">110</td>
-        <td class="num">8</td>
-        <td class="num">118</td>
-      </tr>      <tr>
-        <td>Coachella</td>
-        <td class="num">88</td>
-        <td class="num">16</td>
-        <td class="num">104</td>
-      </tr>      <tr>
-        <td>Lake Arrowhead</td>
-        <td class="num">75</td>
-        <td class="num">8</td>
-        <td class="num">83</td>
-      </tr>      <tr>
-        <td>Orange County</td>
-        <td class="num">62</td>
-        <td class="num">12</td>
-        <td class="num">74</td>
-      </tr>      <tr>
-        <td>Flagstaff</td>
-        <td class="num">48</td>
-        <td class="num">11</td>
-        <td class="num">59</td>
-      </tr>      <tr>
-        <td>Sedona</td>
-        <td class="num">41</td>
-        <td class="num">13</td>
-        <td class="num">54</td>
-      </tr>      <tr>
-        <td>PineTop</td>
-        <td class="num">27</td>
-        <td class="num">7</td>
-        <td class="num">34</td>
-      </tr>      <tr>
-        <td>IdyllwildTemecula</td>
-        <td class="num">24</td>
-        <td class="num">2</td>
-        <td class="num">26</td>
-      </tr>      <tr>
-        <td>HighDesert</td>
-        <td class="num">9</td>
-        <td class="num">2</td>
-        <td class="num">11</td>
-      </tr>      <tr>
-        <td>(unassigned)</td>
-        <td class="num">2</td>
-        <td class="num">7</td>
-        <td class="num">9</td>
-      </tr>
+      <tr><td>PalmSprings</td><td class="num">401</td><td class="num">66</td><td class="num">467</td></tr>      <tr><td>Phoenix</td><td class="num">305</td><td class="num">60</td><td class="num">365</td></tr>      <tr><td>Tucson</td><td class="num">152</td><td class="num">25</td><td class="num">177</td></tr>      <tr><td>Central Coast</td><td class="num">110</td><td class="num">8</td><td class="num">118</td></tr>      <tr><td>Coachella</td><td class="num">88</td><td class="num">16</td><td class="num">104</td></tr>      <tr><td>Lake Arrowhead</td><td class="num">75</td><td class="num">8</td><td class="num">83</td></tr>      <tr><td>Orange County</td><td class="num">62</td><td class="num">12</td><td class="num">74</td></tr>      <tr><td>Flagstaff</td><td class="num">48</td><td class="num">11</td><td class="num">59</td></tr>      <tr><td>Sedona</td><td class="num">41</td><td class="num">13</td><td class="num">54</td></tr>      <tr><td>PineTop</td><td class="num">27</td><td class="num">7</td><td class="num">34</td></tr>      <tr><td>IdyllwildTemecula</td><td class="num">24</td><td class="num">2</td><td class="num">26</td></tr>      <tr><td>HighDesert</td><td class="num">9</td><td class="num">2</td><td class="num">11</td></tr>      <tr><td>(unassigned)</td><td class="num">2</td><td class="num">7</td><td class="num">9</td></tr>
       </tbody>
     </table>
   </div>
-  <div class="note">2 unit(s) have no area assigned in Streamline, so no brand-site expectation can be derived: Hilltop Heaven, San Moritz Lake House</div>
 
   <footer>
-    Generated 2026-08-08T19:20:38+00:00 &middot; V0 config-only audit.
-    URL crawling, Booking.com, branded-site and niche-channel verification are deferred to V2.
+    Generated 2026-08-09T01:33:22+00:00. Merchant / payment-gateway validation is not yet
+    included &mdash; that field lives on the per-unit Streamline record and needs direct API
+    credentials to pull at portfolio scale. Booking.com, branded-site and niche-channel
+    verification arrive with URL crawling in the next phase.
   </footer>
 </div>
