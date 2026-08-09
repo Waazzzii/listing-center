@@ -106,6 +106,14 @@ ISSUES: dict[str, tuple[str, str, str, str]] = {
                       "Neither Airbnb nor VRBO — the unit is invisible on both majors."),
     "online_bookings_off": ("distribution", "Online bookings disabled", "high",
                             "Streamline will not accept an online booking for this unit."),
+    "reviews_without_listing_id": ("distribution", "Guest reviews but no listing ID", "high",
+                                   "Guests reviewed a stay booked through this channel in the "
+                                   "last 90 days, yet Streamline holds no listing ID — the "
+                                   "listing is live and selling but is not mapped."),
+    "no_guest_activity": ("distribution", "No guest reviews on any OTA (90d)", "low",
+                          "Listed on Airbnb and/or VRBO but no guest review on either in 90 "
+                          "days. Frequently just low season or a quiet unit — a prompt to "
+                          "look, not a fault. Read it alongside occupancy, not on its own."),
     "not_in_wheelhouse": ("systems", "Not in Wheelhouse", "high",
                           "No Wheelhouse listing — the unit is not being revenue-managed."),
     "wheelhouse_inactive": ("systems", "Wheelhouse listing inactive", "high",
@@ -265,6 +273,47 @@ def keydata_site_url(record: dict[str, Any]) -> str:
     return ""
 
 
+REVA_CHANNEL_MAP = {"airbnb": "airbnb", "vrbo": "vrbo", "booking": "booking"}
+
+
+def load_reva(paths: list[str]) -> dict[str, dict[str, dict[str, Any]]]:
+    """Streamline unit_id -> channel code -> {count, last_date, avg_rating}.
+
+    A guest review is the strongest liveness signal available: it proves someone
+    actually booked and completed a stay through that channel. Company-level
+    reviews (unit_provider_id like "MANUALLYADDED6") carry no unit and are
+    skipped.
+    """
+    acc: dict[str, dict[str, dict[str, Any]]] = {}
+    for path in paths:
+        payload = load_json(path)
+        for review in payload.get("data", []):
+            provider_id = str(review.get("unit_provider_id") or "").strip()
+            if not provider_id.isdigit():
+                continue
+            code = REVA_CHANNEL_MAP.get(str(review.get("channel_name") or "").lower())
+            if not code:
+                continue
+            slot = acc.setdefault(provider_id, {}).setdefault(
+                code, {"count": 0, "last_date": "", "rating_sum": 0.0, "rated": 0}
+            )
+            slot["count"] += 1
+            date = str(review.get("date") or "")
+            if date > slot["last_date"]:
+                slot["last_date"] = date
+            rating = review.get("rating")
+            if isinstance(rating, (int, float)):
+                slot["rating_sum"] += float(rating)
+                slot["rated"] += 1
+    for channels in acc.values():
+        for slot in channels.values():
+            slot["avg_rating"] = (
+                round(slot["rating_sum"] / slot["rated"], 2) if slot["rated"] else None
+            )
+            del slot["rating_sum"], slot["rated"]
+    return acc
+
+
 def load_wheelhouse(paths: list[str]) -> dict[str, dict[str, Any]]:
     """Streamline unit_id → Wheelhouse listing, across paginated payloads."""
     rows: dict[str, dict[str, Any]] = {}
@@ -291,12 +340,14 @@ def build_audit(
     wazzi: dict[str, dict[str, Any]],
     wheelhouse: dict[str, dict[str, Any]],
     keydata: dict[str, dict[str, Any]],
+    reva: dict[str, dict[str, dict[str, Any]]],
     details: dict[str, dict[str, Any]],
     run_date: str,
 ) -> dict[str, Any]:
     have_wazzi = bool(wazzi)
     have_wheelhouse = bool(wheelhouse)
     have_keydata = bool(keydata)
+    have_reva = bool(reva)
     detailed_units: set[str] = set()
     merchant_units: set[str] = set()
 
@@ -341,6 +392,7 @@ def build_audit(
             "code": c["code"], "name": c["name"], "kind": c["kind"],
             "observable": c["observable"],
             "expected": 0, "live": 0, "missing": 0, "unknown": 0,
+            "review_confirmed": 0,
         }
         for c in CHANNELS
     }
@@ -377,6 +429,29 @@ def build_audit(
                 row["missing"] += 1
             else:
                 row["unknown"] += 1
+
+        unit_reviews = reva.get(unit_id, {})
+        for code, slot in unit_reviews.items():
+            if code in coverage and slot["count"]:
+                coverage[code]["review_confirmed"] += 1
+
+        # A review proves the channel is live regardless of what config says.
+        if have_reva:
+            listed_anywhere = False
+            reviewed_anywhere = False
+            for code in ("airbnb", "vrbo"):
+                has_reviews = unit_reviews.get(code, {}).get("count", 0) > 0
+                has_id = observe(unit, code) == "live"
+                listed_anywhere = listed_anywhere or has_id
+                reviewed_anywhere = reviewed_anywhere or has_reviews
+                if has_reviews and not has_id:
+                    flag(unit, "reviews_without_listing_id",
+                         f"{CHANNEL_BY_CODE[code]['name']}: {unit_reviews[code]['count']} "
+                         f"review(s), latest {unit_reviews[code]['last_date']}")
+            # Once per unit. Flagging per channel produced ~2,000 rows and buried
+            # everything that actually needs action.
+            if listed_anywhere and not reviewed_anywhere:
+                flag(unit, "no_guest_activity", "no Airbnb or VRBO review in 90 days")
 
         ab = observe(unit, "airbnb") == "live"
         vr = observe(unit, "vrbo") == "live"
@@ -513,6 +588,7 @@ def build_audit(
         "wheelhouse_matched": wheelhouse_matched,
         "keydata": len(keydata) if have_keydata else 0,
         "keydata_matched": keydata_matched,
+        "reva_matched": sum(1 for u in renting if str(u.get("id")) in reva),
         "wazzi_matched": wazzi_matched,
         "cops_scope": sum(1 for u in renting if area_of(u) in cops_areas),
         "total_renting": total_renting_units,
@@ -527,7 +603,7 @@ def build_audit(
             "count": by_issue.get(code, 0),
             "checked": _covered(code, wazzi_complete, wheelhouse_complete, keydata_complete,
                                 have_wazzi, wheelhouse_usable, keydata_usable,
-                                detailed_units, merchant_units),
+                                detailed_units, merchant_units, have_reva),
             "coverage": _coverage(code, scope),
         }
         for code in ISSUES
@@ -542,6 +618,7 @@ def build_audit(
             "wazzi": have_wazzi,
             "wheelhouse": have_wheelhouse,
             "keydata": have_keydata,
+            "reva reviews": have_reva,
             "wheelhouse id mapping": wheelhouse_usable,
             "unit detail": bool(detailed_units),
             "merchant": bool(merchant_units),
@@ -554,6 +631,7 @@ def build_audit(
             "wazzi_total": len(wazzi) if have_wazzi else None,
             "wheelhouse_total": len(wheelhouse) if have_wheelhouse else None,
             "keydata_total": len(keydata) if have_keydata else None,
+            "reva_units_with_reviews": len(reva) if have_reva else None,
             "by_area": dict(
                 sorted(census_by_area.items(), key=lambda kv: -kv[1]["renting"])
             ),
@@ -573,13 +651,17 @@ DETAIL_CHECKS = {"missing_neighborhood", "missing_resort", "missing_property_gro
 
 
 KEYDATA_CHECKS = {"not_active_in_keydata", "keydata_active_orphan"}
+REVA_CHECKS = {"reviews_without_listing_id", "no_guest_activity"}
 
 
 def _covered(code: str, wazzi_complete: bool, wheelhouse_complete: bool,
              keydata_complete: bool, have_wazzi: bool, have_wheelhouse: bool,
-             have_keydata: bool, detailed: set[str], merchant: set[str]) -> bool:
+             have_keydata: bool, detailed: set[str], merchant: set[str],
+             have_reva: bool = False) -> bool:
     if code in KEYDATA_CHECKS:
         return keydata_complete
+    if code in REVA_CHECKS:
+        return have_reva
     # Absence-claims require a complete source; presence-claims only require data.
     if code == "not_in_wheelhouse":
         return wheelhouse_complete
@@ -613,6 +695,8 @@ def _coverage(code: str, scope: dict[str, int]) -> str:
         n = total if scope["wazzi"] else 0
     elif code in ("not_active_in_keydata", "keydata_active_orphan"):
         n = total if scope["keydata"] else 0
+    elif code in ("reviews_without_listing_id", "no_guest_activity"):
+        n = total if scope.get("reva_matched") else 0
     elif code in WAZZI_CHECKS:
         n = scope["wazzi_matched"]
     else:
@@ -701,11 +785,15 @@ def render_html(audit: dict[str, Any], deltas: dict[str, Any]) -> str:
             cov = '<span class="unverified">not verified yet</span>'
             missing = live = '<span class="d-flat">&mdash;</span>'
         expected_cell = str(row["expected"]) if row["expected"] else OFF_CELL
+        rc = row.get("review_confirmed", 0)
+        rc_cell = (f'<strong>{rc}</strong>' if rc else DASH_CELL) if audit["sources"].get(
+            "reva reviews") else DASH_CELL
         coverage_rows.append(
             f'      <tr><td class="ch"><span class="dot dot-{esc(row["kind"])}"></span>'
             f'{esc(row["name"])}</td>'
             f'<td class="num">{expected_cell}</td>'
             f'<td class="num">{live}</td><td class="num">{missing}</td>'
+            f'<td class="num">{rc_cell}</td>'
             f'<td class="cov">{cov}</td></tr>'
         )
 
@@ -975,7 +1063,8 @@ def render_html(audit: dict[str, Any], deltas: dict[str, Any]) -> str:
   <div class="scroll">
     <table>
       <thead><tr><th>Channel</th><th class="num">Expected</th><th class="num">Live</th>
-        <th class="num">Missing</th><th>Coverage</th></tr></thead>
+        <th class="num">Missing</th><th class="num">Guest-confirmed 90d</th>
+        <th>Coverage</th></tr></thead>
       <tbody>
 {chr(10).join(coverage_rows)}
       </tbody>
@@ -986,7 +1075,9 @@ def render_html(audit: dict[str, Any], deltas: dict[str, Any]) -> str:
     listing IDs, so a missing one is a real gap. <strong>Branded sites are confirm-only:</strong>
     KeyData stores a single canonical site URL per unit, so a Casago.com URL proves the unit is
     on Casago.com but says nothing about the other sites — everything unconfirmed reads
-    <em>unknown</em>, never <em>missing</em>. Treat the branded-site <em>live</em> counts as a
+    <em>unknown</em>, never <em>missing</em>. <strong>Guest-confirmed</strong> counts units
+    with a Reva review in the last 90 days — the strongest liveness proof there is, since a
+    review means a real stay completed through that channel. Treat the branded-site <em>live</em> counts as a
     floor, not a score. Booking.com has no source yet. Niche channels
     ({esc(', '.join(audit['niche_default_off']))}) default to expected-off until we confirm
     intended distribution per unit.
@@ -1083,6 +1174,8 @@ def main() -> int:
     parser.add_argument("--nonrenting", required=True, action="append")
     parser.add_argument("--wazzi", action="append", default=[])
     parser.add_argument("--wheelhouse", action="append", default=[])
+    parser.add_argument("--reva", action="append", default=[],
+                        help="Reva list_all_reviews payload (90-day window), repeatable")
     parser.add_argument("--keydata", action="append", default=[],
                         help="KeyData list_pm_properties payload (is_active=true), repeatable")
     parser.add_argument("--details", action="append", default=[],
@@ -1103,6 +1196,7 @@ def main() -> int:
     wazzi = load_wazzi(args.wazzi)
     wheelhouse = load_wheelhouse(args.wheelhouse)
     keydata = load_keydata(args.keydata)
+    reva = load_reva(args.reva)
 
     details: dict[str, dict[str, Any]] = {}
     for path in args.details:
@@ -1121,7 +1215,8 @@ def main() -> int:
     history_dir = os.path.join(args.outdir, "history")
     os.makedirs(history_dir, exist_ok=True)
 
-    audit = build_audit(renting, nonrenting, wazzi, wheelhouse, keydata, details, args.date)
+    audit = build_audit(renting, nonrenting, wazzi, wheelhouse, keydata, reva, details,
+                        args.date)
     deltas = compute_deltas(audit, load_prior(history_dir, args.date))
     audit["deltas"] = deltas
 
@@ -1141,6 +1236,8 @@ def main() -> int:
               f"({census['wazzi_total'] - census['total']:+d} vs Streamline)")
     if census.get("wheelhouse_total") is not None:
         print(f"  Wheelhouse      : {census['wheelhouse_total']:,}")
+    if census.get("reva_units_with_reviews") is not None:
+        print(f"  Reva (90d)      : {census['reva_units_with_reviews']:,} units with reviews")
     if census.get("keydata_total") is not None:
         print(f"  KeyData (active): {census['keydata_total']:,} "
               f"({census['keydata_total'] - census['active_renting']:+d} vs renting)")

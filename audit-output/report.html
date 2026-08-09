@@ -142,11 +142,11 @@
       <div class="l">Non-Renting</div>
     </div>
     <div class="cell alert">
-      <div class="n">89</div>
+      <div class="n">91</div>
       <div class="l">High-Severity Flags</div>
     </div>
     <div class="cell alert">
-      <div class="n">285</div>
+      <div class="n">1,072</div>
       <div class="l">Total Flags</div>
     </div>
     <div class="cell">
@@ -167,6 +167,8 @@
       <tr><td class="ch">No VRBO listing ID</td><td><span class="sev sev-high">high</span></td><td class="num"><strong class="num-bad">27</strong> <span class="d-flat">&mdash;</span></td><td class="num"><span class="pct">1,344 of 1,344</span></td><td class="why">Unit is renting but carries no VRBO ID in Streamline.</td></tr>
       <tr><td class="ch">Dark on every verified OTA</td><td><span class="sev sev-high">high</span></td><td class="num"><strong class="num-bad">11</strong> <span class="d-flat">&mdash;</span></td><td class="num"><span class="pct">1,344 of 1,344</span></td><td class="why">Neither Airbnb nor VRBO — the unit is invisible on both majors.</td></tr>
       <tr><td class="ch">Online bookings disabled</td><td><span class="sev sev-high">high</span></td><td class="num"><span class="num-ok">0</span> <span class="d-flat">&mdash;</span></td><td class="num"><span class="pct">1,344 of 1,344</span></td><td class="why">Streamline will not accept an online booking for this unit.</td></tr>
+      <tr><td class="ch">Guest reviews but no listing ID</td><td><span class="sev sev-high">high</span></td><td class="num"><strong class="num-bad">2</strong> <span class="d-flat">&mdash;</span></td><td class="num"><span class="pct">1,344 of 1,344</span></td><td class="why">Guests reviewed a stay booked through this channel in the last 90 days, yet Streamline holds no listing ID — the listing is live and selling but is not mapped.</td></tr>
+      <tr><td class="ch">No guest reviews on any OTA (90d)</td><td><span class="sev sev-low">low</span></td><td class="num"><strong class="num-bad">785</strong> <span class="d-flat">&mdash;</span></td><td class="num"><span class="pct">1,344 of 1,344</span></td><td class="why">Listed on Airbnb and/or VRBO but no guest review on either in 90 days. Frequently just low season or a quiet unit — a prompt to look, not a fault. Read it alongside occupancy, not on its own.</td></tr>
       <tr class="grouprow"><td colspan="5">Systems</td></tr>
       <tr><td class="ch">Not in Wheelhouse</td><td><span class="sev sev-high">high</span></td><td class="num"><span class="unverified">not yet checked</span></td><td class="num"><span class="unverified">needs API credentials</span></td><td class="why">No Wheelhouse listing — the unit is not being revenue-managed.</td></tr>
       <tr><td class="ch">Wheelhouse listing inactive</td><td><span class="sev sev-high">high</span></td><td class="num"><span class="unverified">not yet checked</span></td><td class="num"><span class="unverified">needs API credentials</span></td><td class="why">Present in Wheelhouse but flagged inactive.</td></tr>
@@ -192,22 +194,23 @@
   <div class="scroll">
     <table>
       <thead><tr><th>Channel</th><th class="num">Expected</th><th class="num">Live</th>
-        <th class="num">Missing</th><th>Coverage</th></tr></thead>
+        <th class="num">Missing</th><th class="num">Guest-confirmed 90d</th>
+        <th>Coverage</th></tr></thead>
       <tbody>
-      <tr><td class="ch"><span class="dot dot-ota"></span>Airbnb</td><td class="num">1344</td><td class="num">1321</td><td class="num"><strong class="num-bad">23</strong></td><td class="cov"><div class="bar"><span class="bar-warn" style="width:98.3%"></span></div><span class="pct">98.3%</span></td></tr>
-      <tr><td class="ch"><span class="dot dot-ota"></span>VRBO</td><td class="num">1344</td><td class="num">1317</td><td class="num"><strong class="num-bad">27</strong></td><td class="cov"><div class="bar"><span class="bar-warn" style="width:98.0%"></span></div><span class="pct">98.0%</span></td></tr>
-      <tr><td class="ch"><span class="dot dot-ota"></span>Booking.com</td><td class="num">1344</td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="cov"><span class="unverified">not verified yet</span></td></tr>
-      <tr><td class="ch"><span class="dot dot-branded_site"></span>AcmeHouseCo.com</td><td class="num">1344</td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="cov"><span class="unverified">not verified yet</span></td></tr>
-      <tr><td class="ch"><span class="dot dot-branded_site"></span>Casago.com</td><td class="num">1344</td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="cov"><span class="unverified">not verified yet</span></td></tr>
-      <tr><td class="ch"><span class="dot dot-branded_site"></span>CasagoArizona.com</td><td class="num">582</td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="cov"><span class="unverified">not verified yet</span></td></tr>
-      <tr><td class="ch"><span class="dot dot-branded_site"></span>CasagoSoCal.com</td><td class="num">760</td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="cov"><span class="unverified">not verified yet</span></td></tr>
-      <tr><td class="ch"><span class="dot dot-branded_site"></span>VacationPalmSprings.com</td><td class="num">489</td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="cov"><span class="unverified">not verified yet</span></td></tr>
-      <tr><td class="ch"><span class="dot dot-branded_site"></span>Midstays.com</td><td class="num"><span class="d-flat">off</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="cov"><span class="unverified">not verified yet</span></td></tr>
-      <tr><td class="ch"><span class="dot dot-niche_ota"></span>Vacasa.com</td><td class="num"><span class="d-flat">off</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="cov"><span class="unverified">not verified yet</span></td></tr>
-      <tr><td class="ch"><span class="dot dot-niche_ota"></span>Hopper.com</td><td class="num"><span class="d-flat">off</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="cov"><span class="unverified">not verified yet</span></td></tr>
-      <tr><td class="ch"><span class="dot dot-niche_ota"></span>Crewdogs.com</td><td class="num"><span class="d-flat">off</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="cov"><span class="unverified">not verified yet</span></td></tr>
-      <tr><td class="ch"><span class="dot dot-niche_ota"></span>Wander.com</td><td class="num"><span class="d-flat">off</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="cov"><span class="unverified">not verified yet</span></td></tr>
-      <tr><td class="ch"><span class="dot dot-niche_ota"></span>Whimstay.com</td><td class="num"><span class="d-flat">off</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="cov"><span class="unverified">not verified yet</span></td></tr>
+      <tr><td class="ch"><span class="dot dot-ota"></span>Airbnb</td><td class="num">1344</td><td class="num">1321</td><td class="num"><strong class="num-bad">23</strong></td><td class="num"><strong>486</strong></td><td class="cov"><div class="bar"><span class="bar-warn" style="width:98.3%"></span></div><span class="pct">98.3%</span></td></tr>
+      <tr><td class="ch"><span class="dot dot-ota"></span>VRBO</td><td class="num">1344</td><td class="num">1317</td><td class="num"><strong class="num-bad">27</strong></td><td class="num"><strong>189</strong></td><td class="cov"><div class="bar"><span class="bar-warn" style="width:98.0%"></span></div><span class="pct">98.0%</span></td></tr>
+      <tr><td class="ch"><span class="dot dot-ota"></span>Booking.com</td><td class="num">1344</td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="cov"><span class="unverified">not verified yet</span></td></tr>
+      <tr><td class="ch"><span class="dot dot-branded_site"></span>AcmeHouseCo.com</td><td class="num">1344</td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="cov"><span class="unverified">not verified yet</span></td></tr>
+      <tr><td class="ch"><span class="dot dot-branded_site"></span>Casago.com</td><td class="num">1344</td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="cov"><span class="unverified">not verified yet</span></td></tr>
+      <tr><td class="ch"><span class="dot dot-branded_site"></span>CasagoArizona.com</td><td class="num">582</td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="cov"><span class="unverified">not verified yet</span></td></tr>
+      <tr><td class="ch"><span class="dot dot-branded_site"></span>CasagoSoCal.com</td><td class="num">760</td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="cov"><span class="unverified">not verified yet</span></td></tr>
+      <tr><td class="ch"><span class="dot dot-branded_site"></span>VacationPalmSprings.com</td><td class="num">489</td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="cov"><span class="unverified">not verified yet</span></td></tr>
+      <tr><td class="ch"><span class="dot dot-branded_site"></span>Midstays.com</td><td class="num"><span class="d-flat">off</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="cov"><span class="unverified">not verified yet</span></td></tr>
+      <tr><td class="ch"><span class="dot dot-niche_ota"></span>Vacasa.com</td><td class="num"><span class="d-flat">off</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="cov"><span class="unverified">not verified yet</span></td></tr>
+      <tr><td class="ch"><span class="dot dot-niche_ota"></span>Hopper.com</td><td class="num"><span class="d-flat">off</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="cov"><span class="unverified">not verified yet</span></td></tr>
+      <tr><td class="ch"><span class="dot dot-niche_ota"></span>Crewdogs.com</td><td class="num"><span class="d-flat">off</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="cov"><span class="unverified">not verified yet</span></td></tr>
+      <tr><td class="ch"><span class="dot dot-niche_ota"></span>Wander.com</td><td class="num"><span class="d-flat">off</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="cov"><span class="unverified">not verified yet</span></td></tr>
+      <tr><td class="ch"><span class="dot dot-niche_ota"></span>Whimstay.com</td><td class="num"><span class="d-flat">off</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="num"><span class="d-flat">&mdash;</span></td><td class="cov"><span class="unverified">not verified yet</span></td></tr>
       </tbody>
     </table>
   </div>
@@ -216,7 +219,9 @@
     listing IDs, so a missing one is a real gap. <strong>Branded sites are confirm-only:</strong>
     KeyData stores a single canonical site URL per unit, so a Casago.com URL proves the unit is
     on Casago.com but says nothing about the other sites — everything unconfirmed reads
-    <em>unknown</em>, never <em>missing</em>. Treat the branded-site <em>live</em> counts as a
+    <em>unknown</em>, never <em>missing</em>. <strong>Guest-confirmed</strong> counts units
+    with a Reva review in the last 90 days — the strongest liveness proof there is, since a
+    review means a real stay completed through that channel. Treat the branded-site <em>live</em> counts as a
     floor, not a score. Booking.com has no source yet. Niche channels
     (crewdogs, hopper, midstays, vacasa, wander, whimstay) default to expected-off until we confirm
     intended distribution per unit.
@@ -290,7 +295,7 @@
   </div>
 
   <footer>
-    Generated 2026-08-09T03:54:11+00:00. Merchant / payment-gateway validation is not yet
+    Generated 2026-08-09T04:37:01+00:00. Merchant / payment-gateway validation is not yet
     included &mdash; that field lives on the per-unit Streamline record and needs direct API
     credentials to pull at portfolio scale. Booking.com, branded-site and niche-channel
     verification arrive with URL crawling in the next phase.
