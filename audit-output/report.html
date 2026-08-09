@@ -130,7 +130,7 @@
     <h1>Listing Health Check</h1>
     <div class="stamp">2026-08-08 &middot; first run &mdash; no prior day to compare</div>
   </div>
-  <div class="sources">Sources: Streamline <span class="ok">connected</span>, Wazzi Data <span class="ok">connected</span>, Wheelhouse <span class="ok">connected</span>, Merchant / gateway <span class="off">not connected</span></div>
+  <div class="sources">Sources: Streamline <span class="ok">connected</span>, Wazzi Data <span class="ok">connected</span>, Wheelhouse <span class="off">not connected</span>, Merchant / gateway <span class="off">not connected</span></div>
 
   <div class="strip">
     <div class="cell">
@@ -142,11 +142,11 @@
       <div class="l">Non-Renting</div>
     </div>
     <div class="cell alert">
-      <div class="n">63</div>
+      <div class="n">89</div>
       <div class="l">High-Severity Flags</div>
     </div>
     <div class="cell alert">
-      <div class="n">196</div>
+      <div class="n">285</div>
       <div class="l">Total Flags</div>
     </div>
     <div class="cell">
@@ -154,7 +154,7 @@
       <div class="l">Opened / Closed</div>
     </div>
   </div>
-  <p class="recon">Streamline <strong>1,581</strong> units &middot; Wazzi Data <strong>1,587</strong> &middot; <strong class="num-bad">+6 discrepancy</strong> &middot; Wheelhouse <strong>525</strong></p>
+  <p class="recon">Streamline <strong>1,581</strong> units &middot; Wazzi Data <strong>1,587</strong> &middot; <strong class="num-bad">+6 discrepancy</strong></p>
 
   <h2>All checks</h2>
   <div class="scroll">
@@ -171,6 +171,8 @@
       <tr><td class="ch">Not in Wheelhouse</td><td><span class="sev sev-high">high</span></td><td class="num"><span class="unverified">not yet checked</span></td><td class="num"><span class="unverified">needs API credentials</span></td><td class="why">No Wheelhouse listing — the unit is not being revenue-managed.</td></tr>
       <tr><td class="ch">Wheelhouse listing inactive</td><td><span class="sev sev-high">high</span></td><td class="num"><span class="unverified">not yet checked</span></td><td class="num"><span class="unverified">needs API credentials</span></td><td class="why">Present in Wheelhouse but flagged inactive.</td></tr>
       <tr><td class="ch">Wheelhouse rate posting off</td><td><span class="sev sev-medium">medium</span></td><td class="num"><span class="unverified">not yet checked</span></td><td class="num"><span class="unverified">needs API credentials</span></td><td class="why">In Wheelhouse, but automatic rate posting is disabled, so recommended prices never reach the unit.</td></tr>
+      <tr><td class="ch">Not active in KeyData</td><td><span class="sev sev-high">high</span></td><td class="num"><strong class="num-bad">26</strong> <span class="d-flat">&mdash;</span></td><td class="num"><span class="pct">1,344 of 1,344</span></td><td class="why">Renting in Streamline but not in KeyData&#x27;s active set — performance for this unit is not being tracked.</td></tr>
+      <tr><td class="ch">Active in KeyData, not renting in Streamline</td><td><span class="sev sev-medium">medium</span></td><td class="num"><strong class="num-bad">63</strong> <span class="d-flat">&mdash;</span></td><td class="num"><span class="pct">1,344 of 1,344</span></td><td class="why">KeyData is tracking a unit Streamline does not list as active and renting.</td></tr>
       <tr><td class="ch">Missing from Wazzi Data</td><td><span class="sev sev-medium">medium</span></td><td class="num"><span class="num-ok">0</span> <span class="d-flat">&mdash;</span></td><td class="num"><span class="pct">1,344 of 1,344</span></td><td class="why">In Streamline but absent from Wazzi Data.</td></tr>
       <tr><td class="ch">In Wazzi Data, not in Streamline</td><td><span class="sev sev-medium">medium</span></td><td class="num"><strong class="num-bad">6</strong> <span class="d-flat">&mdash;</span></td><td class="num"><span class="pct">1,344 of 1,344</span></td><td class="why">Wazzi Data carries a unit Streamline no longer returns.</td></tr>
       <tr class="grouprow"><td colspan="5">Accounting</td></tr>
@@ -210,10 +212,14 @@
     </table>
   </div>
   <div class="note">
-    Only <strong>Airbnb</strong> and <strong>VRBO</strong> are verified today, read from
-    Streamline's OTA listing IDs. The rest are tracked but show <em>not verified</em> rather
-    than a misleading green. Niche channels (crewdogs, hopper, midstays, vacasa, wander, whimstay)
-    default to expected-off until we confirm intended distribution per unit.
+    <strong>Airbnb</strong> and <strong>VRBO</strong> are fully verified from Streamline's OTA
+    listing IDs, so a missing one is a real gap. <strong>Branded sites are confirm-only:</strong>
+    KeyData stores a single canonical site URL per unit, so a Casago.com URL proves the unit is
+    on Casago.com but says nothing about the other sites — everything unconfirmed reads
+    <em>unknown</em>, never <em>missing</em>. Treat the branded-site <em>live</em> counts as a
+    floor, not a score. Booking.com has no source yet. Niche channels
+    (crewdogs, hopper, midstays, vacasa, wander, whimstay) default to expected-off until we confirm
+    intended distribution per unit.
   </div>
 
   <h2>Changed since last run</h2>
@@ -273,7 +279,7 @@
   </div>
 
   <footer>
-    Generated 2026-08-09T01:33:22+00:00. Merchant / payment-gateway validation is not yet
+    Generated 2026-08-09T03:20:44+00:00. Merchant / payment-gateway validation is not yet
     included &mdash; that field lives on the per-unit Streamline record and needs direct API
     credentials to pull at portfolio scale. Booking.com, branded-site and niche-channel
     verification arrive with URL crawling in the next phase.

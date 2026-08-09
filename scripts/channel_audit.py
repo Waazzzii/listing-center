@@ -13,19 +13,27 @@ inputs always produce the same output.
 
 Checks performed, by category:
 
-  DISTRIBUTION  Airbnb / VRBO listing IDs present on active+renting units
-  SYSTEMS       Unit present in Wheelhouse; Wheelhouse active; automatic rate
-                posting enabled; unit present in Wazzi Data
-  ACCOUNTING    COPS account/bank IDs present in Wazzi Data
+  DISTRIBUTION  Airbnb / VRBO listing IDs present on active+renting units;
+                online bookings enabled; branded-site presence confirmed from
+                KeyData's canonical site URL (confirm-only — see observe())
+  SYSTEMS       Active in KeyData; KeyData tracking units Streamline does not
+                rent; present in Wazzi Data; Wheelhouse presence/active/rate
+                posting (pending an id mapping — see load_wheelhouse)
+  ACCOUNTING    COPS account/bank IDs, scoped to markets that use them;
+                merchant / payment gateway (needs --details)
   CLASSIFICATION  Area, neighborhood, location resort, property group present
                 and internally consistent (AZ units in AZ groups, etc.)
+
+Every check reports how many units it actually inspected. Absence is only ever
+claimed from a source that looks complete — a dropped page or an unresolved id
+mapping reports "not checked", never "no problems found".
 
 Usage:
   python3 scripts/channel_audit.py \
       --streamline-group <file> [--streamline-group <file> ...] \
       --nonrenting <file> \
-      [--wazzi <file> ...] [--wheelhouse <file> ...] \
-      [--outdir audit-output] [--date YYYY-MM-DD]
+      [--wazzi <file> ...] [--keydata <file> ...] [--wheelhouse <file> ...] \
+      [--details <file> ...] [--outdir audit-output] [--date YYYY-MM-DD]
 
 Streamline group payloads must be fetched with show_ota_ids=true, otherwise
 every OTA reads as missing.
@@ -54,12 +62,18 @@ CHANNELS: list[dict[str, Any]] = [
     {"code": "airbnb", "name": "Airbnb", "kind": "ota", "observable": True},
     {"code": "vrbo", "name": "VRBO", "kind": "ota", "observable": True},
     {"code": "booking", "name": "Booking.com", "kind": "ota", "observable": False},
-    {"code": "acmehouseco", "name": "AcmeHouseCo.com", "kind": "branded_site", "observable": False},
-    {"code": "casago", "name": "Casago.com", "kind": "branded_site", "observable": False},
-    {"code": "casago_az", "name": "CasagoArizona.com", "kind": "branded_site", "observable": False},
-    {"code": "casago_socal", "name": "CasagoSoCal.com", "kind": "branded_site", "observable": False},
-    {"code": "vacation_palm_springs", "name": "VacationPalmSprings.com", "kind": "branded_site", "observable": False},
-    {"code": "midstays", "name": "Midstays.com", "kind": "branded_site", "observable": False},
+    {"code": "acmehouseco", "name": "AcmeHouseCo.com", "kind": "branded_site",
+     "observable": False, "host": "acmehouseco.com"},
+    {"code": "casago", "name": "Casago.com", "kind": "branded_site",
+     "observable": False, "host": "casago.com"},
+    {"code": "casago_az", "name": "CasagoArizona.com", "kind": "branded_site",
+     "observable": False, "host": "casagoarizona.com"},
+    {"code": "casago_socal", "name": "CasagoSoCal.com", "kind": "branded_site",
+     "observable": False, "host": "casagosocal.com"},
+    {"code": "vacation_palm_springs", "name": "VacationPalmSprings.com", "kind": "branded_site",
+     "observable": False, "host": "vacationpalmsprings.com"},
+    {"code": "midstays", "name": "Midstays.com", "kind": "branded_site",
+     "observable": False, "host": "midstays.com"},
     {"code": "vacasa", "name": "Vacasa.com", "kind": "niche_ota", "observable": False},
     {"code": "hopper", "name": "Hopper.com", "kind": "niche_ota", "observable": False},
     {"code": "crewdogs", "name": "Crewdogs.com", "kind": "niche_ota", "observable": False},
@@ -91,6 +105,12 @@ ISSUES: dict[str, tuple[str, str, str, str]] = {
     "wheelhouse_posting_off": ("systems", "Wheelhouse rate posting off", "medium",
                                "In Wheelhouse, but automatic rate posting is disabled, so "
                                "recommended prices never reach the unit."),
+    "not_active_in_keydata": ("systems", "Not active in KeyData", "high",
+                              "Renting in Streamline but not in KeyData's active set — "
+                              "performance for this unit is not being tracked."),
+    "keydata_active_orphan": ("systems", "Active in KeyData, not renting in Streamline", "medium",
+                              "KeyData is tracking a unit Streamline does not list as "
+                              "active and renting."),
     "not_in_wazzi": ("systems", "Missing from Wazzi Data", "medium",
                      "In Streamline but absent from Wazzi Data."),
     "orphan_in_wazzi": ("systems", "In Wazzi Data, not in Streamline", "medium",
@@ -136,12 +156,28 @@ def expected_channels(unit: dict[str, Any]) -> set[str]:
     return expected
 
 
-def observe(unit: dict[str, Any], channel_code: str) -> str:
-    """Return 'live' | 'not_live' | 'unknown' for a unit on a channel."""
+CHANNEL_BY_CODE = {c["code"]: c for c in CHANNELS}
+
+
+def observe(unit: dict[str, Any], channel_code: str, site_url: str = "") -> str:
+    """Return 'live' | 'not_live' | 'unknown' for a unit on a channel.
+
+    Airbnb/VRBO are authoritative: Streamline either holds a listing id or it
+    does not, so absence is a real gap.
+
+    Branded sites are confirm-only. KeyData stores ONE canonical site URL per
+    unit, so a casago.com URL proves the unit is on Casago.com but says nothing
+    about CasagoSoCal. A non-match therefore yields 'unknown', never 'not_live'
+    — otherwise every unit would appear missing from five sites at once.
+    """
     if channel_code in ("airbnb", "vrbo"):
         ota = unit.get("ota_listing_ids") or {}
         value = ota.get(channel_code)
         return "live" if value and str(value).strip() else "not_live"
+
+    host = CHANNEL_BY_CODE.get(channel_code, {}).get("host")
+    if host and site_url and host in site_url.lower():
+        return "live"
     return "unknown"
 
 
@@ -193,6 +229,34 @@ def load_wazzi(paths: list[str]) -> dict[str, dict[str, Any]]:
     return rows
 
 
+def load_keydata(paths: list[str]) -> dict[str, dict[str, Any]]:
+    """Streamline unit_id → KeyData record.
+
+    KeyData tracks properties from several sources; only rows with
+    source == 'STREAMLN' carry a source_id that is a Streamline unit id.
+    Rows from other sources (e.g. GOOGLE) are counted but not joined.
+    """
+    rows: dict[str, dict[str, Any]] = {}
+    for path in paths:
+        payload = load_json(path)
+        items = payload.get("data", payload if isinstance(payload, list) else [])
+        for item in items:
+            if item.get("source") != "STREAMLN":
+                continue
+            source_id = str(item.get("source_id") or "").strip()
+            if source_id:
+                rows[source_id] = item
+    return rows
+
+
+def keydata_site_url(record: dict[str, Any]) -> str:
+    """The branded-site URL KeyData holds for a unit, if any."""
+    for entry in record.get("listing_urls") or []:
+        if entry.get("url_type") == "URL" and (entry.get("url") or "").strip():
+            return entry["url"].strip()
+    return ""
+
+
 def load_wheelhouse(paths: list[str]) -> dict[str, dict[str, Any]]:
     """Streamline unit_id → Wheelhouse listing, across paginated payloads."""
     rows: dict[str, dict[str, Any]] = {}
@@ -218,11 +282,13 @@ def build_audit(
     nonrenting: list[dict[str, Any]],
     wazzi: dict[str, dict[str, Any]],
     wheelhouse: dict[str, dict[str, Any]],
+    keydata: dict[str, dict[str, Any]],
     details: dict[str, dict[str, Any]],
     run_date: str,
 ) -> dict[str, Any]:
     have_wazzi = bool(wazzi)
     have_wheelhouse = bool(wheelhouse)
+    have_keydata = bool(keydata)
     detailed_units: set[str] = set()
     merchant_units: set[str] = set()
 
@@ -238,6 +304,9 @@ def build_audit(
     wheelhouse_complete = wheelhouse_usable and len(wheelhouse) >= COMPLETE_AT * len(renting)
     wazzi_matched = sum(1 for u in renting if str(u.get("id")) in wazzi)
     wazzi_complete = have_wazzi and len(wazzi) >= COMPLETE_AT * len(renting)
+    keydata_matched = sum(1 for u in renting if str(u.get("id")) in keydata)
+    keydata_usable = have_keydata and keydata_matched > 0
+    keydata_complete = keydata_usable and len(keydata) >= COMPLETE_AT * len(renting)
 
     # Which areas actually use COPS account/bank IDs? Derived from the data
     # rather than hardcoded, so the check follows the convention as it spreads.
@@ -286,12 +355,14 @@ def build_audit(
 
     for unit in renting:
         unit_id = str(unit.get("id"))
+        kd = keydata.get(unit_id)
+        site_url = keydata_site_url(kd) if kd else ""
 
         # --- distribution ---
         for code in expected_channels(unit):
             row = coverage[code]
             row["expected"] += 1
-            state = observe(unit, code)
+            state = observe(unit, code, site_url)
             if state == "live":
                 row["live"] += 1
             elif state == "not_live":
@@ -327,6 +398,8 @@ def build_audit(
                     flag(unit, "wheelhouse_posting_off")
         if wazzi_complete and unit_id not in wazzi:
             flag(unit, "not_in_wazzi")
+        if keydata_complete and kd is None:
+            flag(unit, "not_active_in_keydata")
 
         # --- accounting ---
         # Only assert a missing COPS ID in markets that actually use them.
@@ -373,6 +446,22 @@ def build_audit(
                 if blank(gateway.get("name")) and blank(gateway.get("settings_name")):
                     flag(unit, "missing_merchant")
 
+    # Units KeyData lists as active that Streamline does not have as active+renting.
+    if keydata_usable:
+        renting_ids = {str(u.get("id")) for u in renting}
+        for unit_id, row in keydata.items():
+            if unit_id not in renting_ids:
+                category, label, severity, _ = ISSUES["keydata_active_orphan"]
+                issues.append({
+                    "unit_id": unit_id,
+                    "name": row.get("property_alias") or row.get("name") or "(unnamed)",
+                    "area": row.get("source_complex") or "(unassigned)",
+                    "property_group": None,
+                    "issue": "keydata_active_orphan",
+                    "category": category, "label": label, "severity": severity,
+                    "detail": f"city={row.get('city') or '?'}",
+                })
+
     # Units Wazzi knows about that Streamline no longer returns.
     if wazzi_complete:
         streamline_ids = {str(u.get("id")) for u in renting} | {
@@ -406,6 +495,8 @@ def build_audit(
         # Units we could actually inspect, not units that exist. These drive the
         # "checked N of M" column, which must never overstate what was examined.
         "wheelhouse_matched": wheelhouse_matched,
+        "keydata": len(keydata) if have_keydata else 0,
+        "keydata_matched": keydata_matched,
         "wazzi_matched": wazzi_matched,
         "cops_scope": sum(1 for u in renting if area_of(u) in cops_areas),
         "total_renting": total_renting_units,
@@ -418,8 +509,9 @@ def build_audit(
             "severity": ISSUES[code][2],
             "why": ISSUES[code][3],
             "count": by_issue.get(code, 0),
-            "checked": _covered(code, wazzi_complete, wheelhouse_complete,
-                                have_wazzi, wheelhouse_usable, detailed_units, merchant_units),
+            "checked": _covered(code, wazzi_complete, wheelhouse_complete, keydata_complete,
+                                have_wazzi, wheelhouse_usable, keydata_usable,
+                                detailed_units, merchant_units),
             "coverage": _coverage(code, scope),
         }
         for code in ISSUES
@@ -433,6 +525,7 @@ def build_audit(
             "streamline": True,
             "wazzi": have_wazzi,
             "wheelhouse": have_wheelhouse,
+            "keydata": have_keydata,
             "wheelhouse id mapping": wheelhouse_usable,
             "unit detail": bool(detailed_units),
             "merchant": bool(merchant_units),
@@ -444,6 +537,7 @@ def build_audit(
             "total": total_renting + total_nonrenting,
             "wazzi_total": len(wazzi) if have_wazzi else None,
             "wheelhouse_total": len(wheelhouse) if have_wheelhouse else None,
+            "keydata_total": len(keydata) if have_keydata else None,
             "by_area": dict(
                 sorted(census_by_area.items(), key=lambda kv: -kv[1]["renting"])
             ),
@@ -462,9 +556,14 @@ DETAIL_CHECKS = {"missing_neighborhood", "missing_resort", "missing_property_gro
                  "group_state_mismatch"}
 
 
+KEYDATA_CHECKS = {"not_active_in_keydata", "keydata_active_orphan"}
+
+
 def _covered(code: str, wazzi_complete: bool, wheelhouse_complete: bool,
-             have_wazzi: bool, have_wheelhouse: bool,
-             detailed: set[str], merchant: set[str]) -> bool:
+             keydata_complete: bool, have_wazzi: bool, have_wheelhouse: bool,
+             have_keydata: bool, detailed: set[str], merchant: set[str]) -> bool:
+    if code in KEYDATA_CHECKS:
+        return keydata_complete
     # Absence-claims require a complete source; presence-claims only require data.
     if code == "not_in_wheelhouse":
         return wheelhouse_complete
@@ -496,6 +595,8 @@ def _coverage(code: str, scope: dict[str, int]) -> str:
         n = scope["wheelhouse_matched"]
     elif code in ("not_in_wazzi", "orphan_in_wazzi"):
         n = total if scope["wazzi"] else 0
+    elif code in ("not_active_in_keydata", "keydata_active_orphan"):
+        n = total if scope["keydata"] else 0
     elif code in WAZZI_CHECKS:
         n = scope["wazzi_matched"]
     else:
@@ -861,10 +962,14 @@ def render_html(audit: dict[str, Any], deltas: dict[str, Any]) -> str:
     </table>
   </div>
   <div class="note">
-    Only <strong>Airbnb</strong> and <strong>VRBO</strong> are verified today, read from
-    Streamline's OTA listing IDs. The rest are tracked but show <em>not verified</em> rather
-    than a misleading green. Niche channels ({esc(', '.join(audit['niche_default_off']))})
-    default to expected-off until we confirm intended distribution per unit.
+    <strong>Airbnb</strong> and <strong>VRBO</strong> are fully verified from Streamline's OTA
+    listing IDs, so a missing one is a real gap. <strong>Branded sites are confirm-only:</strong>
+    KeyData stores a single canonical site URL per unit, so a Casago.com URL proves the unit is
+    on Casago.com but says nothing about the other sites — everything unconfirmed reads
+    <em>unknown</em>, never <em>missing</em>. Treat the branded-site <em>live</em> counts as a
+    floor, not a score. Booking.com has no source yet. Niche channels
+    ({esc(', '.join(audit['niche_default_off']))}) default to expected-off until we confirm
+    intended distribution per unit.
   </div>
 
   <h2>Changed since last run</h2>
@@ -947,6 +1052,8 @@ def main() -> int:
     parser.add_argument("--nonrenting", required=True, action="append")
     parser.add_argument("--wazzi", action="append", default=[])
     parser.add_argument("--wheelhouse", action="append", default=[])
+    parser.add_argument("--keydata", action="append", default=[],
+                        help="KeyData list_pm_properties payload (is_active=true), repeatable")
     parser.add_argument("--details", action="append", default=[],
                         help="Per-unit detail map from fetch_streamline_details.py "
                              "(classification + merchant fields)")
@@ -964,6 +1071,7 @@ def main() -> int:
     nonrenting = load_streamline_units(args.nonrenting)
     wazzi = load_wazzi(args.wazzi)
     wheelhouse = load_wheelhouse(args.wheelhouse)
+    keydata = load_keydata(args.keydata)
 
     details: dict[str, dict[str, Any]] = {}
     for path in args.details:
@@ -982,7 +1090,7 @@ def main() -> int:
     history_dir = os.path.join(args.outdir, "history")
     os.makedirs(history_dir, exist_ok=True)
 
-    audit = build_audit(renting, nonrenting, wazzi, wheelhouse, details, args.date)
+    audit = build_audit(renting, nonrenting, wazzi, wheelhouse, keydata, details, args.date)
     deltas = compute_deltas(audit, load_prior(history_dir, args.date))
     audit["deltas"] = deltas
 
@@ -1002,6 +1110,9 @@ def main() -> int:
               f"({census['wazzi_total'] - census['total']:+d} vs Streamline)")
     if census.get("wheelhouse_total") is not None:
         print(f"  Wheelhouse      : {census['wheelhouse_total']:,}")
+    if census.get("keydata_total") is not None:
+        print(f"  KeyData (active): {census['keydata_total']:,} "
+              f"({census['keydata_total'] - census['active_renting']:+d} vs renting)")
     print(f"  Flags (high/all): {sum(1 for i in audit['issues'] if i['severity'] == 'high'):,}"
           f" / {len(audit['issues']):,}")
     for s in audit["issue_summary"]:
