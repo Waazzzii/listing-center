@@ -43,6 +43,7 @@ from __future__ import annotations
 
 import argparse
 import collections
+import csv
 import datetime as dt
 import html
 import json
@@ -179,6 +180,46 @@ ACTION_WEIGHTS = {
 # Units mid-onboarding are dark on purpose; keep them visible but well down the
 # list so they do not crowd out genuine faults.
 ONBOARDING_PATTERN = re.compile(r"onboarding", re.IGNORECASE)
+
+# What to actually do about each finding. Written for whoever picks up the
+# task, not for an engineer.
+FIX_ACTIONS = {
+    "missing_airbnb": "Open the unit in Streamline and add the Airbnb listing ID under "
+                      "Distribution Channel Settings. If no Airbnb listing exists, create one.",
+    "missing_vrbo": "Open the unit in Streamline and add the VRBO listing ID under "
+                    "Distribution Channel Settings. If no VRBO listing exists, create one.",
+    "dark_all_otas": "Confirm whether this unit is meant to be selling. If yes, create or "
+                     "relink both OTA listings. If no, set it Non-Renting so it stops "
+                     "appearing here.",
+    "online_bookings_off": "Enable online bookings on the unit in Streamline.",
+    "reviews_without_listing_id": "The listing is live and taking bookings — do NOT rebuild "
+                                  "it. Find the live listing, copy its ID, and paste it into "
+                                  "Streamline.",
+    "no_guest_activity": "No action required on its own. Check occupancy and pricing before "
+                         "treating this as a problem.",
+    "not_active_in_keydata": "Activate the unit in KeyData so its performance is tracked.",
+    "keydata_active_orphan": "Deactivate in KeyData — this is not a renting property.",
+    "not_in_wazzi": "Re-sync the unit into Wazzi Data.",
+    "orphan_in_wazzi": "Remove or archive the stale Wazzi Data record.",
+    "not_in_wheelhouse": "Add the unit to Wheelhouse so it is revenue-managed.",
+    "wheelhouse_inactive": "Reactivate the Wheelhouse listing.",
+    "wheelhouse_posting_off": "Turn on automatic rate posting in Wheelhouse.",
+    "missing_accounting_ids": "Add the COPS account and bank IDs to the unit record.",
+    "missing_merchant": "Set the credit-card gateway on the unit so revenue routes to the "
+                        "right account.",
+    "missing_area": "Assign the unit to an area in Streamline. Nothing routes correctly "
+                    "without it.",
+    "missing_neighborhood": "Assign a neighborhood in Streamline.",
+    "missing_resort": "Assign a location resort in Streamline.",
+    "missing_property_group": "Assign the unit to its regional property group.",
+    "group_state_mismatch": "Move the unit into the property group matching its state.",
+}
+
+# Deep links we can build from real data. Admin URLs for Streamline and KeyData
+# are not published in their APIs — set these once and every row gets a direct
+# link. Left blank, the worklist shows the unit ID instead of a broken URL.
+STREAMLINE_ADMIN_URL = ""   # e.g. "https://web.streamlinevrs.com/unit/{unit_id}"
+KEYDATA_ADMIN_URL = ""      # e.g. "https://app.keydatadashboard.com/property/{property_id}"
 
 CATEGORY_LABELS = {
     "distribution": "Distribution",
@@ -427,6 +468,7 @@ def build_audit(
     }
 
     issues: list[dict[str, Any]] = []
+    unit_links: dict[str, dict[str, str]] = {}
 
     def flag(unit: dict[str, Any], code: str, detail: str = "") -> None:
         category, label, severity, _ = ISSUES[code]
@@ -446,6 +488,7 @@ def build_audit(
         unit_id = str(unit.get("id"))
         kd = keydata.get(unit_id)
         site_url = keydata_site_url(kd) if kd else ""
+
 
         # --- distribution ---
         for code in expected_channels(unit):
@@ -605,7 +648,14 @@ def build_audit(
             round(row["live"] / row["expected"] * 100, 1) if row["expected"] else None
         )
 
+    unit_links = build_links(renting, keydata)
+    for issue in issues:
+        issue["fix"] = FIX_ACTIONS.get(issue["issue"], "")
+        issue["links"] = unit_links.get(issue["unit_id"], {})
+
     top_actions = rank_actions(issues)
+    for entry in top_actions:
+        entry["links"] = unit_links.get(entry["unit_id"], {})
 
     by_issue = collections.Counter(i["issue"] for i in issues)
 
@@ -838,6 +888,39 @@ def render_html(audit: dict[str, Any], deltas: dict[str, Any]) -> str:
         for n, e in enumerate(audit.get("top_actions") or [], 1)
     ) or '      <tr><td colspan="5" class="empty">Nothing needs attention today.</td></tr>'
 
+    # Worklist: grouped by property so one person can take one home and finish it,
+    # rather than bouncing between systems row by row.
+    dark_ids = {i["unit_id"] for i in audit["issues"] if i["issue"] == "dark_all_otas"}
+    actionable = [
+        i for i in audit["issues"]
+        if i["severity"] == "high" and i["issue"] != "no_guest_activity"
+        and not (i["issue"] in ("missing_airbnb", "missing_vrbo") and i["unit_id"] in dark_ids)
+    ]
+    grouped: dict[str, list[dict[str, Any]]] = {}
+    for i in sorted(actionable, key=lambda x: (x["area"], x["name"])):
+        grouped.setdefault(i["unit_id"], []).append(i)
+
+    work_rows = []
+    for unit_id, items in grouped.items():
+        first = items[0]
+        links = first.get("links") or {}
+        link_html = " · ".join(
+            f'<a href="{esc(url)}" target="_blank" rel="noopener">{esc(label)}</a>'
+            for label, url in links.items()
+        ) or '<span class="d-flat">no live listing to open</span>'
+        jobs = "".join(
+            f'<div class="job"><span class="tag">{esc(i["label"])}</span>'
+            f'<span class="why">{esc(i.get("fix") or "")}</span></div>'
+            for i in items
+        )
+        work_rows.append(
+            f'      <tr><td><strong>{esc(first["name"])}</strong>'
+            f'<div class="mono">{esc(unit_id)}</div></td>'
+            f'<td>{esc(first["area"])}</td><td>{jobs}</td><td>{link_html}</td></tr>'
+        )
+    work_html = "".join(work_rows) or (
+        '      <tr><td colspan="4" class="empty">Nothing high-severity to work today.</td></tr>')
+
     check_rows = []
     for group in ("distribution", "systems", "accounting", "classification"):
         rows = [s for s in audit["issue_summary"] if s["category"] == group]
@@ -1054,6 +1137,11 @@ def render_html(audit: dict[str, Any], deltas: dict[str, Any]) -> str:
   @media (max-width: 700px) {{ .cols {{ grid-template-columns: 1fr; }} }}
   .colhead {{ font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.09em;
               font-weight: 700; margin-bottom: 8px; }}
+  .job {{ margin-bottom: 7px; }}
+  .job:last-child {{ margin-bottom: 0; }}
+  .job .why {{ display: block; margin-top: 3px; }}
+  #work td {{ vertical-align: top; }}
+  #work tbody tr td:first-child {{ box-shadow: inset 3px 0 0 var(--rail); }}
   ul.changes {{ margin: 0; padding-left: 17px; font-size: 13px; }}
   ul.changes li {{ margin-bottom: 5px; }}
   footer {{ margin-top: 46px; padding-top: 16px; border-top: 1px solid var(--line);
@@ -1102,6 +1190,21 @@ def render_html(audit: dict[str, Any], deltas: dict[str, Any]) -> str:
 {top_rows}
       </tbody>
     </table>
+  </div>
+
+  <h2>Worklist &mdash; what to fix <span class="count">{len(grouped)} properties</span></h2>
+  <div class="scroll">
+    <table id="work">
+      <thead><tr><th>Property</th><th>Area</th><th>What to fix</th><th>Where to go</th></tr></thead>
+      <tbody>
+{work_html}
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    High-severity items only, grouped so one person can take one property and finish it.
+    The full list including medium-severity items &mdash; with owner, status and notes
+    columns &mdash; is exported to <strong>worklist.csv</strong> every morning.
   </div>
 
   <h2>All checks</h2>
@@ -1239,6 +1342,97 @@ def rank_actions(issues: list[dict[str, Any]], limit: int = 10) -> list[dict[str
     )[:limit]
 
 
+STATUS_FILE = "tracker-status.csv"
+STATUS_HEADER = ["unit_id", "issue", "owner", "status", "notes"]
+
+
+def build_links(renting: list[dict[str, Any]],
+                keydata: dict[str, dict[str, Any]]) -> dict[str, dict[str, str]]:
+    """unit_id -> the places a person actually needs to open."""
+    out: dict[str, dict[str, str]] = {}
+    for unit in renting:
+        unit_id = str(unit.get("id"))
+        ota_ids = unit.get("ota_listing_ids") or {}
+        kd = keydata.get(unit_id)
+        links: dict[str, str] = {}
+        if ota_ids.get("airbnb"):
+            links["Airbnb"] = f"https://www.airbnb.com/rooms/{str(ota_ids['airbnb']).strip()}"
+        if ota_ids.get("vrbo"):
+            links["VRBO"] = f"https://www.vrbo.com/{str(ota_ids['vrbo']).strip()}"
+        site = keydata_site_url(kd) if kd else ""
+        if site:
+            links["Website"] = site
+        if STREAMLINE_ADMIN_URL:
+            links["Streamline"] = STREAMLINE_ADMIN_URL.format(unit_id=unit_id)
+        if kd and KEYDATA_ADMIN_URL:
+            links["KeyData"] = KEYDATA_ADMIN_URL.format(property_id=kd.get("property_id", ""))
+        out[unit_id] = links
+    return out
+
+
+def load_status(outdir: str) -> dict[tuple[str, str], dict[str, str]]:
+    """Ownership and progress, kept in a file the audit never overwrites.
+
+    The audit regenerates every morning, so assignment has to live outside it.
+    Keyed on (unit_id, issue): when a finding is fixed it stops appearing in the
+    audit and its row simply goes quiet — nothing to close by hand.
+    """
+    path = os.path.join(outdir, STATUS_FILE)
+    if not os.path.exists(path):
+        return {}
+    rows: dict[tuple[str, str], dict[str, str]] = {}
+    with open(path, newline="", encoding="utf-8") as handle:
+        for row in csv.DictReader(handle):
+            key = (str(row.get("unit_id", "")).strip(), str(row.get("issue", "")).strip())
+            if key[0]:
+                rows[key] = row
+    return rows
+
+
+def write_worklist(audit: dict[str, Any], outdir: str) -> int:
+    """One row per thing that needs doing, ready for Sheets or Asana import."""
+    status = load_status(outdir)
+    order = {"high": 0, "medium": 1, "low": 2}
+    dark_units = {i["unit_id"] for i in audit["issues"] if i["issue"] == "dark_all_otas"}
+    def redundant(i: dict[str, Any]) -> bool:
+        # "Dark on both" is one job, not three.
+        return i["issue"] in ("missing_airbnb", "missing_vrbo") and i["unit_id"] in dark_units
+    rows = sorted(
+        (i for i in audit["issues"]
+         if i["issue"] != "no_guest_activity" and not redundant(i)),
+        key=lambda i: (order.get(i["severity"], 3), i["area"], i["name"]),
+    )
+    path = os.path.join(outdir, "worklist.csv")
+    with open(path, "w", newline="", encoding="utf-8") as handle:
+        writer = csv.writer(handle)
+        writer.writerow([
+            "priority", "unit", "area", "property_group", "what_is_wrong", "what_to_fix",
+            "detail", "streamline_unit_id", "airbnb_url", "vrbo_url", "website_url",
+            "admin_url", "owner", "status", "notes",
+        ])
+        for i in rows:
+            existing = status.get((i["unit_id"], i["issue"]), {})
+            links = i.get("links") or {}
+            writer.writerow([
+                i["severity"], i["name"], i["area"], i.get("property_group") or "",
+                i["label"], i.get("fix") or "", i.get("detail") or "", i["unit_id"],
+                links.get("Airbnb", ""), links.get("VRBO", ""), links.get("Website", ""),
+                links.get("Streamline", "") or links.get("KeyData", ""),
+                existing.get("owner", ""), existing.get("status", "open"),
+                existing.get("notes", ""),
+            ])
+    # Seed the status file once so there is somewhere to record ownership.
+    status_path = os.path.join(outdir, STATUS_FILE)
+    if not os.path.exists(status_path):
+        with open(status_path, "w", newline="", encoding="utf-8") as handle:
+            writer = csv.writer(handle)
+            writer.writerow(STATUS_HEADER)
+            for i in rows:
+                if i["severity"] == "high":
+                    writer.writerow([i["unit_id"], i["issue"], "", "open", ""])
+    return len(rows)
+
+
 ARTIFACT_URL = "https://claude.ai/code/artifact/c49eecf9-248b-40f0-ab7f-21c17ebf208d"
 
 
@@ -1293,7 +1487,10 @@ def render_slack(audit: dict[str, Any], deltas: dict[str, Any]) -> str:
         lines.append(f"_Not yet checked: {', '.join(unchecked)}._")
 
     lines.append("")
-    lines.append(f"<{ARTIFACT_URL}|Open the full dashboard>")
+    lines.append(
+        f"<{ARTIFACT_URL}|Open the full dashboard> — the Worklist section lists every "
+        f"high-severity property with the exact fix and the links to open."
+    )
     return "\n".join(lines)
 
 
@@ -1326,7 +1523,18 @@ def main() -> int:
 
     if args.rebuild:
         audit = load_json(args.rebuild)
+        links_map: dict[str, dict[str, str]] = {}
+        rebuild_sources = args.streamline_group + args.renting
+        if rebuild_sources:
+            links_map = build_links(load_streamline_units(rebuild_sources),
+                                    load_keydata(args.keydata))
+        for issue in audit["issues"]:
+            issue["fix"] = FIX_ACTIONS.get(issue["issue"], "")
+            if links_map:
+                issue["links"] = links_map.get(issue["unit_id"], {})
         audit["top_actions"] = rank_actions(audit["issues"])
+        for entry in audit["top_actions"]:
+            entry["links"] = links_map.get(entry["unit_id"], entry.get("links", {}))
         deltas = audit.get("deltas", {})
         os.makedirs(args.outdir, exist_ok=True)
         with open(os.path.join(args.outdir, "report.html"), "w", encoding="utf-8") as handle:
@@ -1335,7 +1543,8 @@ def main() -> int:
             handle.write(render_slack(audit, deltas))
         with open(os.path.join(args.outdir, "latest.json"), "w", encoding="utf-8") as handle:
             json.dump(audit, handle, indent=2)
-        print(f"Rebuilt report.html and slack.md from {args.rebuild}")
+        write_worklist(audit, args.outdir)
+        print(f"Rebuilt report.html, slack.md and worklist.csv from {args.rebuild}")
         return 0
 
     renting_paths = args.streamline_group + args.renting
@@ -1384,6 +1593,7 @@ def main() -> int:
         handle.write(render_html(audit, deltas))
     with open(os.path.join(args.outdir, "slack.md"), "w", encoding="utf-8") as handle:
         handle.write(render_slack(audit, deltas))
+    worklist_rows = write_worklist(audit, args.outdir)
 
     census = audit["census"]
     print(f"Listing Health Check — {args.date}")
@@ -1415,7 +1625,8 @@ def main() -> int:
         print("  Top properties to look at:")
         for n, e in enumerate(audit["top_actions"][:5], 1):
             print(f"      {n}. {e['name']} ({e['area']}) — {'; '.join(dict.fromkeys(e['reasons']))}")
-    print(f"  Wrote {args.outdir}/latest.json, report.html, slack.md, "
+    print(f"  Worklist  : {worklist_rows:,} actionable rows -> {args.outdir}/worklist.csv")
+    print(f"  Wrote {args.outdir}/latest.json, report.html, slack.md, worklist.csv, "
           f"history/{args.date}.json")
     return 0
 

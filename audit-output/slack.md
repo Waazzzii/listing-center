@@ -18,4 +18,4 @@ _4 newly flagged, 28 resolved since 2026-08-09_
 
 _Not yet checked: Not in Wheelhouse, Wheelhouse listing inactive, Wheelhouse rate posting off, No merchant / payment gateway, No neighborhood assigned, No location resort assigned, No property group assigned, Property group / state mismatch._
 
-<https://claude.ai/code/artifact/c49eecf9-248b-40f0-ab7f-21c17ebf208d|Open the full dashboard>
+<https://claude.ai/code/artifact/c49eecf9-248b-40f0-ab7f-21c17ebf208d|Open the full dashboard> — the Worklist section lists every high-severity property with the exact fix and the links to open.

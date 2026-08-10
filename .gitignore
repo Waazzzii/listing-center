@@ -34,3 +34,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Tracker ownership/status is edited by the team, not generated
+audit-output/tracker-status.csv
