@@ -56,8 +56,11 @@ from typing import Any
 # Channel registry
 # --------------------------------------------------------------------------
 
-AZ_AREAS = {"Phoenix", "Tucson", "Sedona", "Flagstaff", "PineTop", "HighDesert"}
-CA_AREAS = {"Central Coast", "Orange County", "Lake Arrowhead", "IdyllwildTemecula"}
+# HighDesert (Twentynine Palms, Yucca Valley, Joshua Tree) is California, not
+# Arizona — confirmed against every unit's own city/zip. Originally miscoded
+# here; caught only when an area-vs-state check was run against real records.
+AZ_AREAS = {"Phoenix", "Tucson", "Sedona", "Flagstaff", "PineTop"}
+CA_AREAS = {"Central Coast", "Orange County", "Lake Arrowhead", "IdyllwildTemecula", "HighDesert"}
 PS_AREAS = {"PalmSprings", "Coachella"}
 
 CHANNELS: list[dict[str, Any]] = [
