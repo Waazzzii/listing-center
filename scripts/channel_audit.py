@@ -151,6 +151,35 @@ ISSUES: dict[str, tuple[str, str, str, str]] = {
                              "misroutes reporting and accounting."),
 }
 
+# How much each finding should pull a unit up the "go look at this" list.
+# Weighted by revenue impact and by how cheap the fix is: an unmapped listing
+# that is already selling is a data edit, so it ranks above a dark listing that
+# needs rebuilding.
+ACTION_WEIGHTS = {
+    "reviews_without_listing_id": 95,
+    "dark_all_otas": 90,
+    "online_bookings_off": 70,
+    "not_active_in_keydata": 60,
+    "missing_merchant": 45,
+    "missing_airbnb": 40,
+    "missing_vrbo": 35,
+    "group_state_mismatch": 30,
+    "missing_area": 25,
+    "missing_accounting_ids": 15,
+    "not_in_wazzi": 10,
+    "missing_property_group": 10,
+    "wheelhouse_posting_off": 25,
+    "not_in_wheelhouse": 40,
+    "wheelhouse_inactive": 40,
+    "no_guest_activity": 2,
+    "missing_neighborhood": 1,
+    "missing_resort": 1,
+}
+
+# Units mid-onboarding are dark on purpose; keep them visible but well down the
+# list so they do not crowd out genuine faults.
+ONBOARDING_PATTERN = re.compile(r"onboarding", re.IGNORECASE)
+
 CATEGORY_LABELS = {
     "distribution": "Distribution",
     "systems": "Systems",
@@ -576,7 +605,10 @@ def build_audit(
             round(row["live"] / row["expected"] * 100, 1) if row["expected"] else None
         )
 
+    top_actions = rank_actions(issues)
+
     by_issue = collections.Counter(i["issue"] for i in issues)
+
     total_renting_units = len(renting)
     scope = {
         "classification_detail": len(detailed_units),
@@ -638,6 +670,7 @@ def build_audit(
         },
         "coverage": list(coverage.values()),
         "issue_summary": summary,
+        "top_actions": top_actions,
         "issues": sorted(issues, key=lambda i: (i["category"], i["issue"], i["area"], i["name"])),
         "channels_observable": [c["code"] for c in CHANNELS if c["observable"]],
         "niche_default_off": sorted(NICHE_DEFAULT_OFF),
@@ -797,6 +830,14 @@ def render_html(audit: dict[str, Any], deltas: dict[str, Any]) -> str:
             f'<td class="cov">{cov}</td></tr>'
         )
 
+    top_rows = "".join(
+        f'      <tr><td class="num">{n}</td><td>{esc(e["name"])}</td>'
+        f'<td>{esc(e["area"])}</td>'
+        f'<td class="why">{esc("; ".join(dict.fromkeys(e["reasons"])))}</td>'
+        f'<td class="mono">{esc(e["unit_id"])}</td></tr>'
+        for n, e in enumerate(audit.get("top_actions") or [], 1)
+    ) or '      <tr><td colspan="5" class="empty">Nothing needs attention today.</td></tr>'
+
     check_rows = []
     for group in ("distribution", "systems", "accounting", "classification"):
         rows = [s for s in audit["issue_summary"] if s["category"] == group]
@@ -827,10 +868,14 @@ def render_html(audit: dict[str, Any], deltas: dict[str, Any]) -> str:
         rows = [i for i in audit["issues"] if i["issue"] in codes]
         if not rows:
             return '      <tr><td colspan="5" class="empty">Nothing flagged.</td></tr>'
+        # Column order must match the shared 5-column header:
+        # Unit | Area | Issue | Detail | Streamline ID.
+        # Detail falls back to the property group, and the em-dash is emitted as
+        # markup rather than passed through esc(), which would double-escape it.
         out = "".join(
             f'      <tr><td>{esc(i["name"])}</td><td>{esc(i["area"])}</td>'
-            f'<td>{esc(i["property_group"] or "&mdash;")}</td>'
             f'<td><span class="tag">{esc(i["label"])}</span></td>'
+            f'<td class="why">{esc(i["detail"]) or esc(i["property_group"] or "") or DASH_CELL}</td>'
             f'<td class="mono">{esc(i["unit_id"])}</td></tr>'
             for i in rows[:limit]
         )
@@ -973,7 +1018,7 @@ def render_html(audit: dict[str, Any], deltas: dict[str, Any]) -> str:
   .dot-ota {{ background: var(--accent); }}
   .dot-branded_site {{ background: var(--muted); }}
   .dot-niche_ota {{ background: var(--line); box-shadow: inset 0 0 0 1px var(--muted); }}
-  #dark tbody tr td:first-child, #money tbody tr td:first-child,
+  #top tbody tr td:first-child, #dark tbody tr td:first-child, #money tbody tr td:first-child,
   #systems tbody tr td:first-child, #classify tbody tr td:first-child {{ box-shadow: inset 3px 0 0 var(--rail); }}
   #dark tbody tr td.empty, #money tbody tr td.empty,
   #systems tbody tr td.empty, #classify tbody tr td.empty {{ box-shadow: none; }}
@@ -1047,6 +1092,17 @@ def render_html(audit: dict[str, Any], deltas: dict[str, Any]) -> str:
     </div>
   </div>
   <p class="recon">{reconciliation}</p>
+
+  <h2>Start here <span class="count">{len(audit.get('top_actions') or [])}</span></h2>
+  <div class="scroll">
+    <table id="top">
+      <thead><tr><th class="num">#</th><th>Unit</th><th>Area</th><th>Why it is on this list</th>
+        <th>Streamline ID</th></tr></thead>
+      <tbody>
+{top_rows}
+      </tbody>
+    </table>
+  </div>
 
   <h2>All checks</h2>
   <div class="scroll">
@@ -1160,6 +1216,87 @@ def render_html(audit: dict[str, Any], deltas: dict[str, Any]) -> str:
 """
 
 
+def rank_actions(issues: list[dict[str, Any]], limit: int = 10) -> list[dict[str, Any]]:
+    """The units most worth someone's time, worst first."""
+    per_unit: dict[str, dict[str, Any]] = {}
+    for issue in issues:
+        if issue["issue"] == "keydata_active_orphan":
+            continue  # a cleanup task, not a revenue-earning property
+        entry = per_unit.setdefault(issue["unit_id"], {
+            "unit_id": issue["unit_id"], "name": issue["name"], "area": issue["area"],
+            "score": 0, "reasons": [],
+        })
+        entry["score"] += ACTION_WEIGHTS.get(issue["issue"], 5)
+        if issue["issue"] != "no_guest_activity":
+            entry["reasons"].append(issue["label"])
+    for entry in per_unit.values():
+        if ONBOARDING_PATTERN.search(entry["name"]):
+            entry["score"] = int(entry["score"] * 0.3)
+            entry["reasons"].append("mid-onboarding — may be dark on purpose")
+    return sorted(
+        (e for e in per_unit.values() if e["reasons"]),
+        key=lambda e: (-e["score"], e["name"]),
+    )[:limit]
+
+
+ARTIFACT_URL = "https://claude.ai/code/artifact/c49eecf9-248b-40f0-ab7f-21c17ebf208d"
+
+
+def render_slack(audit: dict[str, Any], deltas: dict[str, Any]) -> str:
+    """The daily #revenue-pulse post.
+
+    Built here rather than written fresh each morning so the numbers always
+    come from the audit itself and the format never drifts.
+    """
+    census = audit["census"]
+    cd = deltas.get("census", {})
+    high = sum(1 for i in audit["issues"] if i["severity"] == "high")
+    opened, closed = len(deltas.get("opened", [])), len(deltas.get("closed", []))
+
+    def signed(n: int | None) -> str:
+        return "" if not n else f" ({n:+d})"
+
+    lines = [f"*Listing Health Check — {audit['run_date']}*"]
+    lines.append(
+        f"{census['active_renting']:,} active & renting{signed(cd.get('active_renting'))}"
+        f"  ·  {census['non_renting']:,} non-renting{signed(cd.get('non_renting'))}"
+        f"  ·  *{high} high-severity flags*"
+    )
+    if deltas.get("prior_date"):
+        lines.append(f"_{opened} newly flagged, {closed} resolved since {deltas['prior_date']}_")
+    else:
+        lines.append("_First run — no prior day to compare._")
+
+    top = audit.get("top_actions") or []
+    if top:
+        lines.append("")
+        lines.append("*Top properties to look at*")
+        for n, entry in enumerate(top, 1):
+            reasons = "; ".join(dict.fromkeys(entry["reasons"]))
+            lines.append(f"{n}. *{entry['name']}* — {entry['area']} — {reasons}")
+    else:
+        lines.append("")
+        lines.append("*No properties need attention today.*")
+
+    quick = [i for i in audit["issues"] if i["issue"] == "reviews_without_listing_id"]
+    if quick:
+        names = ", ".join(sorted({i["name"] for i in quick}))
+        lines.append("")
+        lines.append(
+            f"*Quickest win:* {names} — guests are booking and reviewing these, but "
+            f"Streamline has no listing ID. A mapping fix, not a listing rebuild."
+        )
+
+    unchecked = [s2["label"] for s2 in audit["issue_summary"] if not s2["checked"]]
+    if unchecked:
+        lines.append("")
+        lines.append(f"_Not yet checked: {', '.join(unchecked)}._")
+
+    lines.append("")
+    lines.append(f"<{ARTIFACT_URL}|Open the full dashboard>")
+    return "\n".join(lines)
+
+
 # --------------------------------------------------------------------------
 # Entry point
 # --------------------------------------------------------------------------
@@ -1171,7 +1308,7 @@ def main() -> int:
                         help="GetPropertyList payload, repeatable (show_ota_ids=true)")
     parser.add_argument("--renting", action="append", default=[],
                         help="Alias for --streamline-group")
-    parser.add_argument("--nonrenting", required=True, action="append")
+    parser.add_argument("--nonrenting", action="append", default=[])
     parser.add_argument("--wazzi", action="append", default=[])
     parser.add_argument("--wheelhouse", action="append", default=[])
     parser.add_argument("--reva", action="append", default=[],
@@ -1181,11 +1318,30 @@ def main() -> int:
     parser.add_argument("--details", action="append", default=[],
                         help="Per-unit detail map from fetch_streamline_details.py "
                              "(classification + merchant fields)")
+    parser.add_argument("--rebuild", help="Re-render report.html and slack.md from a stored "
+                                          "snapshot JSON without refetching anything")
     parser.add_argument("--outdir", default="audit-output")
     parser.add_argument("--date", default=dt.date.today().isoformat())
     args = parser.parse_args()
 
+    if args.rebuild:
+        audit = load_json(args.rebuild)
+        audit["top_actions"] = rank_actions(audit["issues"])
+        deltas = audit.get("deltas", {})
+        os.makedirs(args.outdir, exist_ok=True)
+        with open(os.path.join(args.outdir, "report.html"), "w", encoding="utf-8") as handle:
+            handle.write(render_html(audit, deltas))
+        with open(os.path.join(args.outdir, "slack.md"), "w", encoding="utf-8") as handle:
+            handle.write(render_slack(audit, deltas))
+        with open(os.path.join(args.outdir, "latest.json"), "w", encoding="utf-8") as handle:
+            json.dump(audit, handle, indent=2)
+        print(f"Rebuilt report.html and slack.md from {args.rebuild}")
+        return 0
+
     renting_paths = args.streamline_group + args.renting
+    if not args.nonrenting:
+        print("ERROR: --nonrenting is required unless using --rebuild.", file=sys.stderr)
+        return 1
     if not renting_paths:
         print("ERROR: pass at least one --streamline-group (or --renting) payload.",
               file=sys.stderr)
@@ -1226,6 +1382,8 @@ def main() -> int:
             json.dump(audit, handle, indent=2)
     with open(os.path.join(args.outdir, "report.html"), "w", encoding="utf-8") as handle:
         handle.write(render_html(audit, deltas))
+    with open(os.path.join(args.outdir, "slack.md"), "w", encoding="utf-8") as handle:
+        handle.write(render_slack(audit, deltas))
 
     census = audit["census"]
     print(f"Listing Health Check — {args.date}")
@@ -1253,7 +1411,12 @@ def main() -> int:
               f"{len(deltas['closed'])} resolved")
     else:
         print("  (first run — no prior snapshot)")
-    print(f"  Wrote {args.outdir}/latest.json, report.html, history/{args.date}.json")
+    if audit.get("top_actions"):
+        print("  Top properties to look at:")
+        for n, e in enumerate(audit["top_actions"][:5], 1):
+            print(f"      {n}. {e['name']} ({e['area']}) — {'; '.join(dict.fromkeys(e['reasons']))}")
+    print(f"  Wrote {args.outdir}/latest.json, report.html, slack.md, "
+          f"history/{args.date}.json")
     return 0
 
 

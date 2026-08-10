@@ -1,6 +1,6 @@
 {
-  "run_date": "2026-08-08",
-  "generated_at": "2026-08-09T04:37:01+00:00",
+  "run_date": "2026-08-10",
+  "generated_at": "2026-08-10T13:16:32+00:00",
   "sources": {
     "streamline": true,
     "wazzi": true,
@@ -8,18 +8,18 @@
     "keydata": true,
     "reva reviews": true,
     "wheelhouse id mapping": false,
-    "unit detail": true,
+    "unit detail": false,
     "merchant": false
   },
   "scope": {
-    "classification_detail": 76,
+    "classification_detail": 0,
     "merchant": 0,
     "wazzi": 1587,
     "wheelhouse": 0,
     "wheelhouse_matched": 0,
-    "keydata": 1381,
-    "keydata_matched": 1318,
-    "reva_matched": 548,
+    "keydata": 1401,
+    "keydata_matched": 1338,
+    "reva_matched": 549,
     "wazzi_matched": 1344,
     "cops_scope": 401,
     "total_renting": 1344
@@ -30,8 +30,8 @@
     "total": 1581,
     "wazzi_total": 1587,
     "wheelhouse_total": null,
-    "keydata_total": 1381,
-    "reva_units_with_reviews": 581,
+    "keydata_total": 1401,
+    "reva_units_with_reviews": 582,
     "by_area": {
       "PalmSprings": {
         "renting": 401,
@@ -97,7 +97,7 @@
       "live": 1321,
       "missing": 23,
       "unknown": 0,
-      "review_confirmed": 486,
+      "review_confirmed": 483,
       "coverage_pct": 98.3
     },
     {
@@ -109,7 +109,7 @@
       "live": 1317,
       "missing": 27,
       "unknown": 0,
-      "review_confirmed": 189,
+      "review_confirmed": 190,
       "coverage_pct": 98.0
     },
     {
@@ -142,11 +142,11 @@
       "kind": "branded_site",
       "observable": false,
       "expected": 1344,
-      "live": 1087,
+      "live": 1103,
       "missing": 0,
-      "unknown": 257,
+      "unknown": 241,
       "review_confirmed": 0,
-      "coverage_pct": 80.9
+      "coverage_pct": 82.1
     },
     {
       "code": "casago_az",
@@ -154,11 +154,11 @@
       "kind": "branded_site",
       "observable": false,
       "expected": 582,
-      "live": 17,
+      "live": 20,
       "missing": 0,
-      "unknown": 565,
+      "unknown": 562,
       "review_confirmed": 0,
-      "coverage_pct": 2.9
+      "coverage_pct": 3.4
     },
     {
       "code": "casago_socal",
@@ -166,11 +166,11 @@
       "kind": "branded_site",
       "observable": false,
       "expected": 760,
-      "live": 213,
+      "live": 214,
       "missing": 0,
-      "unknown": 547,
+      "unknown": 546,
       "review_confirmed": 0,
-      "coverage_pct": 28.0
+      "coverage_pct": 28.2
     },
     {
       "code": "vacation_palm_springs",
@@ -314,7 +314,7 @@
       "category": "distribution",
       "severity": "low",
       "why": "Listed on Airbnb and/or VRBO but no guest review on either in 90 days. Frequently just low season or a quiet unit \u2014 a prompt to look, not a fault. Read it alongside occupancy, not on its own.",
-      "count": 785,
+      "count": 784,
       "checked": true,
       "coverage": "1,344 of 1,344"
     },
@@ -354,7 +354,7 @@
       "category": "systems",
       "severity": "high",
       "why": "Renting in Streamline but not in KeyData's active set \u2014 performance for this unit is not being tracked.",
-      "count": 26,
+      "count": 6,
       "checked": true,
       "coverage": "1,344 of 1,344"
     },
@@ -424,9 +424,9 @@
       "category": "classification",
       "severity": "low",
       "why": "Neighborhood drives site placement and search.",
-      "count": 1,
-      "checked": true,
-      "coverage": "76 of 1,344"
+      "count": 0,
+      "checked": false,
+      "coverage": "0 of 1,344"
     },
     {
       "issue": "missing_resort",
@@ -435,8 +435,8 @@
       "severity": "low",
       "why": "Location resort drives grouping on the branded sites.",
       "count": 0,
-      "checked": true,
-      "coverage": "76 of 1,344"
+      "checked": false,
+      "coverage": "0 of 1,344"
     },
     {
       "issue": "missing_property_group",
@@ -445,8 +445,8 @@
       "severity": "medium",
       "why": "Property group drives reporting and accounting rollups.",
       "count": 0,
-      "checked": true,
-      "coverage": "76 of 1,344"
+      "checked": false,
+      "coverage": "0 of 1,344"
     },
     {
       "issue": "group_state_mismatch",
@@ -455,8 +455,8 @@
       "severity": "high",
       "why": "Unit sits in a regional group belonging to another state \u2014 misroutes reporting and accounting.",
       "count": 0,
-      "checked": true,
-      "coverage": "76 of 1,344"
+      "checked": false,
+      "coverage": "0 of 1,344"
     }
   ],
   "issues": [
@@ -1861,22 +1861,11 @@
       "unit_id": "1126958",
       "name": "San Moritz Lake House",
       "area": "(unassigned)",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "missing_area",
       "category": "classification",
       "label": "No area assigned",
       "severity": "high",
-      "detail": ""
-    },
-    {
-      "unit_id": "1124366",
-      "name": "The Fairway Chalet",
-      "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
-      "issue": "missing_neighborhood",
-      "category": "classification",
-      "label": "No neighborhood assigned",
-      "severity": "low",
       "detail": ""
     },
     {
@@ -2092,7 +2081,7 @@
       "unit_id": "1101630",
       "name": "The Valley's Cabin",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "missing_airbnb",
       "category": "distribution",
       "label": "No Airbnb listing ID",
@@ -2551,17 +2540,6 @@
       "detail": ""
     },
     {
-      "unit_id": "1126958",
-      "name": "San Moritz Lake House",
-      "area": "(unassigned)",
-      "property_group": "CA-LakeArrowhead",
-      "issue": "no_guest_activity",
-      "category": "distribution",
-      "label": "No guest reviews on any OTA (90d)",
-      "severity": "low",
-      "detail": "no Airbnb or VRBO review in 90 days"
-    },
-    {
       "unit_id": "1101730",
       "name": "All Decked Out in Cambria",
       "area": "Central Coast",
@@ -2707,17 +2685,6 @@
     {
       "unit_id": "1126699",
       "name": "Mountain Retreat",
-      "area": "Central Coast",
-      "property_group": null,
-      "issue": "no_guest_activity",
-      "category": "distribution",
-      "label": "No guest reviews on any OTA (90d)",
-      "severity": "low",
-      "detail": "no Airbnb or VRBO review in 90 days"
-    },
-    {
-      "unit_id": "1101711",
-      "name": "Nana's Vintage Beach House",
       "area": "Central Coast",
       "property_group": null,
       "issue": "no_guest_activity",
@@ -3048,6 +3015,17 @@
     {
       "unit_id": "1050593",
       "name": "Evening Star",
+      "area": "Coachella",
+      "property_group": null,
+      "issue": "no_guest_activity",
+      "category": "distribution",
+      "label": "No guest reviews on any OTA (90d)",
+      "severity": "low",
+      "detail": "no Airbnb or VRBO review in 90 days"
+    },
+    {
+      "unit_id": "1050590",
+      "name": "Five O'clock Somewhere",
       "area": "Coachella",
       "property_group": null,
       "issue": "no_guest_activity",
@@ -3596,17 +3574,6 @@
       "detail": "no Airbnb or VRBO review in 90 days"
     },
     {
-      "unit_id": "1051275",
-      "name": "Fairy Trail",
-      "area": "Flagstaff",
-      "property_group": null,
-      "issue": "no_guest_activity",
-      "category": "distribution",
-      "label": "No guest reviews on any OTA (90d)",
-      "severity": "low",
-      "detail": "no Airbnb or VRBO review in 90 days"
-    },
-    {
       "unit_id": "1050798",
       "name": "Flagstaff Fantasy - Entire Property",
       "area": "Flagstaff",
@@ -3904,21 +3871,10 @@
       "detail": "no Airbnb or VRBO review in 90 days"
     },
     {
-      "unit_id": "1101811",
-      "name": "Arosa Pines",
-      "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
-      "issue": "no_guest_activity",
-      "category": "distribution",
-      "label": "No guest reviews on any OTA (90d)",
-      "severity": "low",
-      "detail": "no Airbnb or VRBO review in 90 days"
-    },
-    {
       "unit_id": "1101702",
       "name": "Arrowhead Haven",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -3929,7 +3885,7 @@
       "unit_id": "1101629",
       "name": "Babbling Brook",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -3940,7 +3896,7 @@
       "unit_id": "1101825",
       "name": "Blue Bird Beauty",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -3951,7 +3907,7 @@
       "unit_id": "1101758",
       "name": "Bright Moon",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -3962,7 +3918,7 @@
       "unit_id": "1101717",
       "name": "Cedar Glen Hideaway",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -3973,7 +3929,7 @@
       "unit_id": "1101760",
       "name": "Cielo Ridge",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -3984,7 +3940,7 @@
       "unit_id": "1101634",
       "name": "Creekside Cabin",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -3995,7 +3951,7 @@
       "unit_id": "1101636",
       "name": "Crestline Charm",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -4006,7 +3962,7 @@
       "unit_id": "1101833",
       "name": "Deer Mountain",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -4017,7 +3973,7 @@
       "unit_id": "1101812",
       "name": "Edelweiss Wonder",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -4028,7 +3984,7 @@
       "unit_id": "1101762",
       "name": "Gregory Getaway",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -4039,7 +3995,7 @@
       "unit_id": "1101690",
       "name": "Grey Stone Fire",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -4050,7 +4006,7 @@
       "unit_id": "1101643",
       "name": "Heliotrope Hideaway",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -4061,7 +4017,7 @@
       "unit_id": "1101710",
       "name": "Hidden Wonder",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -4072,7 +4028,7 @@
       "unit_id": "1101653",
       "name": "Jackalope Lodge",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -4083,7 +4039,7 @@
       "unit_id": "1120996",
       "name": "Kings Lodge",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -4094,7 +4050,7 @@
       "unit_id": "1101816",
       "name": "Lake Gregory Escape",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -4105,7 +4061,7 @@
       "unit_id": "1101801",
       "name": "Lake View Magic",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -4116,18 +4072,7 @@
       "unit_id": "1126853",
       "name": "Lakeside Cavern",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
-      "issue": "no_guest_activity",
-      "category": "distribution",
-      "label": "No guest reviews on any OTA (90d)",
-      "severity": "low",
-      "detail": "no Airbnb or VRBO review in 90 days"
-    },
-    {
-      "unit_id": "1101807",
-      "name": "Lakeside Serenity",
-      "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -4138,7 +4083,7 @@
       "unit_id": "1101754",
       "name": "Matterhorn Woods",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -4149,7 +4094,7 @@
       "unit_id": "1101822",
       "name": "Morrison Manor",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -4160,7 +4105,7 @@
       "unit_id": "1101748",
       "name": "Mountain Memories on Tavern Bay",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -4171,7 +4116,7 @@
       "unit_id": "1101797",
       "name": "Mountain Top Chalet",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -4182,7 +4127,7 @@
       "unit_id": "1101654",
       "name": "Natures Reserve",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -4193,7 +4138,7 @@
       "unit_id": "1101831",
       "name": "Owl Nest",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -4204,18 +4149,7 @@
       "unit_id": "1120995",
       "name": "Pinetree Palace",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
-      "issue": "no_guest_activity",
-      "category": "distribution",
-      "label": "No guest reviews on any OTA (90d)",
-      "severity": "low",
-      "detail": "no Airbnb or VRBO review in 90 days"
-    },
-    {
-      "unit_id": "1101753",
-      "name": "Rocky Pines",
-      "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -4226,7 +4160,7 @@
       "unit_id": "1101650",
       "name": "Saint Bernard Beauty",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -4237,7 +4171,7 @@
       "unit_id": "1101830",
       "name": "Sequoia Serenity",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -4248,7 +4182,7 @@
       "unit_id": "1101819",
       "name": "Serene Cabin",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -4259,7 +4193,7 @@
       "unit_id": "1101757",
       "name": "Sky High Cabin",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -4270,7 +4204,7 @@
       "unit_id": "1101835",
       "name": "Summit Sanctuary",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -4281,7 +4215,7 @@
       "unit_id": "1101719",
       "name": "The Chateau",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -4292,7 +4226,7 @@
       "unit_id": "1124366",
       "name": "The Fairway Chalet",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -4303,7 +4237,7 @@
       "unit_id": "1101761",
       "name": "The House Of Light and Sky",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -4314,7 +4248,7 @@
       "unit_id": "1101770",
       "name": "The Kingsview Lakehouse",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -4325,7 +4259,7 @@
       "unit_id": "1122052",
       "name": "The Polished Pine",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -4336,7 +4270,7 @@
       "unit_id": "1101829",
       "name": "The Retreat on Wabash Lane",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -4347,7 +4281,7 @@
       "unit_id": "1101826",
       "name": "The Snow White",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -4358,7 +4292,7 @@
       "unit_id": "1101828",
       "name": "Timber Top Retreat",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -4369,7 +4303,7 @@
       "unit_id": "1101763",
       "name": "Top Town Retreat",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -4380,7 +4314,7 @@
       "unit_id": "1101821",
       "name": "Tree-Top Getaway",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -4391,7 +4325,7 @@
       "unit_id": "1101827",
       "name": "Tree-mendous Skypark-View Cabin",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -4402,7 +4336,7 @@
       "unit_id": "1101706",
       "name": "Treelands Lodge",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -4413,7 +4347,7 @@
       "unit_id": "1101691",
       "name": "Treetop Cottage",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -4424,7 +4358,7 @@
       "unit_id": "1101738",
       "name": "Victoria Court Vacation",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -4435,7 +4369,7 @@
       "unit_id": "1101767",
       "name": "Villa Elvira",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -4446,7 +4380,7 @@
       "unit_id": "1101708",
       "name": "Vintage Village Walk Cottage",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -4457,7 +4391,7 @@
       "unit_id": "1101715",
       "name": "Whistle Stop Cabin",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -4468,7 +4402,7 @@
       "unit_id": "1101700",
       "name": "Wooded Comfort",
       "area": "Lake Arrowhead",
-      "property_group": "CA-LakeArrowhead",
+      "property_group": null,
       "issue": "no_guest_activity",
       "category": "distribution",
       "label": "No guest reviews on any OTA (90d)",
@@ -8469,6 +8403,17 @@
       "detail": "no Airbnb or VRBO review in 90 days"
     },
     {
+      "unit_id": "1050778",
+      "name": "Historic Oldtown Plaza #202",
+      "area": "Phoenix",
+      "property_group": null,
+      "issue": "no_guest_activity",
+      "category": "distribution",
+      "label": "No guest reviews on any OTA (90d)",
+      "severity": "low",
+      "detail": "no Airbnb or VRBO review in 90 days"
+    },
+    {
       "unit_id": "1051369",
       "name": "Historic Oldtown Plaza 201",
       "area": "Phoenix",
@@ -8768,6 +8713,17 @@
     {
       "unit_id": "1050566",
       "name": "Paint the Town",
+      "area": "Phoenix",
+      "property_group": null,
+      "issue": "no_guest_activity",
+      "category": "distribution",
+      "label": "No guest reviews on any OTA (90d)",
+      "severity": "low",
+      "detail": "no Airbnb or VRBO review in 90 days"
+    },
+    {
+      "unit_id": "1039421",
+      "name": "Painted Mountain Golf Retreat",
       "area": "Phoenix",
       "property_group": null,
       "issue": "no_guest_activity",
@@ -9428,6 +9384,17 @@
     {
       "unit_id": "1050687",
       "name": "The Jetted Jewel",
+      "area": "Phoenix",
+      "property_group": null,
+      "issue": "no_guest_activity",
+      "category": "distribution",
+      "label": "No guest reviews on any OTA (90d)",
+      "severity": "low",
+      "detail": "no Airbnb or VRBO review in 90 days"
+    },
+    {
+      "unit_id": "1050707",
+      "name": "The Overlook at Cinnabar Canyon",
       "area": "Phoenix",
       "property_group": null,
       "issue": "no_guest_activity",
@@ -10440,6 +10407,17 @@
     {
       "unit_id": "1050611",
       "name": "Placita Escondida #101",
+      "area": "Tucson",
+      "property_group": null,
+      "issue": "no_guest_activity",
+      "category": "distribution",
+      "label": "No guest reviews on any OTA (90d)",
+      "severity": "low",
+      "detail": "no Airbnb or VRBO review in 90 days"
+    },
+    {
+      "unit_id": "1051067",
+      "name": "Placita Escondida #105",
       "area": "Tucson",
       "property_group": null,
       "issue": "no_guest_activity",
@@ -11571,6 +11549,17 @@
       "detail": "non-renting in Streamline"
     },
     {
+      "unit_id": "1135291",
+      "name": "Flamingo Oasis",
+      "area": "PalmSprings",
+      "property_group": null,
+      "issue": "keydata_active_orphan",
+      "category": "systems",
+      "label": "Active in KeyData, not renting in Streamline",
+      "severity": "medium",
+      "detail": "non-renting in Streamline"
+    },
+    {
       "unit_id": "1050869",
       "name": "Freestone Modern - 2806",
       "area": "PalmSprings",
@@ -11705,17 +11694,6 @@
     {
       "unit_id": "1050911",
       "name": "Spring into Oasis - 44022 - 7 Night Minimum",
-      "area": "PalmSprings",
-      "property_group": null,
-      "issue": "keydata_active_orphan",
-      "category": "systems",
-      "label": "Active in KeyData, not renting in Streamline",
-      "severity": "medium",
-      "detail": "non-renting in Streamline"
-    },
-    {
-      "unit_id": "1135291",
-      "name": "Sunny Sanctuary",
       "area": "PalmSprings",
       "property_group": null,
       "issue": "keydata_active_orphan",
@@ -11912,28 +11890,6 @@
       "detail": ""
     },
     {
-      "unit_id": "1050783",
-      "name": "Relax at Indian Springs",
-      "area": "Coachella",
-      "property_group": null,
-      "issue": "not_active_in_keydata",
-      "category": "systems",
-      "label": "Not active in KeyData",
-      "severity": "high",
-      "detail": ""
-    },
-    {
-      "unit_id": "1051351",
-      "name": "The 8th Tee Retreat at PGA",
-      "area": "Coachella",
-      "property_group": null,
-      "issue": "not_active_in_keydata",
-      "category": "systems",
-      "label": "Not active in KeyData",
-      "severity": "high",
-      "detail": ""
-    },
-    {
       "unit_id": "1050589",
       "name": "Desert Wonder",
       "area": "HighDesert",
@@ -11945,141 +11901,20 @@
       "detail": ""
     },
     {
-      "unit_id": "1051392",
-      "name": "Casa Sereno",
+      "unit_id": "1050960",
+      "name": "Mojave Magic",
+      "area": "HighDesert",
+      "property_group": null,
+      "issue": "not_active_in_keydata",
+      "category": "systems",
+      "label": "Not active in KeyData",
+      "severity": "high",
+      "detail": ""
+    },
+    {
+      "unit_id": "1050604",
+      "name": "Paradise Views Townhome",
       "area": "PalmSprings",
-      "property_group": null,
-      "issue": "not_active_in_keydata",
-      "category": "systems",
-      "label": "Not active in KeyData",
-      "severity": "high",
-      "detail": ""
-    },
-    {
-      "unit_id": "1050616",
-      "name": "Hermosa Villas Hideaway",
-      "area": "PalmSprings",
-      "property_group": null,
-      "issue": "not_active_in_keydata",
-      "category": "systems",
-      "label": "Not active in KeyData",
-      "severity": "high",
-      "detail": ""
-    },
-    {
-      "unit_id": "1050836",
-      "name": "Luxury on the Lake Rancho Mirage",
-      "area": "PalmSprings",
-      "property_group": null,
-      "issue": "not_active_in_keydata",
-      "category": "systems",
-      "label": "Not active in KeyData",
-      "severity": "high",
-      "detail": ""
-    },
-    {
-      "unit_id": "1050826",
-      "name": "Modern Desert Retreat",
-      "area": "PalmSprings",
-      "property_group": null,
-      "issue": "not_active_in_keydata",
-      "category": "systems",
-      "label": "Not active in KeyData",
-      "severity": "high",
-      "detail": ""
-    },
-    {
-      "unit_id": "1050928",
-      "name": "Peaceful Paradise on Palm Canyon Drive - 4852",
-      "area": "PalmSprings",
-      "property_group": null,
-      "issue": "not_active_in_keydata",
-      "category": "systems",
-      "label": "Not active in KeyData",
-      "severity": "high",
-      "detail": ""
-    },
-    {
-      "unit_id": "1051366",
-      "name": "Versailles Vista",
-      "area": "PalmSprings",
-      "property_group": null,
-      "issue": "not_active_in_keydata",
-      "category": "systems",
-      "label": "Not active in KeyData",
-      "severity": "high",
-      "detail": ""
-    },
-    {
-      "unit_id": "1050556",
-      "name": "AZ The Desert Delight",
-      "area": "Phoenix",
-      "property_group": null,
-      "issue": "not_active_in_keydata",
-      "category": "systems",
-      "label": "Not active in KeyData",
-      "severity": "high",
-      "detail": ""
-    },
-    {
-      "unit_id": "1039448",
-      "name": "Arrowhead Golf Condo",
-      "area": "Phoenix",
-      "property_group": null,
-      "issue": "not_active_in_keydata",
-      "category": "systems",
-      "label": "Not active in KeyData",
-      "severity": "high",
-      "detail": ""
-    },
-    {
-      "unit_id": "1051117",
-      "name": "Desert Comfort Retreat",
-      "area": "Phoenix",
-      "property_group": null,
-      "issue": "not_active_in_keydata",
-      "category": "systems",
-      "label": "Not active in KeyData",
-      "severity": "high",
-      "detail": ""
-    },
-    {
-      "unit_id": "1050737",
-      "name": "Glorious Glendale Getaway",
-      "area": "Phoenix",
-      "property_group": null,
-      "issue": "not_active_in_keydata",
-      "category": "systems",
-      "label": "Not active in KeyData",
-      "severity": "high",
-      "detail": ""
-    },
-    {
-      "unit_id": "1051105",
-      "name": "Golden Oasis, Unit #110",
-      "area": "Phoenix",
-      "property_group": null,
-      "issue": "not_active_in_keydata",
-      "category": "systems",
-      "label": "Not active in KeyData",
-      "severity": "high",
-      "detail": ""
-    },
-    {
-      "unit_id": "1039389",
-      "name": "McCormick Ranch Golf Casita",
-      "area": "Phoenix",
-      "property_group": null,
-      "issue": "not_active_in_keydata",
-      "category": "systems",
-      "label": "Not active in KeyData",
-      "severity": "high",
-      "detail": ""
-    },
-    {
-      "unit_id": "1050618",
-      "name": "My Little Piece of the Desert",
-      "area": "Phoenix",
       "property_group": null,
       "issue": "not_active_in_keydata",
       "category": "systems",
@@ -12091,83 +11926,6 @@
       "unit_id": "1051039",
       "name": "Spacious Relaxing Sanctuary",
       "area": "Phoenix",
-      "property_group": null,
-      "issue": "not_active_in_keydata",
-      "category": "systems",
-      "label": "Not active in KeyData",
-      "severity": "high",
-      "detail": ""
-    },
-    {
-      "unit_id": "1051063",
-      "name": "Sun City's Charmer",
-      "area": "Phoenix",
-      "property_group": null,
-      "issue": "not_active_in_keydata",
-      "category": "systems",
-      "label": "Not active in KeyData",
-      "severity": "high",
-      "detail": ""
-    },
-    {
-      "unit_id": "1039383",
-      "name": "Sunscape Bonita Old Town Ground Floor",
-      "area": "Phoenix",
-      "property_group": null,
-      "issue": "not_active_in_keydata",
-      "category": "systems",
-      "label": "Not active in KeyData",
-      "severity": "high",
-      "detail": ""
-    },
-    {
-      "unit_id": "1051133",
-      "name": "The Half Moon Sanctuary",
-      "area": "Phoenix",
-      "property_group": null,
-      "issue": "not_active_in_keydata",
-      "category": "systems",
-      "label": "Not active in KeyData",
-      "severity": "high",
-      "detail": ""
-    },
-    {
-      "unit_id": "1050609",
-      "name": "The Sonoran Oasis",
-      "area": "Phoenix",
-      "property_group": null,
-      "issue": "not_active_in_keydata",
-      "category": "systems",
-      "label": "Not active in KeyData",
-      "severity": "high",
-      "detail": ""
-    },
-    {
-      "unit_id": "1050975",
-      "name": "Castle Rock Serenity",
-      "area": "Sedona",
-      "property_group": null,
-      "issue": "not_active_in_keydata",
-      "category": "systems",
-      "label": "Not active in KeyData",
-      "severity": "high",
-      "detail": ""
-    },
-    {
-      "unit_id": "1039347",
-      "name": "Roadrunner Retreat",
-      "area": "Sedona",
-      "property_group": null,
-      "issue": "not_active_in_keydata",
-      "category": "systems",
-      "label": "Not active in KeyData",
-      "severity": "high",
-      "detail": ""
-    },
-    {
-      "unit_id": "1039390",
-      "name": "Sedona Quail Haven",
-      "area": "Sedona",
       "property_group": null,
       "issue": "not_active_in_keydata",
       "category": "systems",
@@ -12266,10 +12024,501 @@
     "whimstay"
   ],
   "deltas": {
-    "prior_date": null,
-    "census": {},
-    "opened": [],
-    "closed": [],
-    "by_issue": {}
-  }
+    "prior_date": "2026-08-09",
+    "census": {
+      "active_renting": 0,
+      "non_renting": 0
+    },
+    "opened": [
+      {
+        "unit_id": "1050778",
+        "name": "Historic Oldtown Plaza #202",
+        "area": "Phoenix",
+        "property_group": null,
+        "issue": "no_guest_activity",
+        "category": "distribution",
+        "label": "No guest reviews on any OTA (90d)",
+        "severity": "low",
+        "detail": "no Airbnb or VRBO review in 90 days"
+      },
+      {
+        "unit_id": "1039421",
+        "name": "Painted Mountain Golf Retreat",
+        "area": "Phoenix",
+        "property_group": null,
+        "issue": "no_guest_activity",
+        "category": "distribution",
+        "label": "No guest reviews on any OTA (90d)",
+        "severity": "low",
+        "detail": "no Airbnb or VRBO review in 90 days"
+      },
+      {
+        "unit_id": "1050707",
+        "name": "The Overlook at Cinnabar Canyon",
+        "area": "Phoenix",
+        "property_group": null,
+        "issue": "no_guest_activity",
+        "category": "distribution",
+        "label": "No guest reviews on any OTA (90d)",
+        "severity": "low",
+        "detail": "no Airbnb or VRBO review in 90 days"
+      },
+      {
+        "unit_id": "1050604",
+        "name": "Paradise Views Townhome",
+        "area": "PalmSprings",
+        "property_group": null,
+        "issue": "not_active_in_keydata",
+        "category": "systems",
+        "label": "Not active in KeyData",
+        "severity": "high",
+        "detail": ""
+      }
+    ],
+    "closed": [
+      {
+        "unit_id": "1126958",
+        "name": "San Moritz Lake House",
+        "area": "(unassigned)",
+        "property_group": null,
+        "issue": "no_guest_activity",
+        "category": "distribution",
+        "label": "No guest reviews on any OTA (90d)",
+        "severity": "low",
+        "detail": "no Airbnb or VRBO review in 90 days"
+      },
+      {
+        "unit_id": "1101711",
+        "name": "Nana's Vintage Beach House",
+        "area": "Central Coast",
+        "property_group": null,
+        "issue": "no_guest_activity",
+        "category": "distribution",
+        "label": "No guest reviews on any OTA (90d)",
+        "severity": "low",
+        "detail": "no Airbnb or VRBO review in 90 days"
+      },
+      {
+        "unit_id": "1051275",
+        "name": "Fairy Trail",
+        "area": "Flagstaff",
+        "property_group": null,
+        "issue": "no_guest_activity",
+        "category": "distribution",
+        "label": "No guest reviews on any OTA (90d)",
+        "severity": "low",
+        "detail": "no Airbnb or VRBO review in 90 days"
+      },
+      {
+        "unit_id": "1101811",
+        "name": "Arosa Pines",
+        "area": "Lake Arrowhead",
+        "property_group": null,
+        "issue": "no_guest_activity",
+        "category": "distribution",
+        "label": "No guest reviews on any OTA (90d)",
+        "severity": "low",
+        "detail": "no Airbnb or VRBO review in 90 days"
+      },
+      {
+        "unit_id": "1101807",
+        "name": "Lakeside Serenity",
+        "area": "Lake Arrowhead",
+        "property_group": null,
+        "issue": "no_guest_activity",
+        "category": "distribution",
+        "label": "No guest reviews on any OTA (90d)",
+        "severity": "low",
+        "detail": "no Airbnb or VRBO review in 90 days"
+      },
+      {
+        "unit_id": "1101753",
+        "name": "Rocky Pines",
+        "area": "Lake Arrowhead",
+        "property_group": null,
+        "issue": "no_guest_activity",
+        "category": "distribution",
+        "label": "No guest reviews on any OTA (90d)",
+        "severity": "low",
+        "detail": "no Airbnb or VRBO review in 90 days"
+      },
+      {
+        "unit_id": "1050783",
+        "name": "Relax at Indian Springs",
+        "area": "Coachella",
+        "property_group": null,
+        "issue": "not_active_in_keydata",
+        "category": "systems",
+        "label": "Not active in KeyData",
+        "severity": "high",
+        "detail": ""
+      },
+      {
+        "unit_id": "1051351",
+        "name": "The 8th Tee Retreat at PGA",
+        "area": "Coachella",
+        "property_group": null,
+        "issue": "not_active_in_keydata",
+        "category": "systems",
+        "label": "Not active in KeyData",
+        "severity": "high",
+        "detail": ""
+      },
+      {
+        "unit_id": "1051392",
+        "name": "Casa Sereno",
+        "area": "PalmSprings",
+        "property_group": null,
+        "issue": "not_active_in_keydata",
+        "category": "systems",
+        "label": "Not active in KeyData",
+        "severity": "high",
+        "detail": ""
+      },
+      {
+        "unit_id": "1050616",
+        "name": "Hermosa Villas Hideaway",
+        "area": "PalmSprings",
+        "property_group": null,
+        "issue": "not_active_in_keydata",
+        "category": "systems",
+        "label": "Not active in KeyData",
+        "severity": "high",
+        "detail": ""
+      },
+      {
+        "unit_id": "1050836",
+        "name": "Luxury on the Lake Rancho Mirage",
+        "area": "PalmSprings",
+        "property_group": null,
+        "issue": "not_active_in_keydata",
+        "category": "systems",
+        "label": "Not active in KeyData",
+        "severity": "high",
+        "detail": ""
+      },
+      {
+        "unit_id": "1050826",
+        "name": "Modern Desert Retreat",
+        "area": "PalmSprings",
+        "property_group": null,
+        "issue": "not_active_in_keydata",
+        "category": "systems",
+        "label": "Not active in KeyData",
+        "severity": "high",
+        "detail": ""
+      },
+      {
+        "unit_id": "1050928",
+        "name": "Peaceful Paradise on Palm Canyon Drive - 4852",
+        "area": "PalmSprings",
+        "property_group": null,
+        "issue": "not_active_in_keydata",
+        "category": "systems",
+        "label": "Not active in KeyData",
+        "severity": "high",
+        "detail": ""
+      },
+      {
+        "unit_id": "1051366",
+        "name": "Versailles Vista",
+        "area": "PalmSprings",
+        "property_group": null,
+        "issue": "not_active_in_keydata",
+        "category": "systems",
+        "label": "Not active in KeyData",
+        "severity": "high",
+        "detail": ""
+      },
+      {
+        "unit_id": "1050556",
+        "name": "AZ The Desert Delight",
+        "area": "Phoenix",
+        "property_group": null,
+        "issue": "not_active_in_keydata",
+        "category": "systems",
+        "label": "Not active in KeyData",
+        "severity": "high",
+        "detail": ""
+      },
+      {
+        "unit_id": "1039448",
+        "name": "Arrowhead Golf Condo",
+        "area": "Phoenix",
+        "property_group": null,
+        "issue": "not_active_in_keydata",
+        "category": "systems",
+        "label": "Not active in KeyData",
+        "severity": "high",
+        "detail": ""
+      },
+      {
+        "unit_id": "1051117",
+        "name": "Desert Comfort Retreat",
+        "area": "Phoenix",
+        "property_group": null,
+        "issue": "not_active_in_keydata",
+        "category": "systems",
+        "label": "Not active in KeyData",
+        "severity": "high",
+        "detail": ""
+      },
+      {
+        "unit_id": "1050737",
+        "name": "Glorious Glendale Getaway",
+        "area": "Phoenix",
+        "property_group": null,
+        "issue": "not_active_in_keydata",
+        "category": "systems",
+        "label": "Not active in KeyData",
+        "severity": "high",
+        "detail": ""
+      },
+      {
+        "unit_id": "1051105",
+        "name": "Golden Oasis, Unit #110",
+        "area": "Phoenix",
+        "property_group": null,
+        "issue": "not_active_in_keydata",
+        "category": "systems",
+        "label": "Not active in KeyData",
+        "severity": "high",
+        "detail": ""
+      },
+      {
+        "unit_id": "1039389",
+        "name": "McCormick Ranch Golf Casita",
+        "area": "Phoenix",
+        "property_group": null,
+        "issue": "not_active_in_keydata",
+        "category": "systems",
+        "label": "Not active in KeyData",
+        "severity": "high",
+        "detail": ""
+      },
+      {
+        "unit_id": "1050618",
+        "name": "My Little Piece of the Desert",
+        "area": "Phoenix",
+        "property_group": null,
+        "issue": "not_active_in_keydata",
+        "category": "systems",
+        "label": "Not active in KeyData",
+        "severity": "high",
+        "detail": ""
+      },
+      {
+        "unit_id": "1051063",
+        "name": "Sun City's Charmer",
+        "area": "Phoenix",
+        "property_group": null,
+        "issue": "not_active_in_keydata",
+        "category": "systems",
+        "label": "Not active in KeyData",
+        "severity": "high",
+        "detail": ""
+      },
+      {
+        "unit_id": "1039383",
+        "name": "Sunscape Bonita Old Town Ground Floor",
+        "area": "Phoenix",
+        "property_group": null,
+        "issue": "not_active_in_keydata",
+        "category": "systems",
+        "label": "Not active in KeyData",
+        "severity": "high",
+        "detail": ""
+      },
+      {
+        "unit_id": "1051133",
+        "name": "The Half Moon Sanctuary",
+        "area": "Phoenix",
+        "property_group": null,
+        "issue": "not_active_in_keydata",
+        "category": "systems",
+        "label": "Not active in KeyData",
+        "severity": "high",
+        "detail": ""
+      },
+      {
+        "unit_id": "1050609",
+        "name": "The Sonoran Oasis",
+        "area": "Phoenix",
+        "property_group": null,
+        "issue": "not_active_in_keydata",
+        "category": "systems",
+        "label": "Not active in KeyData",
+        "severity": "high",
+        "detail": ""
+      },
+      {
+        "unit_id": "1050975",
+        "name": "Castle Rock Serenity",
+        "area": "Sedona",
+        "property_group": null,
+        "issue": "not_active_in_keydata",
+        "category": "systems",
+        "label": "Not active in KeyData",
+        "severity": "high",
+        "detail": ""
+      },
+      {
+        "unit_id": "1039347",
+        "name": "Roadrunner Retreat",
+        "area": "Sedona",
+        "property_group": null,
+        "issue": "not_active_in_keydata",
+        "category": "systems",
+        "label": "Not active in KeyData",
+        "severity": "high",
+        "detail": ""
+      },
+      {
+        "unit_id": "1039390",
+        "name": "Sedona Quail Haven",
+        "area": "Sedona",
+        "property_group": null,
+        "issue": "not_active_in_keydata",
+        "category": "systems",
+        "label": "Not active in KeyData",
+        "severity": "high",
+        "detail": ""
+      }
+    ],
+    "by_issue": {
+      "missing_airbnb": 0,
+      "missing_vrbo": 0,
+      "dark_all_otas": 0,
+      "online_bookings_off": 0,
+      "reviews_without_listing_id": 0,
+      "no_guest_activity": -3,
+      "not_in_wheelhouse": 0,
+      "wheelhouse_inactive": 0,
+      "wheelhouse_posting_off": 0,
+      "not_active_in_keydata": -21,
+      "keydata_active_orphan": 0,
+      "not_in_wazzi": 0,
+      "orphan_in_wazzi": 0,
+      "missing_accounting_ids": 0,
+      "missing_merchant": 0,
+      "missing_area": 0,
+      "missing_neighborhood": 0,
+      "missing_resort": 0,
+      "missing_property_group": 0,
+      "group_state_mismatch": 0
+    }
+  },
+  "top_actions": [
+    {
+      "unit_id": "1126708",
+      "name": "167 San Luis St Unit C",
+      "area": "Central Coast",
+      "score": 225,
+      "reasons": [
+        "Dark on every verified OTA",
+        "No Airbnb listing ID",
+        "No VRBO listing ID",
+        "Not active in KeyData"
+      ]
+    },
+    {
+      "unit_id": "1101745",
+      "name": "Hilltop Heaven",
+      "area": "(unassigned)",
+      "score": 190,
+      "reasons": [
+        "No area assigned",
+        "Dark on every verified OTA",
+        "No Airbnb listing ID",
+        "No VRBO listing ID"
+      ]
+    },
+    {
+      "unit_id": "1126707",
+      "name": "167 San Luis St Unit A",
+      "area": "Central Coast",
+      "score": 165,
+      "reasons": [
+        "Dark on every verified OTA",
+        "No Airbnb listing ID",
+        "No VRBO listing ID"
+      ]
+    },
+    {
+      "unit_id": "1130036",
+      "name": "Hollywood Oasis",
+      "area": "Coachella",
+      "score": 165,
+      "reasons": [
+        "Dark on every verified OTA",
+        "No Airbnb listing ID",
+        "No VRBO listing ID"
+      ]
+    },
+    {
+      "unit_id": "1126676",
+      "name": "Lillie by the Sea - Guest House",
+      "area": "Central Coast",
+      "score": 165,
+      "reasons": [
+        "Dark on every verified OTA",
+        "No Airbnb listing ID",
+        "No VRBO listing ID"
+      ]
+    },
+    {
+      "unit_id": "1051077",
+      "name": "Paradise Valley Vacation Home",
+      "area": "Phoenix",
+      "score": 165,
+      "reasons": [
+        "Dark on every verified OTA",
+        "No Airbnb listing ID",
+        "No VRBO listing ID"
+      ]
+    },
+    {
+      "unit_id": "1128196",
+      "name": "Rolling Hills Haven",
+      "area": "Phoenix",
+      "score": 165,
+      "reasons": [
+        "Dark on every verified OTA",
+        "No Airbnb listing ID",
+        "No VRBO listing ID"
+      ]
+    },
+    {
+      "unit_id": "1121874",
+      "name": "The Cove Villa",
+      "area": "Coachella",
+      "score": 165,
+      "reasons": [
+        "Dark on every verified OTA",
+        "No Airbnb listing ID",
+        "No VRBO listing ID"
+      ]
+    },
+    {
+      "unit_id": "1128195",
+      "name": "The Urban Vale",
+      "area": "Phoenix",
+      "score": 165,
+      "reasons": [
+        "Dark on every verified OTA",
+        "No Airbnb listing ID",
+        "No VRBO listing ID"
+      ]
+    },
+    {
+      "unit_id": "1051208",
+      "name": "Bear's Den",
+      "area": "IdyllwildTemecula",
+      "score": 135,
+      "reasons": [
+        "No Airbnb listing ID",
+        "Guest reviews but no listing ID"
+      ]
+    }
+  ]
 }
