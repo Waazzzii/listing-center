@@ -90,6 +90,22 @@ NICHE_DEFAULT_OFF = {"vacasa", "hopper", "crewdogs", "wander", "whimstay", "mids
 # and accounting.
 GROUP_STATE_PREFIX = {"AZ-": "AZ", "CA-": "CA"}
 
+# Streamline's Property Stage. The field is not returned in any payload, but
+# get_property_list can FILTER on it, so each stage is fetched as its own call
+# and turned into a unit list.
+#
+# Units in these stages are dropped before any check runs — they are not
+# expected to be live, so flagging them is noise. A unit with NO stage set is
+# NEVER excluded: 256 renting units have no value yet, and treating absent as
+# excluded would silently drop a fifth of the portfolio.
+EXCLUDED_STAGES = {"Onboarding"}
+
+# Every value the field can hold, for reference when fetching.
+ALL_STAGES = [
+    "Live", "Onboarding", "Off boarding", "On Hold", "Out of Compliance",
+    "Out of Contracts", "Ready to Party", "Terminated", "For Sale",
+]
+
 # Units that are not rentals at all. They should never be active in a system
 # that meters or reports on rental performance.
 ADMIN_UNIT_PATTERN = re.compile(
@@ -315,6 +331,24 @@ def load_wazzi(paths: list[str]) -> dict[str, dict[str, Any]]:
     return rows
 
 
+def load_stages(specs: list[str]) -> dict[str, str]:
+    """unit_id -> Property Stage, from "Stage Name=/path/to/payload" specs."""
+    stage_by_unit: dict[str, str] = {}
+    for spec in specs:
+        if "=" not in spec:
+            raise SystemExit(f'--stage expects "Stage Name=/path/to/payload", got: {spec}')
+        stage, _, path = spec.partition("=")
+        stage = stage.strip()
+        payload = load_json(path.strip())
+        data = payload.get("data") or {}
+        units = data.get("property", []) if isinstance(data, dict) else []
+        if isinstance(units, dict):
+            units = [units]
+        for unit in units:
+            stage_by_unit[str(unit.get("id"))] = stage
+    return stage_by_unit
+
+
 def load_keydata(paths: list[str]) -> dict[str, dict[str, Any]]:
     """Streamline unit_id → KeyData record.
 
@@ -413,11 +447,16 @@ def build_audit(
     reva: dict[str, dict[str, dict[str, Any]]],
     details: dict[str, dict[str, Any]],
     run_date: str,
+    excluded_units: set[str] | None = None,
 ) -> dict[str, Any]:
     have_wazzi = bool(wazzi)
     have_wheelhouse = bool(wheelhouse)
     have_keydata = bool(keydata)
     have_reva = bool(reva)
+    # Excluded units are skipped by the checks but are still OURS. Leaving them
+    # out of the reconciliation sets would make every one of them surface as an
+    # orphan in KeyData and Wazzi — trading two false flags for four.
+    known_units = set(excluded_units or ())
     detailed_units: set[str] = set()
     merchant_units: set[str] = set()
 
@@ -603,7 +642,7 @@ def build_audit(
 
     # Units KeyData lists as active that Streamline does not have as active+renting.
     if keydata_usable:
-        renting_ids = {str(u.get("id")) for u in renting}
+        renting_ids = {str(u.get("id")) for u in renting} | known_units
         nonrenting_ids = {str(u.get("id")) for u in nonrenting}
         for unit_id, row in keydata.items():
             if unit_id not in renting_ids:
@@ -627,9 +666,9 @@ def build_audit(
 
     # Units Wazzi knows about that Streamline no longer returns.
     if wazzi_complete:
-        streamline_ids = {str(u.get("id")) for u in renting} | {
-            str(u.get("id")) for u in nonrenting
-        }
+        streamline_ids = ({str(u.get("id")) for u in renting}
+                          | {str(u.get("id")) for u in nonrenting}
+                          | known_units)
         for unit_id, row in wazzi.items():
             if unit_id not in streamline_ids:
                 category, label, severity, _ = ISSUES["orphan_in_wazzi"]
@@ -1006,6 +1045,16 @@ def render_html(audit: dict[str, Any], deltas: dict[str, Any]) -> str:
                          ("Wheelhouse", src["wheelhouse"]), ("Merchant / gateway", src["merchant"]))
     )
 
+    stage_note = ""
+    if census.get("excluded_total"):
+        detail = ", ".join(f"{n} {esc(stage)}" for stage, n in
+                           sorted(census["excluded_by_stage"].items()))
+        stage_note = (f' &middot; <strong>{census["excluded_total"]} excluded by Property '
+                      f'Stage</strong> ({detail})')
+    if census.get("no_stage_set"):
+        stage_note += (f' &middot; {census["no_stage_set"]:,} renting units have no stage set '
+                       f'and are still audited')
+
     reconciliation = ""
     if census.get("wazzi_total") is not None:
         diff = census["wazzi_total"] - census["total"]
@@ -1179,7 +1228,7 @@ def render_html(audit: dict[str, Any], deltas: dict[str, Any]) -> str:
       <div class="l">Opened / Closed</div>
     </div>
   </div>
-  <p class="recon">{reconciliation}</p>
+  <p class="recon">{reconciliation}{stage_note}</p>
 
   <h2>Start here <span class="count">{len(audit.get('top_actions') or [])}</span></h2>
   <div class="scroll">
@@ -1456,6 +1505,11 @@ def render_slack(audit: dict[str, Any], deltas: dict[str, Any]) -> str:
         f"  ·  {census['non_renting']:,} non-renting{signed(cd.get('non_renting'))}"
         f"  ·  *{high} high-severity flags*"
     )
+    if census.get("excluded_total"):
+        detail = ", ".join(f"{n} {stage}" for stage, n in
+                           sorted(census["excluded_by_stage"].items()))
+        lines.append(f"_{census['excluded_total']} excluded by Property Stage ({detail}) — "
+                     f"not expected to be live._")
     if deltas.get("prior_date"):
         lines.append(f"_{opened} newly flagged, {closed} resolved since {deltas['prior_date']}_")
     else:
@@ -1512,6 +1566,11 @@ def main() -> int:
                         help="Reva list_all_reviews payload (90-day window), repeatable")
     parser.add_argument("--keydata", action="append", default=[],
                         help="KeyData list_pm_properties payload (is_active=true), repeatable")
+    parser.add_argument("--stage", action="append", default=[], metavar="NAME=PATH",
+                        help='Property Stage payload, e.g. "Onboarding=/path/file.txt". '
+                             'Repeatable. Units in an excluded stage are skipped entirely.')
+    parser.add_argument("--exclude-stage", action="append", default=[],
+                        help="Override which stages are excluded (default: Onboarding)")
     parser.add_argument("--details", action="append", default=[],
                         help="Per-unit detail map from fetch_streamline_details.py "
                              "(classification + merchant fields)")
@@ -1558,6 +1617,20 @@ def main() -> int:
 
     renting = load_streamline_units(renting_paths)
     nonrenting = load_streamline_units(args.nonrenting)
+
+    stage_by_unit = load_stages(args.stage)
+    excluded_stages = set(args.exclude_stage) if args.exclude_stage else set(EXCLUDED_STAGES)
+    excluded_units = {
+        uid for uid, stage in stage_by_unit.items() if stage in excluded_stages
+    }
+    # Count only the excluded units that were actually in scope, so the report
+    # says "4 excluded" rather than the 13 that carry the stage portfolio-wide.
+    skipped = [u for u in renting if str(u.get("id")) in excluded_units]
+    excluded_detail = collections.Counter(
+        stage_by_unit[str(u.get("id"))] for u in skipped
+    )
+    renting = [u for u in renting if str(u.get("id")) not in excluded_units]
+    unstaged = sum(1 for u in renting if str(u.get("id")) not in stage_by_unit)
     wazzi = load_wazzi(args.wazzi)
     wheelhouse = load_wheelhouse(args.wheelhouse)
     keydata = load_keydata(args.keydata)
@@ -1581,7 +1654,10 @@ def main() -> int:
     os.makedirs(history_dir, exist_ok=True)
 
     audit = build_audit(renting, nonrenting, wazzi, wheelhouse, keydata, reva, details,
-                        args.date)
+                        args.date, excluded_units=excluded_units)
+    audit["census"]["excluded_by_stage"] = dict(excluded_detail)
+    audit["census"]["excluded_total"] = len(skipped)
+    audit["census"]["no_stage_set"] = unstaged if stage_by_unit else None
     deltas = compute_deltas(audit, load_prior(history_dir, args.date))
     audit["deltas"] = deltas
 
@@ -1598,6 +1674,11 @@ def main() -> int:
     census = audit["census"]
     print(f"Listing Health Check — {args.date}")
     print(f"  Active+Renting  : {census['active_renting']:,}")
+    if skipped:
+        detail = ", ".join(f"{n} {stage}" for stage, n in excluded_detail.most_common())
+        print(f"  Excluded        : {len(skipped)} ({detail}) — not expected to be live")
+    if stage_by_unit:
+        print(f"  No stage set    : {unstaged:,} renting units (still audited)")
     print(f"  Non-Renting     : {census['non_renting']:,}")
     if census.get("wazzi_total") is not None:
         print(f"  Wazzi Data      : {census['wazzi_total']:,} "
