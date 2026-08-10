@@ -68,7 +68,28 @@ misroute money, and some are hygiene that becomes a problem later.
 | No area assigned | High | Can't be routed to a brand site or region |
 | Property group / state mismatch | High | An AZ unit filed under a CA group — misroutes reporting and accounting |
 | No property group assigned | Medium | Breaks reporting and accounting rollups |
+| Stage says Live but unit is Non-Renting | Medium | Property Stage and Renting Type disagree — both drive whether a unit should be selling |
+| No Property Stage set | Low | Can't tell whether the unit is meant to be live, onboarding or off-boarding |
 | No neighborhood / location resort | Low | Affects site placement and search |
+
+### Property Stage — how it's used
+
+Units in **Onboarding** are excluded from the audit entirely: they're dark on purpose, so
+flagging them is noise. Excluding them removed the two false alarms that were topping the
+worklist on day one.
+
+Two things worth knowing about how this behaves:
+
+- **A unit with no stage set is never excluded.** 256 renting units have no value yet, and
+  treating "no value" as "skip" would silently drop a fifth of the portfolio. They're
+  audited as if they should be selling, and flagged separately so the gap is visible.
+- **Exclusions are always stated** on the dashboard and in the Slack post. A property never
+  disappears from the report without the reason showing.
+
+Current stage coverage: Live 1,177 · Onboarding 13 · Terminated 2 · Off boarding 1 ·
+**no value 256**. The missing 256 follow no pattern — coverage is 74–83% across every
+unit-age band and proportional across all 13 markets. The field simply hasn't been
+completed.
 
 ## How priority works
 
@@ -133,7 +154,7 @@ carry the volume.
 three checks report "not checked" rather than a misleading clean result. Once we know how
 the two systems join, they switch on.
 
-**Two questions for the team:**
+**Three questions for the team:**
 
 1. **Which channels should each unit actually be on?** Today the audit assumes Airbnb,
    VRBO, Booking, and the relevant branded sites for every renting unit, and assumes the
@@ -141,6 +162,9 @@ the two systems join, they switch on.
    told otherwise. If that's wrong for any market, the gap counts are wrong with it.
 2. **Is the COPS account/bank ID a Palm Springs convention or a portfolio standard?** It's
    used on 309 of 467 Palm Springs units and nowhere else.
+3. **Should Terminated and Off boarding also be excluded?** Only Onboarding is excluded
+   today. Those two cover 3 units between them, so the impact is small either way — but
+   the rule should be deliberate.
 
 ## The pattern worth fixing, not just the numbers
 
