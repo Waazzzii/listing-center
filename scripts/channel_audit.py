@@ -155,6 +155,14 @@ ISSUES: dict[str, tuple[str, str, str, str]] = {
     "missing_merchant": ("accounting", "No merchant / payment gateway", "high",
                          "No credit-card gateway on the unit — revenue has no confirmed "
                          "destination account."),
+    "no_property_stage": ("classification", "No Property Stage set", "low",
+                          "Renting unit with no Property Stage value. The audit cannot tell "
+                          "whether it is meant to be live, onboarding or off-boarding, so it "
+                          "is audited as if it should be selling."),
+    "stage_live_not_renting": ("classification", "Stage says Live but unit is Non-Renting",
+                               "medium",
+                               "Property Stage and Renting Type disagree. One of the two is "
+                               "wrong, and both drive whether the unit should be selling."),
     "missing_area": ("classification", "No area assigned", "high",
                      "Without an area the unit cannot be routed to a brand site or region."),
     "missing_neighborhood": ("classification", "No neighborhood assigned", "low",
@@ -223,6 +231,10 @@ FIX_ACTIONS = {
     "missing_accounting_ids": "Add the COPS account and bank IDs to the unit record.",
     "missing_merchant": "Set the credit-card gateway on the unit so revenue routes to the "
                         "right account.",
+    "no_property_stage": "Set Property Stage on the unit in Streamline. Until it is set, "
+                         "the audit has to assume the unit should be selling.",
+    "stage_live_not_renting": "Reconcile the two fields: either set the unit back to "
+                              "Renting, or change Property Stage off Live.",
     "missing_area": "Assign the unit to an area in Streamline. Nothing routes correctly "
                     "without it.",
     "missing_neighborhood": "Assign a neighborhood in Streamline.",
@@ -448,6 +460,7 @@ def build_audit(
     details: dict[str, dict[str, Any]],
     run_date: str,
     excluded_units: set[str] | None = None,
+    stage_by_unit: dict[str, str] | None = None,
 ) -> dict[str, Any]:
     have_wazzi = bool(wazzi)
     have_wheelhouse = bool(wheelhouse)
@@ -457,6 +470,7 @@ def build_audit(
     # out of the reconciliation sets would make every one of them surface as an
     # orphan in KeyData and Wazzi — trading two false flags for four.
     known_units = set(excluded_units or ())
+    stages = stage_by_unit or {}
     detailed_units: set[str] = set()
     merchant_units: set[str] = set()
 
@@ -607,6 +621,12 @@ def build_audit(
                     flag(unit, "missing_accounting_ids")
 
         # --- classification ---
+        # Property Stage drives whether a unit is expected to be selling at all,
+        # so an empty value is a real gap — but a low-severity one, since the
+        # unit is still audited rather than skipped.
+        if stages and unit_id not in stages:
+            flag(unit, "no_property_stage")
+
         # Area comes back on every payload shape, so it is always checkable.
         if blank(unit.get("location_area_name")):
             flag(unit, "missing_area")
@@ -639,6 +659,21 @@ def build_audit(
                 gateway = detail.get("cc_payment_gateway_info") or {}
                 if blank(gateway.get("name")) and blank(gateway.get("settings_name")):
                     flag(unit, "missing_merchant")
+
+    # Property Stage and Renting Type disagreeing on the same unit.
+    if stages:
+        for unit in nonrenting:
+            if stages.get(str(unit.get("id"))) == "Live":
+                category, label, severity, _ = ISSUES["stage_live_not_renting"]
+                issues.append({
+                    "unit_id": str(unit.get("id")),
+                    "name": unit.get("name") or "(unnamed)",
+                    "area": area_of(unit),
+                    "property_group": None,
+                    "issue": "stage_live_not_renting",
+                    "category": category, "label": label, "severity": severity,
+                    "detail": "Property Stage = Live, Renting Type = Non-Renting",
+                })
 
     # Units KeyData lists as active that Streamline does not have as active+renting.
     if keydata_usable:
@@ -724,7 +759,7 @@ def build_audit(
             "count": by_issue.get(code, 0),
             "checked": _covered(code, wazzi_complete, wheelhouse_complete, keydata_complete,
                                 have_wazzi, wheelhouse_usable, keydata_usable,
-                                detailed_units, merchant_units, have_reva),
+                                detailed_units, merchant_units, have_reva, bool(stages)),
             "coverage": _coverage(code, scope),
         }
         for code in ISSUES
@@ -774,16 +809,19 @@ DETAIL_CHECKS = {"missing_neighborhood", "missing_resort", "missing_property_gro
 
 KEYDATA_CHECKS = {"not_active_in_keydata", "keydata_active_orphan"}
 REVA_CHECKS = {"reviews_without_listing_id", "no_guest_activity"}
+STAGE_CHECKS = {"no_property_stage", "stage_live_not_renting"}
 
 
 def _covered(code: str, wazzi_complete: bool, wheelhouse_complete: bool,
              keydata_complete: bool, have_wazzi: bool, have_wheelhouse: bool,
              have_keydata: bool, detailed: set[str], merchant: set[str],
-             have_reva: bool = False) -> bool:
+             have_reva: bool = False, have_stages: bool = False) -> bool:
     if code in KEYDATA_CHECKS:
         return keydata_complete
     if code in REVA_CHECKS:
         return have_reva
+    if code in STAGE_CHECKS:
+        return have_stages
     # Absence-claims require a complete source; presence-claims only require data.
     if code == "not_in_wheelhouse":
         return wheelhouse_complete
@@ -1654,7 +1692,8 @@ def main() -> int:
     os.makedirs(history_dir, exist_ok=True)
 
     audit = build_audit(renting, nonrenting, wazzi, wheelhouse, keydata, reva, details,
-                        args.date, excluded_units=excluded_units)
+                        args.date, excluded_units=excluded_units,
+                        stage_by_unit=stage_by_unit)
     audit["census"]["excluded_by_stage"] = dict(excluded_detail)
     audit["census"]["excluded_total"] = len(skipped)
     audit["census"]["no_stage_set"] = unstaged if stage_by_unit else None
