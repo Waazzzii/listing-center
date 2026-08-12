@@ -1,0 +1,21 @@
+{
+  "data": {
+    "property": [
+      {"id": 1093036, "name": "3963 E Calle San Antonio - ONBOARDING"},
+      {"id": 1093005, "name": "570 Desert Way - ONBOARDING"},
+      {"id": 1133016, "name": "Casa del Segundo"},
+      {"id": 1135291, "name": "Flamingo Oasis"},
+      {"id": 1132903, "name": "Inverness on the Green"},
+      {"id": 1126853, "name": "Lakeside Cavern"},
+      {"id": 1127275, "name": "Oasis on Aubrac"},
+      {"id": 1124227, "name": "ONBOARDING - Sunrise on Park"},
+      {"id": 1127261, "name": "ONBOARDING - The Modern Fairway"},
+      {"id": 1132911, "name": "The Dalton"},
+      {"id": 1135015, "name": "The Dove's Nest"},
+      {"id": 1133046, "name": "The Lindenthal"},
+      {"id": 1137163, "name": "The Mountain Watch"},
+      {"id": 1137164, "name": "The Watch Tower"},
+      {"id": 1135422, "name": "Whitehawk Villa"}
+    ]
+  }
+}

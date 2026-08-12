@@ -1,18 +1,19 @@
-*Listing Health Check — 2026-08-10*
-1,344 active & renting  ·  237 non-renting  ·  *71 high-severity flags*
-_4 newly flagged, 28 resolved since 2026-08-09_
+*Listing Health Check — 2026-08-12*
+1,338 active & renting (-2)  ·  241 non-renting (+4)  ·  *71 high-severity flags*
+_4 excluded by Property Stage (4 Onboarding) — not expected to be live._
+_21 newly flagged, 57 resolved since 2026-08-10_
 
 *Top properties to look at*
-1. *167 San Luis St Unit C* — Central Coast — Dark on every verified OTA; No Airbnb listing ID; No VRBO listing ID; Not active in KeyData
-2. *Hilltop Heaven* — (unassigned) — No area assigned; Dark on every verified OTA; No Airbnb listing ID; No VRBO listing ID
-3. *167 San Luis St Unit A* — Central Coast — Dark on every verified OTA; No Airbnb listing ID; No VRBO listing ID
-4. *Hollywood Oasis* — Coachella — Dark on every verified OTA; No Airbnb listing ID; No VRBO listing ID
-5. *Lillie by the Sea - Guest House* — Central Coast — Dark on every verified OTA; No Airbnb listing ID; No VRBO listing ID
-6. *Paradise Valley Vacation Home* — Phoenix — Dark on every verified OTA; No Airbnb listing ID; No VRBO listing ID
-7. *Rolling Hills Haven* — Phoenix — Dark on every verified OTA; No Airbnb listing ID; No VRBO listing ID
-8. *The Cove Villa* — Coachella — Dark on every verified OTA; No Airbnb listing ID; No VRBO listing ID
-9. *The Urban Vale* — Phoenix — Dark on every verified OTA; No Airbnb listing ID; No VRBO listing ID
-10. *Bear's Den* — IdyllwildTemecula — No Airbnb listing ID; Guest reviews but no listing ID
+1. *167 San Luis St Unit C* — Central Coast — No Airbnb listing ID; No VRBO listing ID; Dark on every verified OTA; Not active in KeyData
+2. *Hilltop Heaven* — (unassigned) — No Airbnb listing ID; No VRBO listing ID; Dark on every verified OTA; No area assigned
+3. *Lillie by the Sea - Guest House* — Central Coast — No Airbnb listing ID; No VRBO listing ID; Dark on every verified OTA; No Property Stage set
+4. *Paradise Valley Vacation Home* — Phoenix — No Airbnb listing ID; No VRBO listing ID; Dark on every verified OTA; No Property Stage set
+5. *167 San Luis St Unit A* — Central Coast — No Airbnb listing ID; No VRBO listing ID; Dark on every verified OTA
+6. *Hollywood Oasis* — Coachella — No Airbnb listing ID; No VRBO listing ID; Dark on every verified OTA
+7. *Rolling Hills Haven* — Phoenix — No Airbnb listing ID; No VRBO listing ID; Dark on every verified OTA
+8. *The Cove Villa* — Coachella — No Airbnb listing ID; No VRBO listing ID; Dark on every verified OTA
+9. *The Urban Vale* — Phoenix — No Airbnb listing ID; No VRBO listing ID; Dark on every verified OTA
+10. *Bear's Den* — IdyllwildTemecula — Guest reviews but no listing ID; No Airbnb listing ID
 
 *Quickest win:* Bear's Den, Gallaher — guests are booking and reviewing these, but Streamline has no listing ID. A mapping fix, not a listing rebuild.
 
