@@ -1,0 +1,28 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/agents?agent=discount-optimizer",
+      "schedule": "3 6 * * *"
+    },
+    {
+      "path": "/api/cron/agents?agent=pricing-optimizer",
+      "schedule": "7 7 * * *"
+    },
+    {
+      "path": "/api/cron/agents?agent=revenue-pacer",
+      "schedule": "12 8,14 * * *"
+    },
+    {
+      "path": "/api/cron/agents?agent=content-optimizer",
+      "schedule": "17 6 * * 1"
+    },
+    {
+      "path": "/api/cron/agents?agent=execute-actions",
+      "schedule": "22 9,13,17 * * *"
+    },
+    {
+      "path": "/api/cron/agents?agent=testing-engine",
+      "schedule": "47 10 * * *"
+    }
+  ]
+}
