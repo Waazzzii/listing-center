@@ -171,6 +171,13 @@ Written by `channel_audit.py` on every run, computed by diffing today's qualifyi
 4. `asana-tasks.csv` is committed alongside the rest of `audit-output/` in the existing commit
    step — no new git step needed.
 
+**Assignee resolution — confirmed, no lookup needed.** The Asana MCP tool's `create_tasks` and
+`update_tasks` both accept `assignee` as "an email address or a user GID" directly (verified
+against the tool schema). `asana_actions.json` carries `assignee_email` straight from the
+routing table; the routine passes it through unchanged. No workspace-users lookup or GID
+caching step is needed — this removes a step from both the Lifecycle and Rollout sections
+below versus the original draft.
+
 ## Routine changes (`~/.claude/scheduled-tasks/channel-distribution-audit/SKILL.md`)
 
 - **STEP 8** (compute): unchanged invocation; note that it now also writes
@@ -204,9 +211,8 @@ Written by `channel_audit.py` on every run, computed by diffing today's qualifyi
    tested against fixtures.
 3. Dry run: generate `asana-actions.json` from tomorrow's real data, review the `to_create`
    list and its size/routing by hand before touching Asana.
-4. Wire the routine's new STEP 10.5 to execute against the real Asana project, resolve
-   assignee emails to Asana user GIDs once (cache in the routine step), confirm one task by
-   hand.
+4. Wire the routine's new STEP 10.5 to execute against the real Asana project (assignee passed
+   as email directly — no GID lookup needed), confirm one task by hand.
 5. Enable for a full run; watch the first morning's task count and routing before relying on
    it unattended.
 
@@ -224,11 +230,13 @@ Written by `channel_audit.py` on every run, computed by diffing today's qualifyi
 
 - **Confirm bucket placement** for `stage_live_not_renting`, `missing_accounting_ids`, and the
   Wazzi-orphan codes (flagged above under Bucket → assignee mapping).
-- **Assignee resolution:** confirm whether the Asana MCP tool accepts an email directly as
-  `assignee`, or whether user GIDs must be resolved once via a workspace users lookup and
-  cached in the routine — decide during implementation.
 - **First-run volume:** no cap is planned; Jason to watch the actual count on day one and
-  decide if a cap is wanted later.
+  decide if a cap is wanted later. Note: `create_tasks` caps at 50 tasks per call, so STEP
+  10.5 must batch `to_create` into chunks of 50 — relevant given the ~80-120 expected on day
+  one.
+
+**Resolved:** assignee resolution — `create_tasks`/`update_tasks` accept an email directly, no
+GID lookup needed (see Lifecycle).
 
 ## Deferred: Cloud-based routine
 
